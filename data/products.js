@@ -1,0 +1,132 @@
+// ============================================================
+//  SNEHA ENTERPRISES — PRODUCTS DATA
+//  Edit this file or use the Admin Panel to manage products.
+// ============================================================
+var PRODUCTS_DATA = [
+  {
+    id: "wheat-001",
+    name: "Premium Wheat",
+    category: "grains",
+    emoji: "🌾",
+    badge: "Best Seller",
+    bg: "linear-gradient(135deg,#FFF8E1,#FFF0C0)",
+    origin: "Madhya Pradesh & Rajasthan",
+    description: "High-gluten, low-moisture wheat for flour milling, bread and pasta manufacturing. Available in 50kg bags or bulk containers.",
+    specs: { "Moisture": "Max 12%", "Protein": "Min 10%", "Gluten": "Min 26%", "Purity": "99.5%" },
+    packaging: ["50kg PP Bags", "25kg PP Bags", "Bulk Container"],
+    minOrder: "25 Metric Tons",
+    active: true
+  },
+  {
+    id: "maize-001",
+    name: "Yellow Maize",
+    category: "grains",
+    emoji: "🌽",
+    badge: "",
+    bg: "linear-gradient(135deg,#FFFDE7,#FFF59D)",
+    origin: "Maharashtra & Bihar",
+    description: "Grade-A yellow dent maize for animal feed, starch extraction and industrial use. Low aflatoxin, high starch content.",
+    specs: { "Moisture": "Max 14%", "Aflatoxin": "Max 10 ppb", "Starch": "Min 68%", "Purity": "98%" },
+    packaging: ["50kg PP Bags", "Bulk Container"],
+    minOrder: "20 Metric Tons",
+    active: true
+  },
+  {
+    id: "paddy-001",
+    name: "Raw Paddy & Rice",
+    category: "grains",
+    emoji: "🍚",
+    badge: "Export Grade",
+    bg: "linear-gradient(135deg,#E8F5E9,#C8E6C9)",
+    origin: "West Bengal & Punjab",
+    description: "Long-grain raw paddy and processed rice — Basmati, Sona Masuri, Parboiled — with precise moisture grading.",
+    specs: { "Moisture": "Max 13%", "Broken Grains": "Max 5%", "Purity": "99%", "Varieties": "Basmati / Sona Masuri" },
+    packaging: ["25kg Jute Bags", "50kg PP Bags", "Vacuum Sealed"],
+    minOrder: "10 Metric Tons",
+    active: true
+  },
+  {
+    id: "turmeric-001",
+    name: "Turmeric (Haldi)",
+    category: "spices",
+    emoji: "🟡",
+    badge: "Organic",
+    bg: "linear-gradient(135deg,#FFF3E0,#FFCC80)",
+    origin: "Erode & Nizamabad",
+    description: "High curcumin finger and bulb turmeric. Available as whole fingers, polished or unpolished, and as fine turmeric powder.",
+    specs: { "Curcumin": "Min 3.5%", "Moisture": "Max 10%", "Purity": "99%", "Form": "Finger / Bulb / Powder" },
+    packaging: ["25kg PP Bags", "50kg PP Bags", "10kg Vacuum Pouches"],
+    minOrder: "5 Metric Tons",
+    active: true
+  },
+  {
+    id: "foxnuts-001",
+    name: "Fox Nuts (Makhana)",
+    category: "foxnuts",
+    emoji: "🌿",
+    badge: "Superfood",
+    bg: "linear-gradient(135deg,#F3E5F5,#E1BEE7)",
+    origin: "Darbhanga & Madhubani, Bihar",
+    description: "Premium grade lotus seeds — crispy, white and nutritious. Ideal for health food brands, snack manufacturers and wholesalers.",
+    specs: { "Grade": "Premium / A-Grade", "Moisture": "Max 8%", "Purity": "99.5%", "Size": "6-8mm / 8-10mm" },
+    packaging: ["5kg Vacuum Bags", "10kg Cartons", "25kg PP Bags"],
+    minOrder: "1 Metric Ton",
+    active: true
+  },
+  {
+    id: "vegetables-001",
+    name: "Fresh Vegetables",
+    category: "vegetables",
+    emoji: "🥦",
+    badge: "",
+    bg: "linear-gradient(135deg,#E8F5E9,#A5D6A7)",
+    origin: "Pan India",
+    description: "Seasonal and year-round fresh produce — onions, potatoes, bitter gourd, drumstick, green chillies and more.",
+    specs: { "Availability": "Year-round", "Grading": "A-Grade Sorted", "Certification": "FSSAI Compliant", "Packaging": "Custom" },
+    packaging: ["10kg Mesh Bags", "25kg Cartons", "Custom"],
+    minOrder: "5 Metric Tons",
+    active: true
+  },
+  {
+    id: "onion-001",
+    name: "Red & White Onions",
+    category: "vegetables",
+    emoji: "🧅",
+    badge: "High Demand",
+    bg: "linear-gradient(135deg,#FFF3E0,#FFCC80)",
+    origin: "Nashik, Maharashtra",
+    description: "Fresh onions, properly cured and sorted by size. Exported to Middle East, SE Asia and Europe every season.",
+    specs: { "Moisture": "Max 85%", "Size": "40-80mm / 60-80mm", "Skin": "Dry & Tight", "Purity": "95% min" },
+    packaging: ["25kg Mesh Bags", "10kg Crates"],
+    minOrder: "20 Metric Tons",
+    active: true
+  },
+  {
+    id: "chilli-001",
+    name: "Dried Red Chilli",
+    category: "spices",
+    emoji: "🌶",
+    badge: "",
+    bg: "linear-gradient(135deg,#FFEBEE,#FFCDD2)",
+    origin: "Andhra Pradesh & Karnataka",
+    description: "Byadgi, Teja and Guntur varieties sorted by colour, heat and moisture. Whole, stem-less or powder options.",
+    specs: { "Moisture": "Max 12%", "Colour": "ASTA 80+", "Heat": "5000-150000 SHU", "Varieties": "Byadgi / Teja / Guntur" },
+    packaging: ["25kg PP Bags", "50kg Bales", "Powder Pouches"],
+    minOrder: "5 Metric Tons",
+    active: true
+  },
+  {
+    id: "sorghum-001",
+    name: "Sorghum (Jowar)",
+    category: "grains",
+    emoji: "🌾",
+    badge: "",
+    bg: "linear-gradient(135deg,#EFEBE9,#D7CCC8)",
+    origin: "Karnataka & Maharashtra",
+    description: "Gluten-free sorghum grain for food, feed and industrial markets. Clean, sorted in 25-50kg bags or bulk.",
+    specs: { "Moisture": "Max 13%", "Purity": "98%", "Protein": "Min 8%", "Colour": "White / Red" },
+    packaging: ["25kg PP Bags", "50kg PP Bags", "Bulk"],
+    minOrder: "20 Metric Tons",
+    active: true
+  }
+];

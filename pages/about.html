@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us — Sneha Enterprises</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/shared.css">
+<style>
+.page-hero{background:linear-gradient(135deg,var(--navy-dark),var(--navy));padding:60px 2rem}
+.page-hero .sec-label{color:var(--gold)}.page-hero .sec-title{color:white;font-size:40px}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+.about-visual{background:linear-gradient(135deg,#EEF1FB,var(--gold-light));border-radius:20px;height:420px;display:flex;align-items:center;justify-content:center;transition:transform .4s,box-shadow .4s}
+.about-visual:hover{transform:scale(1.02) rotate(.5deg);box-shadow:0 24px 64px rgba(26,46,107,.18)}
+.about-visual img{width:70%;height:auto;object-fit:contain;transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
+.about-visual:hover img{transform:scale(1.06)}
+.milestones{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:30px}
+.ms{border-left:3px solid var(--gold);padding-left:14px;transition:transform .3s,border-color .3s}
+.ms:hover{transform:translateX(6px);border-color:var(--navy)}
+.ms-n{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--navy)}
+.ms-l{font-size:12px;color:var(--text-light);margin-top:2px}
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.team-card{background:white;border:1px solid var(--border);border-radius:16px;padding:26px;text-align:center;transition:all .35s cubic-bezier(.34,1.56,.64,1)}
+.team-card:hover{transform:translateY(-8px);box-shadow:0 18px 48px rgba(26,46,107,.15);border-color:var(--gold)}
+.team-av{width:66px;height:66px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;font-family:'Playfair Display',serif;border:3px solid var(--gold-light);transition:transform .4s cubic-bezier(.34,1.56,.64,1),box-shadow .3s}
+.team-card:hover .team-av{transform:scale(1.12);box-shadow:0 6px 20px rgba(200,145,42,.35)}
+.team-card h3{font-family:'Playfair Display',serif;font-size:17px;margin-bottom:3px}
+.team-card p{font-size:12px;color:var(--text-light);line-height:1.6}
+.team-role{font-size:11px;font-weight:700;color:var(--navy);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px}
+.cert-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:18px}
+.cert-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:26px 16px;text-align:center;transition:all .35s cubic-bezier(.34,1.56,.64,1)}
+.cert-card:hover{background:rgba(255,255,255,.18);transform:translateY(-8px) scale(1.04);box-shadow:0 16px 40px rgba(0,0,0,.25)}
+@media(max-width:900px){.about-grid{grid-template-columns:1fr;gap:32px}.about-visual{height:250px;order:-1}.milestones{grid-template-columns:1fr 1fr}.team-grid{grid-template-columns:1fr}.cert-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.cert-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div id="ticker-placeholder"></div>
+<div id="nav-placeholder"></div>
+
+<div class="page-hero">
+  <div class="sec-inner">
+    <div class="sec-label">Our Story</div>
+    <h2 class="sec-title">About Sneha Enterprises</h2>
+    <p style="font-size:15px;color:rgba(255,255,255,.7);max-width:560px;line-height:1.75">From a small grain trading firm in Bihar to a trusted global agri-exporter — 16 years of quality, integrity and global reach.</p>
+  </div>
+</div>
+
+<section style="background:var(--cream)">
+  <div class="sec-inner">
+    <div class="about-grid">
+      <div class="reveal-left">
+        <div style="display:inline-block;background:var(--gold-light);color:var(--gold-dark);padding:5px 14px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px">Founded 2008 · Patna, Bihar</div>
+        <h2 class="sec-title">16 Years of Trusted<br>Global Agri Trade</h2>
+        <p style="font-size:15px;color:var(--text-mid);line-height:1.8;margin-bottom:16px">Founded in 2008, Sneha Enterprises began as a domestic grain trader in the heart of Bihar and has since grown into a respected international exporter serving buyers across Asia, Africa, the Middle East and Europe.</p>
+        <p style="font-size:15px;color:var(--text-mid);line-height:1.8">Our strength lies in deep farmer relationships, rigorous quality control, and a team that understands both Indian agriculture and global market requirements. We build long-term trade partnerships.</p>
+        <div class="milestones">
+          <div class="ms reveal d1"><div class="ms-n counter" data-target="16" data-suffix="+">0+</div><div class="ms-l">Years in Business</div></div>
+          <div class="ms reveal d2"><div class="ms-n counter" data-target="48" data-suffix="+">0+</div><div class="ms-l">Export Destinations</div></div>
+          <div class="ms reveal d3"><div class="ms-n">15K+</div><div class="ms-l">MT Exported/Year</div></div>
+          <div class="ms reveal d4"><div class="ms-n counter" data-target="200" data-suffix="+">0+</div><div class="ms-l">Active Clients</div></div>
+        </div>
+      </div>
+      <div class="about-visual reveal-right">
+        <img data-logo src="" alt="Sneha Enterprises">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--warm)">
+  <div class="sec-inner">
+    <div class="sec-header reveal">
+      <div class="sec-label">Core Values</div>
+      <h2 class="sec-title">What Drives Us Every Day</h2>
+    </div>
+    <div class="feat-grid">
+      <div class="card-base feat-card reveal d1"><div class="feat-icon fi-navy">🎯</div><h3>Quality First</h3><p>Every lot is lab-tested and graded before shipment. We never compromise — our reputation and yours depend on it.</p></div>
+      <div class="card-base feat-card reveal d2"><div class="feat-icon fi-gold">🤝</div><h3>Partner Mindset</h3><p>Long-term relationships, not one-time transactions. Your business growth is our shared mission.</p></div>
+      <div class="card-base feat-card reveal d3"><div class="feat-icon fi-green">🌱</div><h3>Farmer Welfare</h3><p>We pay fair prices to our farmer network — ensuring sustainable livelihoods and consistent premium supply.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="team" style="background:white">
+  <div class="sec-inner">
+    <div class="sec-header reveal">
+      <div class="sec-label">Leadership</div>
+      <h2 class="sec-title">Meet the People Behind Sneha</h2>
+    </div>
+    <div class="team-grid">
+      <div class="team-card reveal d1"><div class="team-av" style="background:#EEF1FB;color:var(--navy)">RS</div><h3>Rajesh Sharma</h3><div class="team-role">Founder &amp; CEO</div><p>Agricultural economics graduate with 20+ years in commodity trading. Visionary behind Sneha's international expansion.</p></div>
+      <div class="team-card reveal d2"><div class="team-av" style="background:var(--gold-light);color:var(--gold-dark)">PS</div><h3>Priya Sharma</h3><div class="team-role">Director – Operations</div><p>Oversees procurement, quality control and logistics. Ensures every shipment exceeds client expectations.</p></div>
+      <div class="team-card reveal d3"><div class="team-av" style="background:var(--green-light);color:var(--green)">AK</div><h3>Arvind Kumar</h3><div class="team-role">Head – Export Sales</div><p>Manages international client relationships. Expert in trade documentation and compliance across 4 continents.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="certs" style="background:var(--navy);padding:70px 2rem">
+  <div class="sec-inner">
+    <div class="sec-header reveal">
+      <div class="sec-label" style="color:var(--gold)">Certifications</div>
+      <h2 class="sec-title" style="color:white">Internationally Recognized</h2>
+    </div>
+    <div class="cert-grid">
+      <div class="cert-card reveal d1"><div style="font-size:30px;margin-bottom:12px">📜</div><div style="color:white;font-weight:700;font-size:14px">APEDA</div><div style="color:rgba(255,255,255,.55);font-size:12px;margin-top:5px">Registered Exporter</div></div>
+      <div class="cert-card reveal d2"><div style="font-size:30px;margin-bottom:12px">🏆</div><div style="color:white;font-weight:700;font-size:14px">ISO 9001</div><div style="color:rgba(255,255,255,.55);font-size:12px;margin-top:5px">Quality Management</div></div>
+      <div class="cert-card reveal d3"><div style="font-size:30px;margin-bottom:12px">🔬</div><div style="color:white;font-weight:700;font-size:14px">FSSAI</div><div style="color:rgba(255,255,255,.55);font-size:12px;margin-top:5px">Food Safety License</div></div>
+      <div class="cert-card reveal d4"><div style="font-size:30px;margin-bottom:12px">🌿</div><div style="color:white;font-weight:700;font-size:14px">Phytosanitary</div><div style="color:rgba(255,255,255,.55);font-size:12px;margin-top:5px">Plant Health Cert.</div></div>
+      <div class="cert-card reveal d5"><div style="font-size:30px;margin-bottom:12px">📦</div><div style="color:white;font-weight:700;font-size:14px">DGFT</div><div style="color:rgba(255,255,255,.55);font-size:12px;margin-top:5px">Import Export Code</div></div>
+    </div>
+  </div>
+</section>
+
+<div id="footer-placeholder"></div>
+
+<script src="../data/products.js"></script>
+<script src="../data/inquiries.js"></script>
+<script src="../js/logo.js"></script>
+<script src="../js/partials.js"></script>
+<script src="../js/shared.js"></script>
+</body>
+</html>
