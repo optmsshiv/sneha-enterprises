@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Sneha Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body style="display:flex">
+<div id="sidebar-placeholder"></div>
+<div class="main">
+  <div id="topbar-placeholder"></div>
+  <div class="content">
+
+    <!-- STAT CARDS -->
+    <div class="stat-cards" id="stat-cards">
+      <div class="stat-card sc-blue"><div class="sc-icon">⏳</div><div class="sc-num">—</div><div class="sc-label">Loading...</div></div>
+      <div class="stat-card sc-red"><div class="sc-icon">⏳</div><div class="sc-num">—</div><div class="sc-label">Loading...</div></div>
+      <div class="stat-card sc-green"><div class="sc-icon">⏳</div><div class="sc-num">—</div><div class="sc-label">Loading...</div></div>
+      <div class="stat-card sc-gold"><div class="sc-icon">⏳</div><div class="sc-num">—</div><div class="sc-label">Loading...</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:20px;margin-bottom:20px">
+
+      <!-- RECENT INQUIRIES -->
+      <div class="table-card">
+        <div class="table-head">
+          <h3>Recent Inquiries</h3>
+          <a href="inquiries.html" class="action-btn ab-view" style="text-decoration:none">View All →</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Name</th><th>Product</th><th>Country</th><th>Status</th><th>Date</th></tr></thead>
+            <tbody id="recent-inq"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TOP PRODUCTS -->
+      <div class="table-card">
+        <div class="table-head"><h3>Top Products by Enquiry</h3></div>
+        <div style="padding:16px 20px" id="top-products-list"></div>
+      </div>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="table-card" style="margin-bottom:20px">
+      <div class="table-head"><h3>Quick Actions</h3></div>
+      <div style="padding:20px;display:flex;gap:12px;flex-wrap:wrap">
+        <a href="inquiries.html" class="action-btn ab-view" style="text-decoration:none;padding:10px 20px;font-size:13px">📨 View All Inquiries</a>
+        <a href="products.html?add=1" class="action-btn ab-edit" style="text-decoration:none;padding:10px 20px;font-size:13px">➕ Add New Product</a>
+        <a href="products.html" class="action-btn ab-toggle" style="text-decoration:none;padding:10px 20px;font-size:13px">🌾 Manage Products</a>
+        <a href="settings.html" class="action-btn ab-reply" style="text-decoration:none;padding:10px 20px;font-size:13px">⚙️ Settings</a>
+        <a href="../index.html" target="_blank" class="action-btn ab-view" style="text-decoration:none;padding:10px 20px;font-size:13px">🌐 View Website</a>
+      </div>
+    </div>
+
+    <!-- 7 DAY CHART -->
+    <div class="table-card">
+      <div class="table-head"><h3>Inquiries — Last 7 Days</h3></div>
+      <div style="padding:20px">
+        <div id="week-chart" style="display:flex;align-items:flex-end;gap:10px;height:120px"></div>
+        <div id="week-labels" style="display:flex;gap:10px;margin-top:8px"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="js/layout.js"></script>
+<script src="js/admin-shared.js"></script>
+<script>
+injectLayout('Dashboard');
+
+async function loadDashboard() {
+  try {
+    const d = await api.get('/dashboard');
+    const s = await api.get('/inquiries/stats');
+
+    // Stat cards
+    document.getElementById('stat-cards').innerHTML = [
+      { icon:'📨', num:d.inquiries.total,   label:'Total Inquiries',   cls:'sc-blue', change:'All time' },
+      { icon:'🔴', num:d.inquiries.new,     label:'New (Unread)',      cls:'sc-red',  change: d.inquiries.new > 0 ? '⚠️ Needs attention' : '✓ All clear', chcls: d.inquiries.new > 0 ? 'warn':'up' },
+      { icon:'🌾', num:d.products.active,   label:'Active Products',   cls:'sc-green',change:`of ${d.products.total} total` },
+      { icon:'✅', num:d.inquiries.replied, label:'Replied',           cls:'sc-gold', change:`Today: ${d.inquiries.today}` },
+    ].map(s => `
+      <div class="stat-card ${s.cls}">
+        <div class="sc-icon">${s.icon}</div>
+        <div class="sc-num">${s.num}</div>
+        <div class="sc-label">${s.label}</div>
+        <div class="sc-change ${s.chcls||'up'}">${s.change}</div>
+      </div>`).join('');
+
+    // Recent inquiries
+    const tbody = document.getElementById('recent-inq');
+    if (!d.recent_inquiries.length) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text-light)">No inquiries yet</td></tr>';
+    } else {
+      tbody.innerHTML = d.recent_inquiries.map(i => `
+        <tr style="cursor:pointer" onclick="window.location='inquiries.html?id=${i.id}'">
+          <td><strong>${i.name}</strong><div style="font-size:11px;color:var(--text-light)">${i.email}</div></td>
+          <td style="font-size:12px">${i.product_name||'—'}</td>
+          <td style="font-size:12px">${i.country||'—'}</td>
+          <td>${statusBadge(i.status)}</td>
+          <td style="font-size:11px;color:var(--text-light)">${fmtDateShort(i.created_at)}</td>
+        </tr>`).join('');
+    }
+
+    // Top products chart
+    const maxCount = d.top_products[0]?.count || 1;
+    const topEl = document.getElementById('top-products-list');
+    topEl.innerHTML = d.top_products.map((p,i) => `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-size:11px;font-weight:700;color:var(--text-light);width:16px">${i+1}</span>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:12px;font-weight:600;color:var(--navy)">${p.product_name||'Unknown'}</span>
+            <span style="font-size:12px;font-weight:700;color:var(--gold-dark)">${p.count}</span>
+          </div>
+          <div style="height:5px;background:#F0F2F8;border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:${(p.count/maxCount*100)}%;background:linear-gradient(90deg,var(--navy),var(--gold));border-radius:3px;transition:width .8s"></div>
+          </div>
+        </div>
+      </div>`).join('') || '<p style="color:var(--text-light);font-size:13px;text-align:center;padding:20px">No data yet</p>';
+
+    // 7-day chart
+    const recent = s.recent_7d || [];
+    const chartEl = document.getElementById('week-chart');
+    const labelsEl = document.getElementById('week-labels');
+    const maxVal = Math.max(...recent.map(r=>r.count), 1);
+    chartEl.innerHTML = recent.map(r => `
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+        <span style="font-size:10px;color:var(--text-light)">${r.count}</span>
+        <div style="width:100%;height:${Math.max(8,(r.count/maxVal)*100)}%;background:linear-gradient(180deg,var(--navy),var(--navy-mid));border-radius:4px 4px 0 0;transition:height .8s cubic-bezier(.34,1.56,.64,1);min-height:8px"></div>
+      </div>`).join('') || '<p style="color:var(--text-light);font-size:13px">No data for last 7 days</p>';
+    labelsEl.innerHTML = recent.map(r => `
+      <div style="flex:1;text-align:center;font-size:10px;color:var(--text-light)">
+        ${new Date(r.day).toLocaleDateString('en-IN',{weekday:'short'})}
+      </div>`).join('');
+
+  } catch(err) {
+    toast('Failed to load dashboard: ' + err.message, 'error');
+  }
+}
+
+window.addEventListener('DOMContentLoaded', loadDashboard);
+</script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — Sneha Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin.css">
+<style>
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.settings-card{background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.settings-card-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.settings-card-head h3{font-family:'Playfair Display',serif;font-size:17px;color:var(--navy)}
+.settings-card-body{padding:22px}
+.info-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(224,216,200,.4);font-size:13px}
+.info-row:last-child{border-bottom:none}
+.info-label{color:var(--text-light);font-weight:600}
+.info-val{color:var(--navy);font-weight:600}
+.api-url{font-family:monospace;background:#F0F4FF;padding:6px 12px;border-radius:6px;font-size:12px;color:var(--navy);word-break:break-all}
+@media(max-width:900px){.settings-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body style="display:flex">
+<div id="sidebar-placeholder"></div>
+<div class="main">
+  <div id="topbar-placeholder"></div>
+  <div class="content">
+    <div class="settings-grid">
+
+      <!-- CHANGE PASSWORD -->
+      <div class="settings-card">
+        <div class="settings-card-head"><span>🔒</span><h3>Change Password</h3></div>
+        <div class="settings-card-body">
+          <div class="mfg"><label>Current Password</label>
+            <input type="password" id="old-pw" placeholder="Enter current password">
+          </div>
+          <div class="mfg"><label>New Password</label>
+            <input type="password" id="new-pw" placeholder="Min 6 characters">
+          </div>
+          <div class="mfg"><label>Confirm New Password</label>
+            <input type="password" id="confirm-pw" placeholder="Repeat new password">
+          </div>
+          <button class="m-btn m-btn-primary" onclick="changePassword()">🔒 Update Password</button>
+        </div>
+      </div>
+
+      <!-- ACCOUNT INFO -->
+      <div class="settings-card">
+        <div class="settings-card-head"><span>👤</span><h3>Account Info</h3></div>
+        <div class="settings-card-body">
+          <div class="info-row"><span class="info-label">Username</span><span class="info-val" id="info-username">—</span></div>
+          <div class="info-row"><span class="info-label">Role</span><span class="info-val" id="info-role">—</span></div>
+          <div class="info-row"><span class="info-label">Email</span><span class="info-val" id="info-email">—</span></div>
+          <div class="info-row"><span class="info-label">Last Login</span><span class="info-val" id="info-lastlogin">—</span></div>
+          <div class="info-row"><span class="info-label">Account Since</span><span class="info-val" id="info-created">—</span></div>
+          <button class="m-btn m-btn-danger" style="margin-top:16px" onclick="Auth.logout()">🚪 Logout</button>
+        </div>
+      </div>
+
+      <!-- API & DATABASE -->
+      <div class="settings-card">
+        <div class="settings-card-head"><span>🔌</span><h3>API & Database</h3></div>
+        <div class="settings-card-body">
+          <div class="mfg"><label>API Base URL</label>
+            <div class="api-url" id="api-url-display">Loading...</div>
+          </div>
+          <div class="mfg" style="margin-top:12px"><label>Backend Stack</label>
+            <div class="api-url">PHP 8.3 + MySQL (Percona 5.7) — cPanel</div>
+          </div>
+          <div class="mfg" style="margin-top:12px"><label>Database</label>
+            <div class="api-url">MySQL via PDO — sessions, inquiries, products, admins</div>
+          </div>
+          <div style="background:#EEF1FB;border-radius:10px;padding:14px;margin-top:14px;font-size:13px;color:var(--navy);line-height:1.7">
+            <strong>Auth:</strong> Token sessions in MySQL (24h expiry)<br>
+            <strong>Email:</strong> PHP mail() or SMTP via <code>api/config.php</code><br>
+            <strong>Setup SQL:</strong> Run <code>api/database.sql</code> in phpMyAdmin
+          </div>
+          <button class="m-btn m-btn-primary" style="margin-top:14px" onclick="testApi()">🔌 Test API Connection</button>
+          <div id="api-test-result" style="margin-top:10px;font-size:13px;display:none;padding:10px;border-radius:8px"></div>
+        </div>
+      </div>
+
+      <!-- EMAIL CONFIG -->
+      <div class="settings-card">
+        <div class="settings-card-head"><span>📧</span><h3>Email Configuration</h3></div>
+        <div class="settings-card-body">
+          <div style="background:var(--gold-light);border:1px solid var(--gold);border-radius:10px;padding:14px;margin-bottom:16px;font-size:13px;color:var(--gold-dark);line-height:1.7">
+            Edit <strong>api/config.php</strong> to configure email. Upload it to your cPanel server.
+          </div>
+          <div class="mfg"><label>Admin Notification Email</label>
+            <div class="api-url">admin@snehaenterprises.in</div>
+          </div>
+          <div class="mfg" style="margin-top:10px"><label>Company From Email</label>
+            <div class="api-url">exports@snehaenterprises.in</div>
+          </div>
+          <div class="mfg" style="margin-top:10px"><label>Email Method</label>
+            <div class="api-url">PHP mail() — works on all cPanel (or set USE_SMTP=true)</div>
+          </div>
+          <div style="background:#F0F4FF;border-radius:10px;padding:14px;margin-top:12px;font-size:12px;color:var(--navy);line-height:1.8">
+            <strong>For cPanel SMTP:</strong> set <code>USE_SMTP = true</code> in config.php<br>
+            Fill: <code>SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS</code><br>
+            <em>Use your cPanel email credentials (not Gmail)</em>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /settings-grid -->
+  </div>
+</div>
+
+<script src="js/layout.js"></script>
+<script src="js/admin-shared.js"></script>
+<script>
+injectLayout('Settings');
+
+const API_URL = window.location.hostname === 'localhost'
+  ? 'http://localhost/sneha-enterprises/api'
+  : window.location.origin + '/api';
+
+document.getElementById('api-url-display').textContent = API_URL;
+
+async function loadProfile() {
+  try {
+    const me = await api.get('/auth/me');
+    document.getElementById('info-username').textContent  = me.username;
+    document.getElementById('info-role').textContent      = me.role;
+    document.getElementById('info-email').textContent     = me.email || '—';
+    document.getElementById('info-lastlogin').textContent = fmtDate(me.last_login);
+    document.getElementById('info-created').textContent   = fmtDateShort(me.created_at);
+  } catch(e) { toast('Failed to load profile: ' + e.message, 'error'); }
+}
+
+async function changePassword() {
+  const old_pw     = document.getElementById('old-pw').value;
+  const new_pw     = document.getElementById('new-pw').value;
+  const confirm_pw = document.getElementById('confirm-pw').value;
+  if (!old_pw || !new_pw) { toast('Fill in all password fields', 'error'); return; }
+  if (new_pw.length < 6)  { toast('New password must be 6+ characters', 'error'); return; }
+  if (new_pw !== confirm_pw) { toast('Passwords do not match', 'error'); return; }
+  try {
+    await api.post('/auth/change-password', { old_password: old_pw, new_password: new_pw });
+    toast('✅ Password changed! Please log in again.');
+    ['old-pw','new-pw','confirm-pw'].forEach(id => document.getElementById(id).value = '');
+    setTimeout(() => Auth.logout(), 2500);
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function testApi() {
+  const resultEl = document.getElementById('api-test-result');
+  resultEl.style.display = 'block';
+  resultEl.style.background = '#EEF1FB';
+  resultEl.style.color = 'var(--navy)';
+  resultEl.textContent = '⏳ Testing connection...';
+  try {
+    const res = await fetch(API_URL + '/health');
+    const d   = await res.json();
+    if (d.status === 'ok') {
+      resultEl.style.background = 'var(--green-light)';
+      resultEl.style.color = 'var(--green)';
+      resultEl.innerHTML = '✅ <strong>Connected!</strong> PHP ' + d.php + ' | ' + d.database;
+    } else {
+      throw new Error(d.database || 'DB error');
+    }
+  } catch(e) {
+    resultEl.style.background = 'var(--red-light)';
+    resultEl.style.color = 'var(--red)';
+    resultEl.innerHTML = '❌ <strong>Failed:</strong> ' + e.message + '<br><small>Check api/config.php credentials</small>';
+  }
+}
+
+window.addEventListener('DOMContentLoaded', loadProfile);
+</script>
+</body>
+</html>
