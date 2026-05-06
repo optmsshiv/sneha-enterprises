@@ -136,3 +136,17 @@ window.addEventListener('DOMContentLoaded', function() {
   animateHeroStats();
   initParticles(document.querySelector('.hero'));
 });
+
+// ── FLOATING CONTACT TOGGLE ───────────────────────────────────
+var floatOpen = false;
+function toggleFloat() {
+  floatOpen = !floatOpen;
+  var opts = document.getElementById('float-opts');
+  var btn  = document.getElementById('float-toggle');
+  if (opts) opts.classList.toggle('open', floatOpen);
+  if (btn)  btn.textContent = floatOpen ? '✕' : '💬';
+}
+// Close on outside click
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#float-btns') && floatOpen) toggleFloat();
+});

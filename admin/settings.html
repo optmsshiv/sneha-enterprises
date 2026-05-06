@@ -151,7 +151,7 @@ async function testApi() {
   resultEl.style.color = 'var(--navy)';
   resultEl.textContent = '⏳ Testing connection...';
   try {
-    const res = await fetch(API_URL + '/health');
+    const res = await fetch(API_URL + '?route=health');
     const d   = await res.json();
     if (d.status === 'ok') {
       resultEl.style.background = 'var(--green-light)';

@@ -1,34 +1,13 @@
-# ============================================================
-#  SNEHA ENTERPRISES — API Router (.htaccess)
-#  Place this file in the /api/ folder on your cPanel server
-#  This routes all /api/* requests to the correct PHP file
-# ============================================================
+# SNEHA ENTERPRISES — API .htaccess
+# This routes /api/anything to index.php?route=anything
+# If this doesn't work on your server, use ?route= directly (already done in JS)
 
 Options -Indexes
 RewriteEngine On
 
-# Allow CORS preflight
-RewriteCond %{REQUEST_METHOD} OPTIONS
-RewriteRule ^(.*)$ index.php [L]
+# Allow direct PHP file access
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
 
-# Route auth endpoints
-RewriteRule ^auth/(.*)$       auth.php     [L,QSA]
-
-# Route inquiry endpoints
-RewriteRule ^inquiries/stats$ inquiries.php [L,QSA]
-RewriteRule ^inquiries/(.+)$  inquiries.php [L,QSA]
-RewriteRule ^inquiries$       inquiries.php [L,QSA]
-
-# Route product endpoints
-RewriteRule ^products/(.+)/toggle$ products.php [L,QSA]
-RewriteRule ^products/(.+)$        products.php [L,QSA]
-RewriteRule ^products$             products.php [L,QSA]
-
-# Route dashboard
-RewriteRule ^dashboard$       dashboard.php [L,QSA]
-
-# Health check
-RewriteRule ^health$          index.php     [L,QSA]
-
-# Default
-RewriteRule ^(.*)$            index.php     [L,QSA]
+# Route everything else through index.php
+RewriteRule ^(.+)$ index.php?route=$1 [L,QSA]

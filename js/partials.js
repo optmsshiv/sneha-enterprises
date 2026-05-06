@@ -36,7 +36,15 @@ var NAV_HTML = `
     <ul class="nav-links">
       <li><a href="../index.html">Home</a></li>
       <li><a href="../pages/products.html">Products</a></li>
-      <li><a href="../pages/about.html">About Us</a></li>
+      <li class="nav-dropdown">
+        <a href="../pages/about.html" class="nav-drop-trigger">About ▾</a>
+        <div class="nav-drop-menu">
+          <a href="../pages/about.html">About Us</a>
+          <a href="../pages/about.html#certs">Certifications</a>
+          <a href="../pages/export-process.html">Export Process</a>
+          <a href="../pages/gallery.html">Gallery</a>
+        </div>
+      </li>
       <li><a href="../pages/contact.html" class="nav-cta">Get a Quote</a></li>
     </ul>
     <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
@@ -48,24 +56,59 @@ var NAV_HTML = `
   <a href="../index.html" onclick="closeMenu()">Home</a>
   <a href="../pages/products.html" onclick="closeMenu()">Products</a>
   <a href="../pages/about.html" onclick="closeMenu()">About Us</a>
+  <a href="../pages/export-process.html" onclick="closeMenu()">Export Process</a>
+  <a href="../pages/gallery.html" onclick="closeMenu()">Gallery</a>
   <a href="../pages/contact.html" onclick="closeMenu()" class="m-cta">Get a Quote →</a>
 </div>`;
 
 var NAV_ROOT_HTML = NAV_HTML
   .replace(/href="\.\.\/index\.html"/g, 'href="index.html"')
-  .replace(/href="\.\.\/pages\//g, 'href="pages/')
-  .replace(/href="\.\.\/pages\/contact\.html"/g, 'href="pages/contact.html"');
+  .replace(/href="\.\.\/pages\//g, 'href="pages/');
 
 var FOOTER_HTML = `
+<!-- FONT AWESOME (loaded once globally via partials) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<!-- FLOATING CONTACT BUTTONS -->
+<div class="float-btns" id="float-btns">
+  <div class="float-options" id="float-opts">
+    <a href="https://wa.me/919876543210?text=Hi%20Sneha%20Enterprises%2C%20I%20am%20interested%20in%20your%20products." target="_blank" class="float-option">
+      <span class="float-label">WhatsApp Chat</span>
+      <div class="float-icon fi-wa"><i class="fa-brands fa-whatsapp"></i></div>
+    </a>
+    <a href="tel:+919876543210" class="float-option">
+      <span class="float-label">Call Now</span>
+      <div class="float-icon fi-call"><i class="fa-solid fa-phone"></i></div>
+    </a>
+    <a href="mailto:exports@snehaenterprises.in" class="float-option">
+      <span class="float-label">Send Email</span>
+      <div class="float-icon fi-mail"><i class="fa-solid fa-envelope"></i></div>
+    </a>
+    <a href="https://maps.google.com/?q=25.5941,85.1376" target="_blank" class="float-option">
+      <span class="float-label">Find Us</span>
+      <div class="float-icon" style="background:#e74c3c"><i class="fa-solid fa-location-dot"></i></div>
+    </a>
+  </div>
+  <button class="float-main" id="float-toggle" onclick="toggleFloat()" title="Contact Us">
+    <i class="fa-brands fa-whatsapp"></i>
+  </button>
+</div>
+
 <footer>
   <div class="sec-inner">
     <div class="footer-grid">
       <div class="footer-brand">
         <div class="footer-logo"><img data-logo src="" alt="Sneha Enterprises"></div>
-        <p>India's trusted agri-export partner. Premium grains, spices, fox nuts and fresh vegetables — delivered to global buyers with certified quality.</p>
+        <p>India's trusted agri-export partner — premium grains, spices, fox nuts and vegetables delivered to global buyers with certified quality and full documentation.</p>
         <div style="display:flex;gap:8px;align-items:center;margin-top:14px">
           <div style="width:6px;height:6px;background:var(--gold);border-radius:50%"></div>
-          <span style="font-size:11px;color:rgba(255,255,255,.4)">APEDA · ISO 9001 · FSSAI · DGFT Registered</span>
+          <span style="font-size:11px;color:rgba(255,255,255,.4)">IEC · GST · FSSAI · APEDA · Phytosanitary</span>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:16px">
+          <a href="https://wa.me/919876543210" target="_blank" style="width:36px;height:36px;border-radius:8px;background:#25D366;display:flex;align-items:center;justify-content:center;font-size:18px;text-decoration:none;color:white"><i class="fa-brands fa-whatsapp"></i></a>
+          <a href="tel:+919876543210" style="width:36px;height:36px;border-radius:8px;background:#233480;display:flex;align-items:center;justify-content:center;font-size:15px;text-decoration:none;color:white"><i class="fa-solid fa-phone"></i></a>
+          <a href="mailto:exports@snehaenterprises.in" style="width:36px;height:36px;border-radius:8px;background:#8B6318;display:flex;align-items:center;justify-content:center;font-size:15px;text-decoration:none;color:white"><i class="fa-solid fa-envelope"></i></a>
+          <a href="https://maps.google.com/?q=25.5941,85.1376" target="_blank" style="width:36px;height:36px;border-radius:8px;background:#e74c3c;display:flex;align-items:center;justify-content:center;font-size:15px;text-decoration:none;color:white"><i class="fa-solid fa-location-dot"></i></a>
         </div>
       </div>
       <div class="footer-col">
@@ -77,27 +120,29 @@ var FOOTER_HTML = `
         <ul>
           <li><a href="index.html">Home</a></li>
           <li><a href="pages/about.html">About Us</a></li>
-          <li><a href="pages/about.html#team">Leadership</a></li>
           <li><a href="pages/about.html#certs">Certifications</a></li>
+          <li><a href="pages/export-process.html">Export Process</a></li>
+          <li><a href="pages/gallery.html">Gallery</a></li>
           <li><a href="pages/contact.html">Contact</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h5>Contact</h5>
         <ul>
-          <li><a>Patna, Bihar – 800001, India</a></li>
-          <li><a href="tel:+919876543210">+91 98765 43210</a></li>
-          <li><a href="mailto:exports@snehaenterprises.in">exports@snehaenterprises.in</a></li>
-          <li><a>Mon–Sat: 9 AM – 6 PM IST</a></li>
+          <li><a><i class="fa-solid fa-location-dot" style="color:var(--gold);margin-right:6px"></i>Patna, Bihar – 800001, India</a></li>
+          <li><a href="tel:+919876543210"><i class="fa-solid fa-phone" style="color:var(--gold);margin-right:6px"></i>+91 98765 43210</a></li>
+          <li><a href="mailto:exports@snehaenterprises.in"><i class="fa-solid fa-envelope" style="color:var(--gold);margin-right:6px"></i>exports@snehaenterprises.in</a></li>
+          <li><a href="https://wa.me/919876543210" target="_blank"><i class="fa-brands fa-whatsapp" style="color:#25D366;margin-right:6px"></i>WhatsApp Available</a></li>
+          <li><a><i class="fa-regular fa-clock" style="color:var(--gold);margin-right:6px"></i>Mon–Sat: 9 AM – 6 PM IST</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2024 Sneha Enterprises. All rights reserved. | Export &amp; Import of Agricultural Products | Patna, Bihar</p>
+      <p>© 2024 Sneha Enterprises. All rights reserved. | Registered Exporter from India | Patna, Bihar</p>
       <div class="footer-soc">
-        <div class="soc-btn">in</div>
-        <div class="soc-btn">wa</div>
-        <div class="soc-btn">fb</div>
+        <div class="soc-btn" onclick="window.open('https://wa.me/919876543210','_blank')" title="WhatsApp" style="font-size:16px"><i class="fa-brands fa-whatsapp"></i></div>
+        <div class="soc-btn" onclick="window.open('tel:+919876543210')" title="Call" style="font-size:14px"><i class="fa-solid fa-phone"></i></div>
+        <div class="soc-btn" onclick="window.open('mailto:exports@snehaenterprises.in')" title="Email" style="font-size:14px"><i class="fa-solid fa-envelope"></i></div>
       </div>
     </div>
   </div>

@@ -153,7 +153,7 @@ body{font-family:'DM Sans',sans-serif;min-height:100vh;background:var(--navy-dar
 
 <script src="../js/logo.js"></script>
 <script>
-const API = window.location.hostname === 'localhost'
+const API = (() => { const l = window.location; if (l.hostname === 'localhost' || l.hostname === '127.0.0.1') return l.origin + '/sneha-enterprises/api/index.php'; return l.origin + '/api/index.php'; })();
   ? 'http://localhost/sneha-enterprises/api'
   : window.location.origin + '/api';
 
@@ -197,7 +197,7 @@ async function doLogin() {
 
   setLoading(true);
   try {
-    var res = await fetch(API + '/auth/login', {
+    var res = await fetch(API + '?route=auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })

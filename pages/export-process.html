@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Export Process — Sneha Enterprises</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../css/shared.css">
+<style>
+.page-hero{background:linear-gradient(135deg,var(--navy-dark),var(--navy));padding:60px 2rem 50px;position:relative;overflow:hidden}
+.page-hero::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.03) 0,rgba(255,255,255,.03) 1px,transparent 0,transparent 50%);background-size:18px 18px}
+.page-hero .sec-label{color:var(--gold)}
+.page-hero .sec-title{color:white;font-size:42px}
+
+/* PROCESS TIMELINE */
+.timeline{position:relative;padding:60px 0}
+.timeline::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,var(--gold),var(--navy),var(--gold));transform:translateX(-50%);border-radius:2px}
+.tl-step{display:grid;grid-template-columns:1fr 80px 1fr;align-items:center;gap:0;margin-bottom:60px;position:relative}
+.tl-step:last-child{margin-bottom:0}
+.tl-left{text-align:right;padding-right:40px}
+.tl-right{text-align:left;padding-left:40px}
+.tl-center{display:flex;align-items:center;justify-content:center;z-index:2;position:relative}
+.tl-num{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:white;font-family:'Playfair Display',serif;font-size:24px;font-weight:700;display:flex;align-items:center;justify-content:center;border:4px solid white;box-shadow:0 6px 24px rgba(200,145,42,.4);transition:transform .3s,box-shadow .3s;cursor:default}
+.tl-step:hover .tl-num{transform:scale(1.12);box-shadow:0 10px 32px rgba(200,145,42,.5)}
+.tl-card{background:white;border:1px solid var(--border);border-radius:18px;padding:28px;transition:all .35s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden}
+.tl-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--navy))}
+.tl-card:hover{transform:translateY(-6px);box-shadow:0 16px 48px rgba(26,46,107,.14);border-color:var(--gold)}
+.tl-icon{font-size:36px;margin-bottom:14px;display:block}
+.tl-card h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--navy);margin-bottom:8px}
+.tl-card p{font-size:13px;color:var(--text-mid);line-height:1.75}
+.tl-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.tl-tag{background:#EEF1FB;color:var(--navy);font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px}
+.tl-even .tl-left{order:3;text-align:left;padding-left:40px;padding-right:0}
+.tl-even .tl-center{order:2}
+.tl-even .tl-right{order:1;text-align:right;padding-right:40px;padding-left:0}
+.tl-time{font-size:12px;font-weight:700;color:var(--gold-dark);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+
+/* DOCS SECTION */
+.docs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px}
+.doc-card{background:white;border:1px solid var(--border);border-radius:16px;padding:28px;text-align:center;transition:all .35s cubic-bezier(.34,1.56,.64,1);cursor:default}
+.doc-card:hover{transform:translateY(-8px);box-shadow:0 16px 44px rgba(26,46,107,.14);border-color:var(--gold)}
+.doc-icon{font-size:40px;margin-bottom:14px;display:block}
+.doc-card h3{font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);margin-bottom:6px}
+.doc-card p{font-size:13px;color:var(--text-light);line-height:1.6;margin-bottom:12px}
+.doc-badge{display:inline-block;background:var(--green-light);color:var(--green);font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;letter-spacing:.5px}
+
+/* FAQ */
+.faq-item{background:white;border:1px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden;transition:border-color .2s}
+.faq-item.open{border-color:var(--navy)}
+.faq-q{padding:20px 24px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px;color:var(--navy)}
+.faq-q:hover{background:var(--cream)}
+.faq-arrow{font-size:18px;color:var(--gold);transition:transform .3s}
+.faq-item.open .faq-arrow{transform:rotate(180deg)}
+.faq-a{padding:0 24px 0;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+.faq-item.open .faq-a{padding:0 24px 20px;max-height:300px}
+.faq-a p{font-size:13px;color:var(--text-mid);line-height:1.75}
+
+/* CTA */
+.proc-cta{background:linear-gradient(135deg,var(--navy-dark),var(--navy));padding:70px 2rem;text-align:center;position:relative;overflow:hidden}
+.proc-cta::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.02) 0,rgba(255,255,255,.02) 1px,transparent 0,transparent 50%);background-size:16px 16px}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .timeline::before{left:36px}
+  .tl-step,.tl-even{display:flex;flex-direction:column;align-items:flex-start;padding-left:90px;gap:12px}
+  .tl-left,.tl-right,.tl-even .tl-left,.tl-even .tl-right{text-align:left;padding:0;order:unset}
+  .tl-center{position:absolute;left:0;top:0}
+  .tl-step{position:relative;margin-bottom:40px}
+  .tl-even .tl-center{order:unset}
+  .docs-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .docs-grid{grid-template-columns:1fr}
+  .page-hero .sec-title{font-size:28px}
+}
+</style>
+</head>
+<body>
+<div id="ticker-placeholder"></div>
+<div id="nav-placeholder"></div>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="sec-inner" style="position:relative;z-index:1">
+    <div class="sec-label">How We Work</div>
+    <h2 class="sec-title">Our Export Process</h2>
+    <p style="font-size:15px;color:rgba(255,255,255,.75);max-width:560px;line-height:1.75;margin-bottom:28px">From your first inquiry to delivery at your port — a clear, transparent 5-step process with full documentation support.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <a href="contact.html" class="btn-gold" style="text-decoration:none;display:inline-block">Start an Inquiry →</a>
+      <a href="https://wa.me/919876543210" target="_blank" class="btn-ghost" style="text-decoration:none;display:inline-block">💬 WhatsApp Us</a>
+    </div>
+  </div>
+</div>
+
+<!-- TIMELINE PROCESS -->
+<section style="background:var(--cream)">
+  <div class="sec-inner">
+    <div class="sec-header reveal">
+      <div class="sec-label">5-Step Process</div>
+      <h2 class="sec-title">Simple. Transparent. Reliable.</h2>
+      <p class="sec-sub">We handle everything from sourcing to customs — so you can focus on your business.</p>
+    </div>
+
+    <div class="timeline">
+
+      <!-- STEP 1 -->
+      <div class="tl-step">
+        <div class="tl-left reveal-left">
+          <div class="tl-card">
+            <span class="tl-icon">📩</span>
+            <div class="tl-time">Day 1</div>
+            <h3>Step 1 — Inquiry Received</h3>
+            <p>Share your product requirement, quantity needed, destination port and preferred incoterm. You can reach us via our website form, WhatsApp, email or phone — whichever is convenient.</p>
+            <div class="tl-tags">
+              <span class="tl-tag">Website Form</span>
+              <span class="tl-tag">WhatsApp</span>
+              <span class="tl-tag">Email</span>
+              <span class="tl-tag">Phone</span>
+            </div>
+          </div>
+        </div>
+        <div class="tl-center"><div class="tl-num">01</div></div>
+        <div class="tl-right reveal-right" style="display:flex;flex-direction:column;gap:12px">
+          <div style="background:#EEF1FB;border-radius:12px;padding:16px">
+            <div style="font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">What to share</div>
+            <ul style="font-size:13px;color:var(--text-mid);line-height:1.9;padding-left:16px">
+              <li>Product name & variety</li>
+              <li>Quantity (in MT or KG)</li>
+              <li>Destination country & port</li>
+              <li>Preferred incoterm (FOB/CIF/CFR)</li>
+              <li>Packaging preference</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="tl-step tl-even">
+        <div class="tl-left reveal-right">
+          <div style="background:var(--gold-light);border-radius:12px;padding:16px">
+            <div style="font-size:11px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Quotation Includes</div>
+            <ul style="font-size:13px;color:var(--text-mid);line-height:1.9;padding-left:16px">
+              <li>Unit price per MT (FOB/CIF)</li>
+              <li>Payment terms</li>
+              <li>Quality specs & grade</li>
+              <li>Packaging details</li>
+              <li>Estimated shipment date</li>
+              <li>Sample availability</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tl-center"><div class="tl-num">02</div></div>
+        <div class="tl-right reveal-left">
+          <div class="tl-card">
+            <span class="tl-icon">💰</span>
+            <div class="tl-time">Within 24 Hours</div>
+            <h3>Step 2 — Price Quotation</h3>
+            <p>We send you a detailed price quotation within 24 business hours. You may also request product samples before placing a bulk order — we dispatch samples worldwide. Your approval is mandatory before we proceed.</p>
+            <div class="tl-tags">
+              <span class="tl-tag">FOB / CIF / CFR</span>
+              <span class="tl-tag">Samples Available</span>
+              <span class="tl-tag">24hr Response</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="tl-step">
+        <div class="tl-left reveal-left">
+          <div class="tl-card">
+            <span class="tl-icon">🏦</span>
+            <div class="tl-time">Before Production</div>
+            <h3>Step 3 — Advance Payment</h3>
+            <p>Once you confirm the order and proforma invoice, an advance payment (typically 30–50%) secures your order. We accept TT (Wire Transfer), LC (Letter of Credit) and other international payment modes as agreed.</p>
+            <div class="tl-tags">
+              <span class="tl-tag">TT Transfer</span>
+              <span class="tl-tag">Letter of Credit</span>
+              <span class="tl-tag">Proforma Invoice</span>
+            </div>
+          </div>
+        </div>
+        <div class="tl-center"><div class="tl-num">03</div></div>
+        <div class="tl-right reveal-right" style="display:flex;flex-direction:column;gap:12px">
+          <div style="background:var(--green-light);border-radius:12px;padding:16px">
+            <div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Payment Methods</div>
+            <ul style="font-size:13px;color:var(--text-mid);line-height:1.9;padding-left:16px">
+              <li>TT — Telegraphic Transfer (Wire)</li>
+              <li>LC — Letter of Credit (Sight/Usance)</li>
+              <li>DP — Documents Against Payment</li>
+              <li>DA — Documents Against Acceptance</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="tl-step tl-even">
+        <div class="tl-left reveal-right">
+          <div style="background:#EEF1FB;border-radius:12px;padding:16px">
+            <div style="font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">QC Checks Done</div>
+            <ul style="font-size:13px;color:var(--text-mid);line-height:1.9;padding-left:16px">
+              <li>Moisture content testing</li>
+              <li>Purity & foreign matter check</li>
+              <li>Pesticide residue analysis</li>
+              <li>Weight & packaging verification</li>
+              <li>Pre-shipment inspection (optional)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tl-center"><div class="tl-num">04</div></div>
+        <div class="tl-right reveal-left">
+          <div class="tl-card">
+            <span class="tl-icon">🚢</span>
+            <div class="tl-time">3–15 Days After Payment</div>
+            <h3>Step 4 — Loading & Dispatch</h3>
+            <p>Your order is sourced from our verified farmer network, processed, quality-checked, graded and packed per your specification. Goods are then loaded into containers and dispatched to the port of loading. We provide real-time shipment updates.</p>
+            <div class="tl-tags">
+              <span class="tl-tag">Farm Sourced</span>
+              <span class="tl-tag">Lab Tested</span>
+              <span class="tl-tag">Custom Packing</span>
+              <span class="tl-tag">Container Loading</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 5 -->
+      <div class="tl-step">
+        <div class="tl-left reveal-left">
+          <div class="tl-card">
+            <span class="tl-icon">📄</span>
+            <div class="tl-time">After Shipment</div>
+            <h3>Step 5 — Documents Sharing</h3>
+            <p>Once the shipment is on board, we prepare and share all required export documents within 3–5 business days. All documents are verified, authenticated and shared via courier (originals) and email (scans) as per LC or buyer requirements.</p>
+            <div class="tl-tags">
+              <span class="tl-tag">Bill of Lading</span>
+              <span class="tl-tag">Phytosanitary</span>
+              <span class="tl-tag">Certificate of Origin</span>
+              <span class="tl-tag">Lab Report</span>
+            </div>
+          </div>
+        </div>
+        <div class="tl-center"><div class="tl-num">05</div></div>
+        <div class="tl-right reveal-right">
+          <div style="background:var(--gold-light);border-radius:12px;padding:16px">
+            <div style="font-size:11px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Documents Provided</div>
+            <ul style="font-size:13px;color:var(--text-mid);line-height:1.9;padding-left:16px">
+              <li>Commercial Invoice</li>
+              <li>Packing List</li>
+              <li>Bill of Lading / Airway Bill</li>
+              <li>Certificate of Origin (COO)</li>
+              <li>Phytosanitary Certificate</li>
+              <li>Quality / Lab Test Report</li>
+              <li>FSSAI / APEDA Certificate</li>
+              <li>Fumigation Certificate (if required)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS & DOCUMENTS -->
+<section style="background:white" id="certs">
+  <div class="sec-inner">
+    <div class="sec-header reveal">
+      <div class="sec-label">Our Credentials</div>
+      <h2 class="sec-title">Certifications & Documents</h2>
+      <p class="sec-sub">Sneha Enterprises is a registered exporter from India with all required certifications. All documents are available on request.</p>
+    </div>
+    <div class="docs-grid">
+      <div class="doc-card reveal d1">
+        <span class="doc-icon">🌐</span>
+        <h3>IEC Code</h3>
+        <p>Import Export Code issued by DGFT, Ministry of Commerce — mandatory for all Indian exporters.</p>
+        <span class="doc-badge">✓ Registered Exporter</span>
+      </div>
+      <div class="doc-card reveal d2">
+        <span class="doc-icon">🧾</span>
+        <h3>GST Registration</h3>
+        <p>Goods & Services Tax registered business. All exports are zero-rated under GST with full compliance.</p>
+        <span class="doc-badge">✓ GST Compliant</span>
+      </div>
+      <div class="doc-card reveal d3">
+        <span class="doc-icon">🥗</span>
+        <h3>FSSAI License</h3>
+        <p>Food Safety and Standards Authority of India license — ensuring our food products meet all safety standards.</p>
+        <span class="doc-badge">✓ Food Safe</span>
+      </div>
+      <div class="doc-card reveal d1">
+        <span class="doc-icon">🌿</span>
+        <h3>Phytosanitary Certificate</h3>
+        <p>Issued by NPPO India for every shipment — certifying plant products are free from pests and diseases.</p>
+        <span class="doc-badge">✓ Per Shipment</span>
+      </div>
+      <div class="doc-card reveal d2">
+        <span class="doc-icon">📋</span>
+        <h3>APEDA Registration</h3>
+        <p>Agricultural & Processed Food Products Export Development Authority — our exports are APEDA certified.</p>
+        <span class="doc-badge">✓ APEDA Certified</span>
+      </div>
+      <div class="doc-card reveal d3">
+        <span class="doc-icon">📜</span>
+        <h3>Certificate of Origin</h3>
+        <p>Issued by FIEO / Chamber of Commerce for every shipment — confirming Indian origin of all products.</p>
+        <span class="doc-badge">✓ Available On Request</span>
+      </div>
+    </div>
+    <div class="reveal" style="text-align:center;margin-top:36px;padding:24px;background:var(--gold-light);border:1px solid var(--gold);border-radius:16px;max-width:600px;margin-left:auto;margin-right:auto">
+      <div style="font-size:24px;margin-bottom:10px">📬</div>
+      <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--navy);margin-bottom:8px">All Documents Available On Request</div>
+      <div style="font-size:13px;color:var(--text-mid);line-height:1.7">We provide complete documentation for every shipment. Request copies of any certificate by contacting us directly.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section style="background:var(--warm)">
+  <div class="sec-inner">
+    <div class="sec-header reveal">
+      <div class="sec-label">FAQ</div>
+      <h2 class="sec-title">Frequently Asked Questions</h2>
+    </div>
+    <div style="max-width:800px;margin:0 auto">
+      <div class="faq-item reveal" onclick="toggleFaq(this)">
+        <div class="faq-q">What is the minimum order quantity? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a"><p>MOQ varies by product — typically 1 MT for fox nuts, 5 MT for spices and vegetables, and 10–25 MT for grains. We can discuss smaller trial orders for first-time buyers.</p></div>
+      </div>
+      <div class="faq-item reveal" onclick="toggleFaq(this)">
+        <div class="faq-q">How long does shipment take? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a"><p>From order confirmation to port loading typically takes 7–15 days depending on the product and quantity. Sea transit varies by destination: UAE (10–12 days), SE Asia (15–20 days), Europe (25–30 days).</p></div>
+      </div>
+      <div class="faq-item reveal" onclick="toggleFaq(this)">
+        <div class="faq-q">Do you provide product samples? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a"><p>Yes, we dispatch samples worldwide before bulk orders. Sample cost and courier charges are borne by the buyer and later adjusted against the first order payment.</p></div>
+      </div>
+      <div class="faq-item reveal" onclick="toggleFaq(this)">
+        <div class="faq-q">What quality certifications do you have? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a"><p>We hold IEC Code, GST Registration, FSSAI License, APEDA Registration and Phytosanitary certification. Lab test reports for moisture, purity and pesticide residue are provided with every shipment.</p></div>
+      </div>
+      <div class="faq-item reveal" onclick="toggleFaq(this)">
+        <div class="faq-q">What payment terms do you accept? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a"><p>We accept TT (Telegraphic Transfer), Letter of Credit (Sight/Usance), DP and DA. For new buyers, we typically work on 30–50% advance + balance before shipment or against documents.</p></div>
+      </div>
+      <div class="faq-item reveal" onclick="toggleFaq(this)">
+        <div class="faq-q">Can you arrange door-to-door delivery? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a"><p>Yes, we can arrange CIF (Cost Insurance Freight) or DDP (Delivered Duty Paid) shipments where we handle shipping, insurance and in some cases customs clearance at the destination.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="proc-cta">
+  <div class="sec-inner" style="position:relative;z-index:1">
+    <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:38px;color:white;margin-bottom:14px">Ready to Start Your Order?</h2>
+    <p class="reveal" style="font-size:16px;color:rgba(255,255,255,.75);margin-bottom:32px;max-width:500px;margin-left:auto;margin-right:auto">Our export team is ready to assist you. Get a quote within 24 hours.</p>
+    <div class="reveal" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a href="contact.html" class="btn-gold" style="text-decoration:none;font-size:15px;padding:14px 32px">Get Free Quote →</a>
+      <a href="https://wa.me/919876543210?text=Hi%20Sneha%20Enterprises%2C%20I%20would%20like%20to%20inquire%20about%20your%20export%20products." target="_blank" style="background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.4);color:white;padding:14px 32px;border-radius:8px;text-decoration:none;font-size:15px;font-weight:600;transition:all .2s;display:inline-block">💬 WhatsApp Now</a>
+    </div>
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="../data/products.js"></script>
+<script src="../data/inquiries.js"></script>
+<script src="../js/logo.js"></script>
+<script src="../js/partials.js"></script>
+<script src="../js/shared.js"></script>
+<script>
+function toggleFaq(item) {
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(f => f.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+</script>
+</body>
+</html>

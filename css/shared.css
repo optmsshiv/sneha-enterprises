@@ -248,3 +248,129 @@ textarea { resize: vertical; min-height: 100px; }
   .sec-title { font-size: 24px; }
   .footer-grid { grid-template-columns: 1fr; }
 }
+
+/* ── NAV DROPDOWN ───────────────────────────────────────────── */
+.nav-dropdown{position:relative}
+.nav-drop-trigger{cursor:pointer}
+.nav-drop-menu{
+  position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%);
+  background:white;border:1px solid var(--border);border-radius:12px;
+  min-width:190px;padding:8px 0;box-shadow:0 12px 36px rgba(26,46,107,.14);
+  opacity:0;visibility:hidden;transform:translateX(-50%) translateY(-8px);
+  transition:opacity .22s ease,transform .22s ease,visibility .22s;z-index:200
+}
+.nav-dropdown:hover .nav-drop-menu{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.nav-drop-menu a{display:block;padding:10px 18px;font-size:13px;color:var(--text-mid);text-decoration:none;transition:background .15s,color .15s;border-bottom:none !important}
+.nav-drop-menu a:hover{background:var(--cream);color:var(--navy)}
+.nav-drop-menu::before{content:'';position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:12px;height:12px;background:white;border:1px solid var(--border);border-bottom:none;border-right:none;transform:translateX(-50%) rotate(45deg)}
+
+/* ── FLOATING CONTACT BUTTONS ───────────────────────────────── */
+.float-btns{
+  position:fixed;bottom:28px;right:24px;z-index:990;
+  display:flex;flex-direction:column;align-items:flex-end;gap:12px
+}
+.float-main{
+  width:56px;height:56px;border-radius:50%;background:#25D366;
+  box-shadow:0 6px 24px rgba(37,211,102,.45);
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;cursor:pointer;border:none;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s;
+  animation:glowPulse 3s ease-in-out infinite
+}
+.float-main:hover{transform:scale(1.12);box-shadow:0 10px 32px rgba(37,211,102,.55)}
+.float-options{
+  display:flex;flex-direction:column;gap:10px;align-items:flex-end;
+  opacity:0;transform:translateY(12px);pointer-events:none;
+  transition:opacity .25s ease,transform .25s ease
+}
+.float-options.open{opacity:1;transform:translateY(0);pointer-events:all}
+.float-option{
+  display:flex;align-items:center;gap:10px;cursor:pointer;
+  text-decoration:none
+}
+.float-label{
+  background:rgba(20,20,20,.82);color:white;font-size:12px;font-weight:600;
+  padding:5px 12px;border-radius:20px;white-space:nowrap;backdrop-filter:blur(6px)
+}
+.float-icon{
+  width:46px;height:46px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:20px;box-shadow:0 4px 14px rgba(0,0,0,.2);
+  transition:transform .2s cubic-bezier(.34,1.56,.64,1)
+}
+.float-option:hover .float-icon{transform:scale(1.12)}
+.fi-wa{background:#25D366}
+.fi-call{background:var(--navy)}
+.fi-mail{background:var(--gold)}
+.fi-chat{background:#7C3AED}
+
+/* Tooltip label disappears on small screens */
+@media(max-width:600px){
+  .float-label{display:none}
+  .float-btns{bottom:20px;right:16px}
+  .float-main{width:50px;height:50px;font-size:22px}
+  .float-icon{width:42px;height:42px;font-size:18px}
+}
+
+/* stagger d5-d8 */
+.d5{transition-delay:.5s}.d6{transition-delay:.6s}
+.d7{transition-delay:.7s}.d8{transition-delay:.8s}
+
+/* PROCESS STEPS (homepage) */
+.proc-step{text-align:center;position:relative;z-index:1;padding:0 10px;transition:transform .3s}
+.proc-step:hover{transform:translateY(-5px)}
+.proc-num{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:white;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;border:3px solid transparent;transition:transform .35s cubic-bezier(.34,1.56,.64,1),box-shadow .3s;box-shadow:0 4px 16px rgba(200,145,42,.3)}
+.proc-step:hover .proc-num{transform:scale(1.15) rotate(-5deg);box-shadow:0 8px 28px rgba(200,145,42,.45)}
+.proc-step h4{color:white;font-family:'Playfair Display',serif;font-size:14px;margin-bottom:8px}
+.proc-step p{font-size:12px;color:rgba(255,255,255,.6);line-height:1.6}
+
+@media(max-width:900px){
+  .proc-step{grid-column:span 1}
+}
+
+/* ── FONT AWESOME ICON FIXES ────────────────────────────────── */
+.float-icon i { font-size: 20px; color: white; }
+.float-icon.fi-wa i  { font-size: 22px; }
+.float-icon.fi-call i{ font-size: 18px; }
+.float-icon.fi-mail i{ font-size: 18px; }
+.float-main i { font-size: 24px; color: white; }
+/* Reset float-main text content when using FA icons */
+.float-main { display: flex; align-items: center; justify-content: center; }
+
+/* ── GET QUOTE BUTTON FIX ───────────────────────────────────── */
+/* CTA banner button — ensure text perfectly centered */
+.cta-banner .btn-gold,
+.cta-banner a.btn-gold {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+/* Contact strip links — perfect vertical + horizontal center */
+.contact-strip-btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+/* Nav CTA button center fix */
+.nav-cta {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* General button icon alignment */
+.btn-gold, .btn-navy, .btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  line-height: 1;
+}

@@ -4,6 +4,7 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Contact — Sneha Enterprises</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="../css/shared.css">
 <style>
 .page-hero{background:linear-gradient(135deg,var(--navy-dark),var(--navy));padding:60px 2rem}
@@ -49,12 +50,12 @@
       <div class="reveal-left">
         <h2 style="font-family:'Playfair Display',serif;font-size:28px;color:var(--navy);margin-bottom:14px">Get in Touch</h2>
         <p style="font-size:14px;color:var(--text-mid);line-height:1.75;margin-bottom:32px">Available to answer questions about products, MOQ, pricing, packaging and shipping terms.</p>
-        <div class="ci-item"><div class="ci-ico">📍</div><div><div class="ci-lbl">Head Office</div><div class="ci-val">Sneha Enterprises, Patna, Bihar – 800001, India</div></div></div>
-        <div class="ci-item"><div class="ci-ico">📞</div><div><div class="ci-lbl">Phone &amp; WhatsApp</div><div class="ci-val"><a href="tel:+919876543210" style="color:var(--navy);text-decoration:none">+91 98765 43210</a></div></div></div>
-        <div class="ci-item"><div class="ci-ico">✉️</div><div><div class="ci-lbl">Email</div><div class="ci-val"><a href="mailto:exports@snehaenterprises.in" style="color:var(--navy);text-decoration:none">exports@snehaenterprises.in</a></div></div></div>
-        <div class="ci-item"><div class="ci-ico">🕐</div><div><div class="ci-lbl">Business Hours</div><div class="ci-val">Mon–Sat: 9:00 AM – 6:00 PM IST</div></div></div>
+        <div class="ci-item"><div class="ci-ico"><i class="fa-solid fa-location-dot" style="color:var(--navy)"></i></div><div><div class="ci-lbl">Head Office</div><div class="ci-val">Sneha Enterprises, Patna, Bihar – 800001, India</div></div></div>
+        <div class="ci-item"><div class="ci-ico"><i class="fa-solid fa-phone" style="color:var(--navy)"></i></div><div><div class="ci-lbl">Phone &amp; WhatsApp</div><div class="ci-val"><a href="tel:+919876543210" style="color:var(--navy);text-decoration:none">+91 98765 43210</a></div></div></div>
+        <div class="ci-item"><div class="ci-ico"><i class="fa-solid fa-envelope" style="color:var(--navy)"></i></div><div><div class="ci-lbl">Email</div><div class="ci-val"><a href="mailto:exports@snehaenterprises.in" style="color:var(--navy);text-decoration:none">exports@snehaenterprises.in</a></div></div></div>
+        <div class="ci-item"><div class="ci-ico"><i class="fa-regular fa-clock" style="color:var(--navy)"></i></div><div><div class="ci-lbl">Business Hours</div><div class="ci-val">Mon–Sat: 9:00 AM – 6:00 PM IST</div></div></div>
         <div style="background:#EEF1FB;border:1px solid var(--navy);border-radius:12px;padding:18px;margin-top:6px">
-          <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase">⚡ Fast Response Promise</div>
+          <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase"><i class="fa-solid fa-bolt" style="color:var(--gold)"></i> Fast Response Promise</div>
           <div style="font-size:13px;color:var(--text-mid);line-height:1.65">All trade inquiries receive a detailed response within <strong>24 business hours</strong> — pricing, availability and sample options.</div>
         </div>
         <div style="margin-top:24px"><img data-logo src="" alt="Sneha Enterprises" style="height:72px;width:auto;object-fit:contain"></div>
@@ -122,48 +123,81 @@
 <script src="../js/partials.js"></script>
 <script src="../js/shared.js"></script>
 <script>
+var SNEHA_API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? window.location.origin + '/sneha-enterprises/api/index.php' : window.location.origin + '/api/index.php';
+
 window.addEventListener('DOMContentLoaded', function() {
-  var sel = document.getElementById('f-product');
-  if (sel && typeof PRODUCTS_DATA !== 'undefined') {
-    PRODUCTS_DATA.filter(function(p){ return p.active; }).forEach(function(p){
-      sel.innerHTML += '<option value="' + p.id + '">' + p.emoji + ' ' + p.name + '</option>';
-    });
-    // Pre-select from URL param
-    var params = new URLSearchParams(window.location.search);
-    var pre = params.get('product');
-    if (pre) sel.value = pre;
-  }
+  loadProductOptions();
 });
 
-function submitForm() {
-  var name = document.getElementById('f-name').value.trim();
-  var email = document.getElementById('f-email').value.trim();
+async function loadProductOptions() {
+  var sel = document.getElementById('f-product');
+  if (!sel) return;
+  try {
+    var res = await fetch(SNEHA_API + '?route=products&active=1');
+    var data = await res.json();
+    (data.products || []).forEach(function(p) {
+      sel.innerHTML += '<option value="' + p.id + '">' + p.emoji + ' ' + p.name + '</option>';
+    });
+  } catch(e) {
+    // Fallback to static data if API not available
+    if (typeof PRODUCTS_DATA !== 'undefined') {
+      PRODUCTS_DATA.filter(function(p){ return p.active; }).forEach(function(p){
+        sel.innerHTML += '<option value="' + p.id + '">' + p.emoji + ' ' + p.name + '</option>';
+      });
+    }
+  }
+  var pre = new URLSearchParams(window.location.search).get('product');
+  if (pre) sel.value = pre;
+}
+
+async function submitForm() {
+  var name    = document.getElementById('f-name').value.trim();
+  var email   = document.getElementById('f-email').value.trim();
   var company = document.getElementById('f-company').value.trim();
   var product = document.getElementById('f-product').value;
   if (!name || !email || !company || !product) {
     showToast('Please fill in name, email, company and select a product.', 'error'); return;
   }
-  var productObj = PRODUCTS_DATA.find(function(p){ return p.id === product; });
-  var inquiry = {
-    name: name, email: email, company: company,
-    country: document.getElementById('f-country').value,
-    phone: document.getElementById('f-phone').value,
-    qty: document.getElementById('f-qty').value,
-    incoterm: document.getElementById('f-inco').value,
-    message: document.getElementById('f-msg').value,
-    productId: product,
-    productName: productObj ? productObj.name : product,
-    source: 'contact-page'
-  };
   var btn = document.getElementById('sbtn');
   btn.textContent = 'Sending...'; btn.disabled = true;
-  setTimeout(function() {
-    var id = InquiryStore.save(inquiry);
+
+  var payload = {
+    name: name, email: email, company: company,
+    country:     document.getElementById('f-country').value,
+    phone:       document.getElementById('f-phone').value,
+    qty:         document.getElementById('f-qty').value,
+    incoterm:    document.getElementById('f-inco').value,
+    message:     document.getElementById('f-msg').value,
+    productId:   product,
+    productName: document.getElementById('f-product').options[document.getElementById('f-product').selectedIndex]?.text?.replace(/^[\S\u00A0]+\s/,'') || product,
+    source:      'contact-page'
+  };
+
+  try {
+    var res  = await fetch(SNEHA_API + '?route=inquiries', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    var data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Submission failed');
     btn.style.display = 'none';
     document.getElementById('fsuccess').style.display = 'block';
-    document.getElementById('inquiry-id').textContent = 'Reference: ' + id;
-    showToast('✅ Inquiry submitted successfully!');
-  }, 1200);
+    document.getElementById('inquiry-id').textContent = 'Reference: ' + data.id;
+    showToast('✅ Inquiry submitted & saved to database!');
+  } catch(err) {
+    // Fallback: save to localStorage if API unavailable
+    if (typeof InquiryStore !== 'undefined') {
+      var id = InquiryStore.save(payload);
+      btn.style.display = 'none';
+      document.getElementById('fsuccess').style.display = 'block';
+      document.getElementById('inquiry-id').textContent = 'Reference: ' + id + ' (offline)';
+      showToast('Saved locally. Connect server for database storage.', 'warn');
+    } else {
+      btn.textContent = 'Send Trade Inquiry →'; btn.disabled = false;
+      showToast('Error: ' + err.message + '. Is the server running?', 'error');
+    }
+  }
 }
 </script>
 </body>

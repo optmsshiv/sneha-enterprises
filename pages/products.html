@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Products — Sneha Enterprises</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="../css/shared.css">
 <style>
 .page-hero { background: linear-gradient(135deg,var(--navy-dark),var(--navy)); padding: 60px 2rem 50px; }
@@ -162,18 +163,38 @@
 <script src="../js/partials.js"></script>
 <script src="../js/shared.js"></script>
 <script>
+var SNEHA_API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? window.location.origin + '/sneha-enterprises/api/index.php' : window.location.origin + '/api/index.php';
+var ALL_PRODUCTS = [];
 var currentCat = 'all';
+
+async function loadAllProducts() {
+  try {
+    var res  = await fetch(SNEHA_API + '?route=products&active=1');
+    var data = await res.json();
+    ALL_PRODUCTS = data.products || [];
+  } catch(e) {
+    // Fallback to static
+    if (typeof PRODUCTS_DATA !== 'undefined') {
+      ALL_PRODUCTS = PRODUCTS_DATA.filter(function(p){ return p.active; }).map(function(p){
+        return Object.assign({}, p, { min_order: p.minOrder });
+      });
+    }
+  }
+  renderCategories();
+  renderProducts();
+}
 
 function renderCategories() {
   var tabs = document.getElementById('cat-tabs');
   if (!tabs) return;
   var cats = { all: 'All Products' };
-  var catEmojis = { grains: '🌾', spices: '🟡', foxnuts: '🌿', vegetables: '🥦' };
-  PRODUCTS_DATA.filter(function(p){ return p.active; }).forEach(function(p){
+  var catEmojis = { grains:'🌾', spices:'🟡', foxnuts:'🌿', vegetables:'🥦' };
+  ALL_PRODUCTS.forEach(function(p){
     if (!cats[p.category]) {
-      cats[p.category] = (catEmojis[p.category] || '') + ' ' + p.category.charAt(0).toUpperCase() + p.category.slice(1);
+      cats[p.category] = (catEmojis[p.category]||'') + ' ' + p.category.charAt(0).toUpperCase() + p.category.slice(1);
     }
   });
+  tabs.innerHTML = '';
   Object.keys(cats).forEach(function(cat) {
     var btn = document.createElement('button');
     btn.className = 'cat-tab' + (cat === 'all' ? ' active' : '');
@@ -189,16 +210,15 @@ function renderCategories() {
 }
 
 function renderProducts() {
-  var grid = document.getElementById('prod-grid');
+  var grid    = document.getElementById('prod-grid');
   var sortVal = document.getElementById('sort-select').value;
   if (!grid) return;
 
-  var products = PRODUCTS_DATA.filter(function(p){
-    return p.active && (currentCat === 'all' || p.category === currentCat);
+  var products = ALL_PRODUCTS.filter(function(p){
+    return currentCat === 'all' || p.category === currentCat;
   });
-
   if (sortVal === 'name') products.sort(function(a,b){ return a.name.localeCompare(b.name); });
-  if (sortVal === 'cat') products.sort(function(a,b){ return a.category.localeCompare(b.category); });
+  if (sortVal === 'cat')  products.sort(function(a,b){ return a.category.localeCompare(b.category); });
 
   var countEl = document.getElementById('results-count');
   if (countEl) countEl.textContent = 'Showing ' + products.length + ' product' + (products.length !== 1 ? 's' : '');
@@ -209,11 +229,14 @@ function renderProducts() {
   }
 
   grid.innerHTML = products.map(function(p, i) {
-    var badge = p.badge ? '<span class="prod-badge">' + p.badge + '</span>' : '';
-    var specs = Object.entries(p.specs || {}).slice(0,4).map(function(kv){
+    var badge  = p.badge ? '<span class="prod-badge">' + p.badge + '</span>' : '';
+    var specsObj = typeof p.specs === 'string' ? JSON.parse(p.specs||'{}') : (p.specs||{});
+    var packArr  = typeof p.packaging === 'string' ? JSON.parse(p.packaging||'[]') : (p.packaging||[]);
+    var specs  = Object.entries(specsObj).slice(0,4).map(function(kv){
       return '<div class="spec-item"><span class="spec-key">' + kv[0] + '</span><div class="spec-val">' + kv[1] + '</div></div>';
     }).join('');
-    var packs = (p.packaging || []).map(function(pk){ return '<span class="pack-tag">' + pk + '</span>'; }).join('');
+    var packs  = packArr.map(function(pk){ return '<span class="pack-tag">' + pk + '</span>'; }).join('');
+    var moq    = p.min_order || p.minOrder || 'On Request';
     return '<div class="prod-card reveal d' + ((i%3)+1) + '" data-id="' + p.id + '">' +
       badge +
       '<div class="prod-img" style="background:' + p.bg + '">' + p.emoji + '</div>' +
@@ -224,24 +247,22 @@ function renderProducts() {
         '<div class="prod-specs">' + specs + '</div>' +
         '<div class="prod-footer">' +
           '<div class="prod-origin"><span>Origin</span><strong>' + p.origin + '</strong></div>' +
-          '<div class="prod-moq"><span>Min Order</span><strong>' + p.minOrder + '</strong></div>' +
+          '<div class="prod-moq"><span>Min Order</span><strong>' + moq + '</strong></div>' +
           '<button class="enquire-btn" onclick="openModal(\'' + p.id + '\')">Enquire Now</button>' +
         '</div>' +
       '</div></div>';
   }).join('');
 
-  // Re-init reveal for new cards
   grid.querySelectorAll('.reveal').forEach(function(el){ revealObserver.observe(el); });
 }
 
 function openModal(productId) {
-  var product = PRODUCTS_DATA.find(function(p){ return p.id === productId; });
+  var product = ALL_PRODUCTS.find(function(p){ return p.id === productId; });
   if (!product) return;
   document.getElementById('modal-product-label').textContent = product.emoji + ' ' + product.name;
   document.getElementById('modal-product-id').value = productId;
   document.getElementById('modal').classList.add('open');
   document.body.style.overflow = 'hidden';
-  // Reset form
   ['f-name','f-company','f-email','f-country','f-qty','f-phone','f-msg'].forEach(function(id){
     var el = document.getElementById(id); if(el) el.value = '';
   });
@@ -256,55 +277,63 @@ function closeModal() {
   document.body.style.overflow = '';
 }
 
-// Close modal on overlay click
 document.getElementById('modal').addEventListener('click', function(e){
   if (e.target === this) closeModal();
 });
-
-// Close on ESC
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeModal(); });
 
-function submitEnquiry() {
-  var name = document.getElementById('f-name').value.trim();
-  var email = document.getElementById('f-email').value.trim();
+async function submitEnquiry() {
+  var name    = document.getElementById('f-name').value.trim();
+  var email   = document.getElementById('f-email').value.trim();
   var company = document.getElementById('f-company').value.trim();
   if (!name || !email || !company) {
     showToast('Please fill in name, email and company.', 'error'); return;
   }
   var productId = document.getElementById('modal-product-id').value;
-  var product = PRODUCTS_DATA.find(function(p){ return p.id === productId; });
-  var inquiry = {
+  var product   = ALL_PRODUCTS.find(function(p){ return p.id === productId; });
+  var payload   = {
     name: name, email: email, company: company,
-    country: document.getElementById('f-country').value,
-    phone: document.getElementById('f-phone').value,
-    qty: document.getElementById('f-qty').value,
-    incoterm: document.getElementById('f-inco').value,
-    message: document.getElementById('f-msg').value,
-    productId: productId,
+    country:     document.getElementById('f-country').value,
+    phone:       document.getElementById('f-phone').value,
+    qty:         document.getElementById('f-qty').value,
+    incoterm:    document.getElementById('f-inco').value,
+    message:     document.getElementById('f-msg').value,
+    productId:   productId,
     productName: product ? product.name : productId,
-    source: 'products-page'
+    source:      'products-page'
   };
   var btn = document.getElementById('sbtn');
   btn.textContent = 'Sending...'; btn.disabled = true;
 
-  // Save to localStorage
-  var id = InquiryStore.save(inquiry);
-
-  // Simulate email send (in production: call your backend API here)
-  setTimeout(function() {
+  try {
+    var res  = await fetch(SNEHA_API + '?route=inquiries', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    var data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Submission failed');
     btn.style.display = 'none';
     document.getElementById('fsuccess').style.display = 'block';
-    showToast('✅ Inquiry submitted! ID: ' + id, 'success');
-    // In production: sendEmailNotification(inquiry);
-  }, 1200);
+    document.getElementById('fsuccess').innerHTML = '✅ Inquiry received! Reference: <strong>' + data.id + '</strong><br>Our team will contact you within 24 hours.';
+    showToast('✅ Saved to database! Ref: ' + data.id);
+  } catch(err) {
+    // Offline fallback
+    if (typeof InquiryStore !== 'undefined') {
+      var id = InquiryStore.save(payload);
+      btn.style.display = 'none';
+      document.getElementById('fsuccess').style.display = 'block';
+      showToast('Saved locally. Ref: ' + id, 'warn');
+    } else {
+      btn.textContent = 'Send Inquiry →'; btn.disabled = false;
+      showToast('Error: ' + err.message, 'error');
+    }
+  }
 }
 
 document.getElementById('sort-select').addEventListener('change', renderProducts);
 
-window.addEventListener('DOMContentLoaded', function() {
-  renderCategories();
-  renderProducts();
-});
+window.addEventListener('DOMContentLoaded', loadAllProducts);
 </script>
 </body>
 </html>
