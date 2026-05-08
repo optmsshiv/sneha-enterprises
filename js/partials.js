@@ -40,7 +40,7 @@ var NAV_HTML = `
         <a href="../pages/about.html" class="nav-drop-trigger">About ▾</a>
         <div class="nav-drop-menu">
           <a href="../pages/about.html">About Us</a>
-          <a href="../pages/about.html#certs">Certifications</a>
+          <a href="../pages/certificates.html">Certificates</a>
           <a href="../pages/export-process.html">Export Process</a>
           <a href="../pages/gallery.html">Gallery</a>
         </div>
@@ -56,6 +56,7 @@ var NAV_HTML = `
   <a href="../index.html" onclick="closeMenu()">Home</a>
   <a href="../pages/products.html" onclick="closeMenu()">Products</a>
   <a href="../pages/about.html" onclick="closeMenu()">About Us</a>
+  <a href="../pages/certificates.html" onclick="closeMenu()">Certificates</a>
   <a href="../pages/export-process.html" onclick="closeMenu()">Export Process</a>
   <a href="../pages/gallery.html" onclick="closeMenu()">Gallery</a>
   <a href="../pages/contact.html" onclick="closeMenu()" class="m-cta">Get a Quote →</a>
@@ -120,10 +121,12 @@ var FOOTER_HTML = `
         <ul>
           <li><a href="index.html">Home</a></li>
           <li><a href="pages/about.html">About Us</a></li>
-          <li><a href="pages/about.html#certs">Certifications</a></li>
+          <li><a href="pages/certificates.html">Certificates</a></li>
           <li><a href="pages/export-process.html">Export Process</a></li>
           <li><a href="pages/gallery.html">Gallery</a></li>
           <li><a href="pages/contact.html">Contact</a></li>
+          <li><a href="pages/terms.html">Terms &amp; Conditions</a></li>
+          <li><a href="pages/privacy.html">Privacy Policy</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -139,6 +142,13 @@ var FOOTER_HTML = `
     </div>
     <div class="footer-bottom">
       <p>© 2024 Sneha Enterprises. All rights reserved. | Registered Exporter from India | Patna, Bihar</p>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:8px">
+        <a href="pages/terms.html" style="font-size:11px;color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.9)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Terms &amp; Conditions</a>
+        <span style="color:rgba(255,255,255,.2);font-size:11px">|</span>
+        <a href="pages/privacy.html" style="font-size:11px;color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.9)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Privacy Policy</a>
+        <span style="color:rgba(255,255,255,.2);font-size:11px">|</span>
+        <a href="pages/contact.html" style="font-size:11px;color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.9)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Contact Us</a>
+      </div>
       <div class="footer-soc">
         <div class="soc-btn" onclick="window.open('https://wa.me/919876543210','_blank')" title="WhatsApp" style="font-size:16px"><i class="fa-brands fa-whatsapp"></i></div>
         <div class="soc-btn" onclick="window.open('tel:+919876543210')" title="Call" style="font-size:14px"><i class="fa-solid fa-phone"></i></div>

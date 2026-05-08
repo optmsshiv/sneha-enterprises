@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Certificates & Licenses — Sneha Enterprises</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../css/shared.css">
+<style>
+/* PAGE HERO */
+.page-hero{background:linear-gradient(135deg,var(--navy-dark),var(--navy));padding:60px 2rem 50px;position:relative;overflow:hidden}
+.page-hero::before{content:'';position:absolute;inset:0;opacity:.04;background-image:repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%);background-size:18px 18px}
+.page-hero .sec-label{color:var(--gold)}
+.page-hero h1{font-family:'Playfair Display',serif;font-size:40px;color:white;font-weight:700;margin-bottom:10px}
+.page-hero p{font-size:15px;color:rgba(255,255,255,.7);max-width:560px;line-height:1.75}
+
+/* CERT CARDS GRID */
+.cert-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+
+/* CERT CARD */
+.cert-card{background:white;border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:all .35s cubic-bezier(.34,1.56,.64,1);position:relative}
+.cert-card:hover{transform:translateY(-6px);box-shadow:0 20px 56px rgba(26,46,107,.16);border-color:var(--gold)}
+.cert-card::after{content:'';position:absolute;bottom:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--navy));transition:width .4s ease}
+.cert-card:hover::after{width:100%}
+
+/* Card header */
+.cert-header{padding:24px 24px 0;display:flex;align-items:center;gap:16px}
+.cert-icon-wrap{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.cert-name{font-family:'Playfair Display',serif;font-size:20px;color:var(--navy);font-weight:700;margin-bottom:3px}
+.cert-issuer{font-size:12px;color:var(--text-light);font-weight:500}
+.cert-active-badge{display:inline-flex;align-items:center;gap:5px;background:var(--green-light);color:var(--green);font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;letter-spacing:.5px;margin-left:8px}
+.cert-active-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:glowPulse 2s infinite}
+
+/* Details table */
+.cert-details{margin:16px 24px;display:flex;flex-direction:column;gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.cert-row{display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(224,216,200,.5);font-size:13px;transition:background .15s}
+.cert-row:last-child{border-bottom:none}
+.cert-row:hover{background:var(--cream)}
+.cert-row-label{color:var(--text-light);font-weight:600;min-width:130px;font-size:11px;text-transform:uppercase;letter-spacing:.3px}
+.cert-row-val{color:var(--navy);font-weight:600;font-family:monospace;font-size:13px;flex:1}
+.cert-row-val.normal{font-family:'DM Sans',sans-serif}
+
+/* Preview image thumbnail */
+.cert-preview{margin:0 24px;border-radius:12px;overflow:hidden;position:relative;cursor:pointer;background:var(--cream);border:1px solid var(--border)}
+.cert-preview-img{width:100%;height:200px;object-fit:cover;object-position:top;display:block;transition:transform .4s;pointer-events:none;user-select:none}
+.cert-card:hover .cert-preview-img{transform:scale(1.03)}
+/* Protection overlay — no right click */
+.cert-preview-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(26,46,107,.65));display:flex;align-items:flex-end;padding:14px;pointer-events:none}
+.cert-preview-hint{color:white;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px}
+.cert-view-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,255,255,.92);border:none;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;color:var(--navy);cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:7px;opacity:0;transition:opacity .25s,transform .25s;pointer-events:all}
+.cert-preview:hover .cert-view-btn{opacity:1;transform:translate(-50%,-50%) scale(1.05)}
+
+/* Card actions */
+.cert-actions{padding:16px 24px 20px;display:flex;gap:10px;flex-wrap:wrap}
+.btn-verify{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;transition:all .2s;font-family:'DM Sans',sans-serif;border:none;cursor:pointer}
+.btn-verify-primary{background:var(--navy);color:white}
+.btn-verify-primary:hover{background:var(--navy-mid);transform:translateY(-1px)}
+.btn-verify-gold{background:var(--gold-light);color:var(--gold-dark)}
+.btn-verify-gold:hover{background:var(--gold);color:white}
+.btn-verify-wa{background:#25D366;color:white}
+.btn-verify-wa:hover{opacity:.88}
+
+/* PROTECTION WARNING BANNER */
+.protect-banner{background:linear-gradient(135deg,#FFF3E0,#FFF8E1);border:1px solid var(--gold);border-radius:14px;padding:18px 22px;margin-bottom:36px;display:flex;gap:14px;align-items:flex-start}
+.protect-icon{font-size:28px;flex-shrink:0}
+.protect-text h4{font-family:'Playfair Display',serif;font-size:16px;color:var(--gold-dark);margin-bottom:5px}
+.protect-text p{font-size:13px;color:var(--text-mid);line-height:1.7}
+
+/* LIGHTBOX */
+.lightbox{display:none;position:fixed;inset:0;background:rgba(5,10,25,.96);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(10px)}
+.lightbox.open{display:flex;animation:fadeInLB .3s ease}
+@keyframes fadeInLB{from{opacity:0}to{opacity:1}}
+.lb-wrap{position:relative;max-width:780px;width:calc(100% - 40px);max-height:92vh;display:flex;flex-direction:column;gap:12px}
+.lb-close{position:absolute;top:-44px;right:0;background:rgba(255,255,255,.15);border:none;color:white;font-size:18px;width:36px;height:36px;border-radius:50%;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;z-index:2}
+.lb-close:hover{background:rgba(255,255,255,.3)}
+.lb-img-wrap{position:relative;border-radius:14px;overflow:hidden;max-height:78vh}
+.lb-img{width:100%;max-height:78vh;object-fit:contain;display:block;pointer-events:none;user-select:none;-webkit-user-drag:none}
+/* Anti-drag overlay */
+.lb-block{position:absolute;inset:0;background:transparent;cursor:default}
+.lb-caption{text-align:center;color:rgba(255,255,255,.85);font-size:14px;font-weight:600;font-family:'Playfair Display',serif}
+.lb-sub{text-align:center;color:rgba(255,255,255,.5);font-size:11px;margin-top:4px}
+.lb-warn{display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(200,145,42,.2);border:1px solid rgba(200,145,42,.35);border-radius:8px;padding:8px 14px;color:rgba(255,220,100,.9);font-size:11px;font-weight:600}
+
+/* GOVT VERIFY SECTION */
+.verify-section{background:var(--navy);border-radius:20px;padding:32px;margin-top:36px}
+.verify-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:20px}
+.verify-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:18px;transition:background .2s;display:flex;gap:14px;align-items:flex-start}
+.verify-card:hover{background:rgba(255,255,255,.14)}
+.vc-icon{font-size:22px;min-width:28px}
+.vc-title{color:white;font-size:13px;font-weight:700;margin-bottom:4px}
+.vc-desc{color:rgba(255,255,255,.6);font-size:11px;line-height:1.5;margin-bottom:8px}
+.vc-link{display:inline-flex;align-items:center;gap:5px;background:var(--gold);color:white;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;text-decoration:none;transition:opacity .2s}
+.vc-link:hover{opacity:.85}
+
+/* REQUEST SECTION */
+.request-box{background:var(--green-light);border:1px solid var(--green);border-radius:16px;padding:28px;margin-top:24px;text-align:center}
+.request-box h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--green);margin-bottom:8px}
+.request-box p{font-size:13px;color:var(--text-mid);line-height:1.7;max-width:520px;margin:0 auto 20px}
+.req-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+@media(max-width:900px){
+  .cert-grid{grid-template-columns:1fr}
+  .verify-grid{grid-template-columns:1fr}
+  .page-hero h1{font-size:30px}
+}
+</style>
+</head>
+<body>
+
+<!-- Disable right-click on cert images -->
+<script>
+document.addEventListener('contextmenu', function(e) {
+  if (e.target.classList.contains('cert-img-protect') || e.target.closest('.lightbox')) {
+    e.preventDefault();
+    return false;
+  }
+});
+document.addEventListener('dragstart', function(e) {
+  if (e.target.tagName === 'IMG') e.preventDefault();
+});
+// Disable keyboard save shortcuts on lightbox
+document.addEventListener('keydown', function(e) {
+  var lb = document.getElementById('cert-lightbox');
+  if (lb && lb.classList.contains('open')) {
+    if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) e.preventDefault();
+    if (e.key === 'PrintScreen') e.preventDefault();
+    if (e.key === 'Escape') closeLightbox();
+  }
+});
+</script>
+
+<div id="ticker-placeholder"></div>
+<div id="nav-placeholder"></div>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="sec-inner" style="position:relative;z-index:1">
+    <div class="sec-label">Trust & Compliance</div>
+    <h1>Certificates & Licenses</h1>
+    <p>M/S Sneha Enterprises is a fully registered and certified exporter from India. All registrations are active and verifiable directly on government portals.</p>
+  </div>
+</div>
+
+<section style="background:var(--cream)">
+  <div class="sec-inner">
+
+    <!-- PROTECTION NOTICE -->
+    <div class="protect-banner reveal">
+      <div class="protect-icon">🛡️</div>
+      <div class="protect-text">
+        <h4>Certificate Protection Notice</h4>
+        <p>All certificate images displayed here are watermarked with <strong>"FOR VERIFICATION ONLY — M/S SNEHA ENTERPRISES"</strong> and are protected against unauthorised use. For official verification, please use the government portal links provided below. Full copies are available only on written request for genuine trade purposes.</p>
+      </div>
+    </div>
+
+    <!-- CERT CARDS GRID -->
+    <div class="cert-grid">
+
+      <!-- 1. IEC CODE -->
+      <div class="cert-card reveal d1">
+        <div class="cert-header">
+          <div class="cert-icon-wrap" style="background:#EEF1FB"><i class="fa-solid fa-globe" style="color:var(--navy);font-size:24px"></i></div>
+          <div>
+            <div class="cert-name">IEC Code <span class="cert-active-badge"><span class="cert-active-dot"></span>Active</span></div>
+            <div class="cert-issuer">DGFT — Ministry of Commerce & Industry, Govt. of India</div>
+          </div>
+        </div>
+        <div class="cert-details">
+          <div class="cert-row"><span class="cert-row-label">IEC Number</span><span class="cert-row-val">BJHPP6356B</span></div>
+          <div class="cert-row"><span class="cert-row-label">Firm Name</span><span class="cert-row-val normal">M/S SNEHA ENTERPRISES</span></div>
+          <div class="cert-row"><span class="cert-row-label">Nature</span><span class="cert-row-val normal">Proprietorship</span></div>
+          <div class="cert-row"><span class="cert-row-label">Date of Issue</span><span class="cert-row-val normal">26 / 11 / 2025</span></div>
+          <div class="cert-row"><span class="cert-row-label">Validity</span><span class="cert-row-val normal" style="color:var(--green)">Permanent (No Expiry)</span></div>
+          <div class="cert-row"><span class="cert-row-label">Issued By</span><span class="cert-row-val normal">ADGFT Kolkata, West Bengal</span></div>
+        </div>
+        <div class="cert-preview" onclick="openLightbox('iec','IEC Code — Import Exporter Code','Issued by DGFT, Ministry of Commerce & Industry')">
+          <img id="cert-preview-iec" class="cert-preview-img cert-img-protect" src="" alt="IEC Certificate — For Verification Only" draggable="false">
+          <div class="cert-preview-overlay"><div class="cert-preview-hint"><i class="fa-solid fa-shield-halved"></i> Watermarked — For Verification Only</div></div>
+          <button class="cert-view-btn"><i class="fa-solid fa-eye"></i> View Certificate</button>
+        </div>
+        <div class="cert-actions">
+          <a href="https://dgft.gov.in" target="_blank" class="btn-verify btn-verify-primary"><i class="fa-solid fa-arrow-up-right-from-square"></i> Verify on DGFT</a>
+          <a href="https://wa.me/919876543210?text=Hi%2C%20I%20need%20a%20copy%20of%20your%20IEC%20Certificate%20for%20trade%20verification." target="_blank" class="btn-verify btn-verify-wa"><i class="fa-brands fa-whatsapp"></i> Request Copy</a>
+        </div>
+      </div>
+
+      <!-- 2. GST -->
+      <div class="cert-card reveal d2">
+        <div class="cert-header">
+          <div class="cert-icon-wrap" style="background:#FFF3E0"><i class="fa-solid fa-file-invoice" style="color:var(--gold-dark);font-size:24px"></i></div>
+          <div>
+            <div class="cert-name">GST Registration <span class="cert-active-badge"><span class="cert-active-dot"></span>Active</span></div>
+            <div class="cert-issuer">Goods & Services Tax — Govt. of India, Bihar State</div>
+          </div>
+        </div>
+        <div class="cert-details">
+          <div class="cert-row"><span class="cert-row-label">GSTIN</span><span class="cert-row-val">10BJHPP6356B1ZJ</span></div>
+          <div class="cert-row"><span class="cert-row-label">Trade Name</span><span class="cert-row-val normal">M/S SNEHA ENTERPRISES</span></div>
+          <div class="cert-row"><span class="cert-row-label">Legal Name</span><span class="cert-row-val normal">Lalan Paswan</span></div>
+          <div class="cert-row"><span class="cert-row-label">Type</span><span class="cert-row-val normal">Regular — Central License</span></div>
+          <div class="cert-row"><span class="cert-row-label">Date of Issue</span><span class="cert-row-val normal">07 / 08 / 2025</span></div>
+          <div class="cert-row"><span class="cert-row-label">Validity</span><span class="cert-row-val normal" style="color:var(--green)">Not Applicable (Perpetual)</span></div>
+        </div>
+        <div class="cert-preview" onclick="openLightbox('gst','GST Registration Certificate','Form GST REG-06 — Govt. of India')">
+          <img id="cert-preview-gst" class="cert-preview-img cert-img-protect" src="" alt="GST Certificate — For Verification Only" draggable="false">
+          <div class="cert-preview-overlay"><div class="cert-preview-hint"><i class="fa-solid fa-shield-halved"></i> Watermarked — For Verification Only</div></div>
+          <button class="cert-view-btn"><i class="fa-solid fa-eye"></i> View Certificate</button>
+        </div>
+        <div class="cert-actions">
+          <a href="https://www.gst.gov.in/commonhome" target="_blank" class="btn-verify btn-verify-primary"><i class="fa-solid fa-arrow-up-right-from-square"></i> Verify on GST Portal</a>
+          <a href="https://wa.me/919876543210?text=Hi%2C%20I%20need%20a%20copy%20of%20your%20GST%20Certificate%20for%20trade%20verification." target="_blank" class="btn-verify btn-verify-wa"><i class="fa-brands fa-whatsapp"></i> Request Copy</a>
+        </div>
+      </div>
+
+      <!-- 3. APEDA RCMC -->
+      <div class="cert-card reveal d1">
+        <div class="cert-header">
+          <div class="cert-icon-wrap" style="background:var(--green-light)"><i class="fa-solid fa-seedling" style="color:var(--green);font-size:24px"></i></div>
+          <div>
+            <div class="cert-name">APEDA RCMC <span class="cert-active-badge"><span class="cert-active-dot"></span>Active</span></div>
+            <div class="cert-issuer">Registration-Cum-Membership Certificate — APEDA, Kolkata</div>
+          </div>
+        </div>
+        <div class="cert-details">
+          <div class="cert-row"><span class="cert-row-label">RCMC Number</span><span class="cert-row-val">RCMC/APEDA/23749/2025-2026</span></div>
+          <div class="cert-row"><span class="cert-row-label">Exporter Name</span><span class="cert-row-val normal">M/S SNEHA ENTERPRISES</span></div>
+          <div class="cert-row"><span class="cert-row-label">IEC Number</span><span class="cert-row-val">BJHPP6356B</span></div>
+          <div class="cert-row"><span class="cert-row-label">Registered As</span><span class="cert-row-val normal">Merchant Exporter</span></div>
+          <div class="cert-row"><span class="cert-row-label">Issue Date</span><span class="cert-row-val normal">04 / 12 / 2025</span></div>
+          <div class="cert-row"><span class="cert-row-label">Valid Upto</span><span class="cert-row-val normal" style="color:var(--green)">26 / 11 / 2030</span></div>
+        </div>
+        <div class="cert-preview" onclick="openLightbox('apeda','APEDA RCMC Certificate','Registration-Cum-Membership Certificate — APEDA Kolkata')">
+          <img id="cert-preview-apeda" class="cert-preview-img cert-img-protect" src="" alt="APEDA RCMC — For Verification Only" draggable="false">
+          <div class="cert-preview-overlay"><div class="cert-preview-hint"><i class="fa-solid fa-shield-halved"></i> Watermarked — For Verification Only</div></div>
+          <button class="cert-view-btn"><i class="fa-solid fa-eye"></i> View Certificate</button>
+        </div>
+        <div class="cert-actions">
+          <a href="https://apeda.gov.in/apedawebsite/index.htm" target="_blank" class="btn-verify btn-verify-primary"><i class="fa-solid fa-arrow-up-right-from-square"></i> Verify on APEDA</a>
+          <a href="https://wa.me/919876543210?text=Hi%2C%20I%20need%20a%20copy%20of%20your%20APEDA%20RCMC%20Certificate%20for%20trade%20verification." target="_blank" class="btn-verify btn-verify-wa"><i class="fa-brands fa-whatsapp"></i> Request Copy</a>
+        </div>
+      </div>
+
+      <!-- 4. FSSAI -->
+      <div class="cert-card reveal d2">
+        <div class="cert-header">
+          <div class="cert-icon-wrap" style="background:#FFEBEE"><i class="fa-solid fa-flask" style="color:#c0392b;font-size:24px"></i></div>
+          <div>
+            <div class="cert-name">FSSAI License <span class="cert-active-badge"><span class="cert-active-dot"></span>Active</span></div>
+            <div class="cert-issuer">Food Safety & Standards Authority of India — Central License</div>
+          </div>
+        </div>
+        <div class="cert-details">
+          <div class="cert-row"><span class="cert-row-label">License No.</span><span class="cert-row-val">10426999000036</span></div>
+          <div class="cert-row"><span class="cert-row-label">Business Name</span><span class="cert-row-val normal">M/S SNEHA ENTERPRISES</span></div>
+          <div class="cert-row"><span class="cert-row-label">Category</span><span class="cert-row-val normal">Central License</span></div>
+          <div class="cert-row"><span class="cert-row-label">Type</span><span class="cert-row-val normal">Wholesaler / Exporter / Importer</span></div>
+          <div class="cert-row"><span class="cert-row-label">Issue Date</span><span class="cert-row-val normal">28 / 01 / 2026</span></div>
+          <div class="cert-row"><span class="cert-row-label">Valid Upto</span><span class="cert-row-val normal" style="color:#e67e22">27 / 01 / 2027</span></div>
+        </div>
+        <div class="cert-preview" onclick="openLightbox('fssai','FSSAI Central License','Food Safety & Standards Authority of India — Form C')">
+          <img id="cert-preview-fssai" class="cert-preview-img cert-img-protect" src="" alt="FSSAI License — For Verification Only" draggable="false">
+          <div class="cert-preview-overlay"><div class="cert-preview-hint"><i class="fa-solid fa-shield-halved"></i> Watermarked — For Verification Only</div></div>
+          <button class="cert-view-btn"><i class="fa-solid fa-eye"></i> View Certificate</button>
+        </div>
+        <div class="cert-actions">
+          <a href="https://foscos.fssai.gov.in" target="_blank" class="btn-verify btn-verify-primary"><i class="fa-solid fa-arrow-up-right-from-square"></i> Verify on FSSAI</a>
+          <a href="https://wa.me/919876543210?text=Hi%2C%20I%20need%20a%20copy%20of%20your%20FSSAI%20License%20for%20trade%20verification." target="_blank" class="btn-verify btn-verify-wa"><i class="fa-brands fa-whatsapp"></i> Request Copy</a>
+        </div>
+      </div>
+
+    </div><!-- /cert-grid -->
+
+    <!-- GOVT VERIFY SECTION -->
+    <div class="verify-section reveal" style="margin-top:36px">
+      <div class="sec-label" style="color:var(--gold)">Online Verification</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:26px;color:white;margin-bottom:4px">Verify Directly on Government Portals</h2>
+      <p style="font-size:13px;color:rgba(255,255,255,.65);margin-bottom:0">You can independently verify all our registrations on official Indian government websites — no need to rely on our documents.</p>
+      <div class="verify-grid">
+        <div class="verify-card">
+          <span class="vc-icon">🌐</span>
+          <div>
+            <div class="vc-title">Verify IEC Code</div>
+            <div class="vc-desc">Go to DGFT → Services → View IEC Details → Enter code: <strong>BJHPP6356B</strong></div>
+            <a href="https://dgft.gov.in/CP/" target="_blank" class="vc-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> dgft.gov.in</a>
+          </div>
+        </div>
+        <div class="verify-card">
+          <span class="vc-icon">🧾</span>
+          <div>
+            <div class="vc-title">Verify GST Registration</div>
+            <div class="vc-desc">Go to GST Portal → Search Taxpayer → Enter GSTIN: <strong>10BJHPP6356B1ZJ</strong></div>
+            <a href="https://www.gst.gov.in/commonhome" target="_blank" class="vc-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> gst.gov.in</a>
+          </div>
+        </div>
+        <div class="verify-card">
+          <span class="vc-icon">🌿</span>
+          <div>
+            <div class="vc-title">Verify APEDA RCMC</div>
+            <div class="vc-desc">Go to APEDA → Member Search → Enter IEC: <strong>BJHPP6356B</strong> or RCMC: <strong>RCMC/APEDA/23749/2025-2026</strong></div>
+            <a href="https://apeda.gov.in" target="_blank" class="vc-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> apeda.gov.in</a>
+          </div>
+        </div>
+        <div class="verify-card">
+          <span class="vc-icon">🥗</span>
+          <div>
+            <div class="vc-title">Verify FSSAI License</div>
+            <div class="vc-desc">Go to FoSCoS → License Search → Enter License No: <strong>10426999000036</strong></div>
+            <a href="https://foscos.fssai.gov.in" target="_blank" class="vc-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> foscos.fssai.gov.in</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REQUEST FULL COPIES -->
+    <div class="request-box reveal">
+      <h3>Need Full Certificate Copies?</h3>
+      <p>Original unredacted certificate copies are available to genuine trade partners for due diligence purposes. Please identify yourself and your company when requesting.</p>
+      <div class="req-btns">
+        <a href="https://wa.me/919876543210?text=Hi%20Sneha%20Enterprises%2C%20I%20need%20copies%20of%20your%20trade%20certificates%20for%20due%20diligence%20purposes.%20My%20company%20is%3A" target="_blank" class="btn-gold" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px"><i class="fa-brands fa-whatsapp"></i> WhatsApp Request</a>
+        <a href="mailto:exports@snehaenterprises.in?subject=Certificate%20Copy%20Request&body=Dear%20Sneha%20Enterprises%2C%0A%0AI%20am%20writing%20to%20request%20copies%20of%20your%20trade%20certificates%20for%20due%20diligence%20purposes.%0A%0ACompany%20Name%3A%0ACountry%3A%0APurpose%3A%0A" class="btn-navy" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px"><i class="fa-solid fa-envelope"></i> Email Request</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="cert-lightbox">
+  <div class="lb-wrap">
+    <button class="lb-close" onclick="closeLightbox()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="lb-img-wrap">
+      <img id="lb-img" class="lb-img cert-img-protect" src="" alt="" draggable="false">
+      <div class="lb-block"></div>
+    </div>
+    <div class="lb-caption" id="lb-caption"></div>
+    <div class="lb-sub" id="lb-sub"></div>
+    <div class="lb-warn"><i class="fa-solid fa-shield-halved"></i>&nbsp; For Verification Only — M/S Sneha Enterprises — snehaenterprises.in</div>
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="../data/products.js"></script>
+<script src="../data/inquiries.js"></script>
+<script src="../js/logo.js"></script>
+<script src="../js/partials.js"></script>
+<script src="../js/shared.js"></script>
+<script src="../js/cert-images.js"></script>
+<script>
+// Inject watermarked images into page
+window.addEventListener('DOMContentLoaded', function() {
+  if (typeof CERT_IMAGES === 'undefined') return;
+  ['iec','gst','apeda','fssai'].forEach(function(k) {
+    var el = document.getElementById('cert-preview-' + k);
+    if (el && CERT_IMAGES[k]) el.src = CERT_IMAGES[k];
+  });
+});
+
+function openLightbox(certKey, caption, sub) {
+  if (typeof CERT_IMAGES === 'undefined' || !CERT_IMAGES[certKey]) return;
+  document.getElementById('lb-img').src     = CERT_IMAGES[certKey];
+  document.getElementById('lb-caption').textContent = caption;
+  document.getElementById('lb-sub').textContent      = sub;
+  document.getElementById('cert-lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('cert-lightbox').classList.remove('open');
+  document.getElementById('lb-img').src = '';
+  document.body.style.overflow = '';
+}
+
+document.getElementById('cert-lightbox').addEventListener('click', function(e) {
+  if (e.target === this) closeLightbox();
+});
+</script>
+</body>
+</html>
