@@ -1,224 +1,610 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Login — Sneha Enterprises</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --navy:#1A2E6B;--navy-dark:#0F1D47;--navy-mid:#233480;
-  --gold:#C8912A;--gold-light:#F5E6C8;--gold-dark:#8B6318;
-  --green:#1B6B2A;--red:#c0392b;
-  --text:#1A1A1A;--text-light:#7A7A7A;--border:#E0D8C8;
-}
-body{font-family:'DM Sans',sans-serif;min-height:100vh;background:var(--navy-dark);display:flex;align-items:stretch;overflow:hidden}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login — Sneha Enterprises</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
 
-/* LEFT PANEL */
-.left{flex:1;background:linear-gradient(135deg,var(--navy-dark) 0%,var(--navy) 60%,#1a3a6b 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px;position:relative;overflow:hidden}
-.left-pattern{position:absolute;inset:0;opacity:.05;background-image:repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%);background-size:20px 20px}
-.left-orb{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(200,145,42,.15),transparent 70%)}
-.left-orb:nth-child(1){width:400px;height:400px;top:-100px;right:-100px}
-.left-orb:nth-child(2){width:300px;height:300px;bottom:-80px;left:-80px}
-.left-content{position:relative;z-index:1;text-align:center;max-width:360px}
-.left-logo{width:180px;height:auto;margin-bottom:36px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.3));animation:floatY 5s ease-in-out infinite}
-@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.left-content h2{font-family:'Playfair Display',serif;font-size:30px;color:white;margin-bottom:14px;font-weight:700}
-.left-content p{font-size:14px;color:rgba(255,255,255,.65);line-height:1.75;margin-bottom:36px}
-.feature-list{display:flex;flex-direction:column;gap:12px;text-align:left}
-.feature-item{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 16px}
-.fi-icon{font-size:18px;min-width:24px}
-.fi-text{color:rgba(255,255,255,.85);font-size:13px;font-weight:500}
+    :root {
+      --navy: #1A2E6B;
+      --navy-dark: #0F1D47;
+      --navy-mid: #233480;
+      --gold: #C8912A;
+      --gold-light: #F5E6C8;
+      --gold-dark: #8B6318;
+      --green: #1B6B2A;
+      --red: #c0392b;
+      --text: #1A1A1A;
+      --text-light: #7A7A7A;
+      --border: #E0D8C8;
+    }
 
-/* RIGHT PANEL - LOGIN FORM */
-.right{width:480px;background:white;display:flex;align-items:center;justify-content:center;padding:48px;position:relative}
-.right::before{content:'';position:absolute;left:0;top:15%;bottom:15%;width:1px;background:linear-gradient(to bottom,transparent,var(--border),transparent)}
-.login-box{width:100%;max-width:380px}
-.login-brand{margin-bottom:36px}
-.login-brand .badge{display:inline-flex;align-items:center;gap:6px;background:var(--gold-light);color:var(--gold-dark);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px}
-.login-brand h1{font-family:'Playfair Display',serif;font-size:28px;color:var(--navy);margin-bottom:6px}
-.login-brand p{font-size:13px;color:var(--text-light);line-height:1.6}
+    body {
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      background: var(--navy-dark);
+      display: flex;
+      align-items: stretch;
+      overflow: hidden
+    }
 
-.form-group{margin-bottom:20px}
-.form-group label{display:block;font-size:11px;font-weight:700;color:var(--text-light);margin-bottom:7px;letter-spacing:.5px;text-transform:uppercase}
-.input-wrap{position:relative}
-.input-wrap .input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none}
-.input-wrap input{width:100%;padding:12px 14px 12px 42px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:all .25s;background:#FDFAF4}
-.input-wrap input:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(26,46,107,.08);background:white}
-.show-pw{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:14px;color:var(--text-light);padding:4px;transition:color .2s}
-.show-pw:hover{color:var(--navy)}
+    /* LEFT PANEL */
+    .left {
+      flex: 1;
+      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 60%, #1a3a6b 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
+      position: relative;
+      overflow: hidden
+    }
 
-.login-btn{width:100%;background:linear-gradient(135deg,var(--navy),var(--navy-mid));color:white;padding:14px;border:none;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .25s;position:relative;overflow:hidden;margin-top:8px}
-.login-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(26,46,107,.3)}
-.login-btn:active{transform:translateY(0)}
-.login-btn.loading{pointer-events:none;opacity:.8}
-.btn-spinner{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
-@keyframes spin{to{transform:rotate(360deg)}}
+    .left-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: .05;
+      background-image: repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 50%);
+      background-size: 20px 20px
+    }
 
-.error-msg{background:var(--red);color:white;padding:11px 16px;border-radius:9px;font-size:13px;font-weight:500;margin-bottom:16px;display:none;align-items:center;gap:8px;animation:shake .4s ease}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+    .left-orb {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200, 145, 42, .15), transparent 70%)
+    }
 
-.divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--text-light);font-size:12px}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+    .left-orb:nth-child(1) {
+      width: 400px;
+      height: 400px;
+      top: -100px;
+      right: -100px
+    }
 
-.demo-creds{background:#F0F4FF;border:1px solid #C5D0F0;border-radius:9px;padding:14px 16px;font-size:12px}
-.demo-creds .dc-title{font-weight:700;color:var(--navy);font-size:11px;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
-.dc-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
-.dc-label{color:var(--text-light);font-size:12px}
-.dc-val{font-weight:700;color:var(--navy);font-family:monospace;font-size:13px;background:white;padding:2px 8px;border-radius:5px;border:1px solid var(--border);cursor:pointer;transition:background .2s}
-.dc-val:hover{background:var(--gold-light)}
+    .left-orb:nth-child(2) {
+      width: 300px;
+      height: 300px;
+      bottom: -80px;
+      left: -80px
+    }
 
-.back-link{display:flex;align-items:center;gap:6px;color:var(--text-light);font-size:12px;text-decoration:none;margin-top:24px;transition:color .2s;justify-content:center}
-.back-link:hover{color:var(--navy)}
+    .left-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 360px
+    }
 
-/* ANIMATIONS */
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.login-box{animation:fadeUp .5s .1s both}
-.left-content{animation:fadeUp .6s .2s both}
+    .left-logo {
+      width: 180px;
+      height: auto;
+      margin-bottom: 36px;
+      filter: drop-shadow(0 8px 24px rgba(0, 0, 0, .3));
+      animation: floatY 5s ease-in-out infinite
+    }
 
-/* RESPONSIVE */
-@media(max-width:900px){
-  .left{display:none}
-  .right{width:100%;padding:32px 20px}
-}
-</style>
+    @keyframes floatY {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-10px)
+      }
+    }
+
+    .left-content h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 30px;
+      color: white;
+      margin-bottom: 14px;
+      font-weight: 700
+    }
+
+    .left-content p {
+      font-size: 14px;
+      color: rgba(255, 255, 255, .65);
+      line-height: 1.75;
+      margin-bottom: 36px
+    }
+
+    .feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: left
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, .07);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 10px;
+      padding: 12px 16px
+    }
+
+    .fi-icon {
+      font-size: 18px;
+      min-width: 24px
+    }
+
+    .fi-text {
+      color: rgba(255, 255, 255, .85);
+      font-size: 13px;
+      font-weight: 500
+    }
+
+    /* RIGHT PANEL - LOGIN FORM */
+    .right {
+      width: 480px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
+      position: relative
+    }
+
+    .right::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 15%;
+      bottom: 15%;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--border), transparent)
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 380px
+    }
+
+    .login-brand {
+      margin-bottom: 36px
+    }
+
+    .login-brand .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--gold-light);
+      color: var(--gold-dark);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 16px
+    }
+
+    .login-brand h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      color: var(--navy);
+      margin-bottom: 6px
+    }
+
+    .login-brand p {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.6
+    }
+
+    .form-group {
+      margin-bottom: 20px
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-light);
+      margin-bottom: 7px;
+      letter-spacing: .5px;
+      text-transform: uppercase
+    }
+
+    .input-wrap {
+      position: relative
+    }
+
+    .input-wrap .input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      pointer-events: none
+    }
+
+    .input-wrap input {
+      width: 100%;
+      padding: 12px 14px 12px 42px;
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      outline: none;
+      transition: all .25s;
+      background: #FDFAF4
+    }
+
+    .input-wrap input:focus {
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px rgba(26, 46, 107, .08);
+      background: white
+    }
+
+    .show-pw {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--text-light);
+      padding: 4px;
+      transition: color .2s
+    }
+
+    .show-pw:hover {
+      color: var(--navy)
+    }
+
+    .login-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 9px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all .25s;
+      position: relative;
+      overflow: hidden;
+      margin-top: 8px
+    }
+
+    .login-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(26, 46, 107, .3)
+    }
+
+    .login-btn:active {
+      transform: translateY(0)
+    }
+
+    .login-btn.loading {
+      pointer-events: none;
+      opacity: .8
+    }
+
+    .btn-spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, .3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin: 0 auto
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .error-msg {
+      background: var(--red);
+      color: white;
+      padding: 11px 16px;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 16px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      animation: shake .4s ease
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0)
+      }
+
+      25% {
+        transform: translateX(-6px)
+      }
+
+      75% {
+        transform: translateX(6px)
+      }
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+      color: var(--text-light);
+      font-size: 12px
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border)
+    }
+
+    .demo-creds {
+      background: #F0F4FF;
+      border: 1px solid #C5D0F0;
+      border-radius: 9px;
+      padding: 14px 16px;
+      font-size: 12px
+    }
+
+    .demo-creds .dc-title {
+      font-weight: 700;
+      color: var(--navy);
+      font-size: 11px;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      margin-bottom: 6px
+    }
+
+    .dc-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px
+    }
+
+    .dc-label {
+      color: var(--text-light);
+      font-size: 12px
+    }
+
+    .dc-val {
+      font-weight: 700;
+      color: var(--navy);
+      font-family: monospace;
+      font-size: 13px;
+      background: white;
+      padding: 2px 8px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: background .2s
+    }
+
+    .dc-val:hover {
+      background: var(--gold-light)
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-light);
+      font-size: 12px;
+      text-decoration: none;
+      margin-top: 24px;
+      transition: color .2s;
+      justify-content: center
+    }
+
+    .back-link:hover {
+      color: var(--navy)
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .login-box {
+      animation: fadeUp .5s .1s both
+    }
+
+    .left-content {
+      animation: fadeUp .6s .2s both
+    }
+
+    /* RESPONSIVE */
+    @media(max-width:900px) {
+      .left {
+        display: none
+      }
+
+      .right {
+        width: 100%;
+        padding: 32px 20px
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- LEFT DECORATIVE PANEL -->
-<div class="left">
-  <div class="left-pattern"></div>
-  <div class="left-orb"></div>
-  <div class="left-orb"></div>
-  <div class="left-content">
-    <img id="login-logo" src="" alt="Sneha Enterprises" class="left-logo">
-    <h2>Admin Control Centre</h2>
-    <p>Manage products, track inquiries, and grow your global agri-trade business from one place.</p>
-    <div class="feature-list">
-      <div class="feature-item"><span class="fi-icon">📊</span><span class="fi-text">Real-time inquiry dashboard with stats</span></div>
-      <div class="feature-item"><span class="fi-icon">🌾</span><span class="fi-text">Full product catalogue management</span></div>
-      <div class="feature-item"><span class="fi-icon">📨</span><span class="fi-text">Inquiry tracking with email notifications</span></div>
-      <div class="feature-item"><span class="fi-icon">🗄️</span><span class="fi-text">SQLite database — all data persisted</span></div>
-    </div>
-  </div>
-</div>
-
-<!-- RIGHT LOGIN FORM -->
-<div class="right">
-  <div class="login-box">
-    <div class="login-brand">
-      <div class="badge">🔐 Secure Admin</div>
-      <h1>Welcome Back</h1>
-      <p>Sign in to the Sneha Enterprises admin panel to manage your trade operations.</p>
-    </div>
-
-    <div class="error-msg" id="error-msg">
-      <span>⚠️</span><span id="error-text">Invalid username or password</span>
-    </div>
-
-    <div class="form-group">
-      <label>Username</label>
-      <div class="input-wrap">
-        <span class="input-icon">👤</span>
-        <input type="text" id="username" placeholder="Enter username" autocomplete="username">
+  <!-- LEFT DECORATIVE PANEL -->
+  <div class="left">
+    <div class="left-pattern"></div>
+    <div class="left-orb"></div>
+    <div class="left-orb"></div>
+    <div class="left-content">
+      <img id="login-logo" src="" alt="Sneha Enterprises" class="left-logo">
+      <h2>Admin Control Centre</h2>
+      <p>Manage products, track inquiries, and grow your global agri-trade business from one place.</p>
+      <div class="feature-list">
+        <div class="feature-item"><span class="fi-icon">📊</span><span class="fi-text">Real-time inquiry dashboard with
+            stats</span></div>
+        <div class="feature-item"><span class="fi-icon">🌾</span><span class="fi-text">Full product catalogue
+            management</span></div>
+        <div class="feature-item"><span class="fi-icon">📨</span><span class="fi-text">Inquiry tracking with email
+            notifications</span></div>
+        <div class="feature-item"><span class="fi-icon">🗄️</span><span class="fi-text">SQLite database — all data
+            persisted</span></div>
       </div>
     </div>
-
-    <div class="form-group">
-      <label>Password</label>
-      <div class="input-wrap">
-        <span class="input-icon">🔒</span>
-        <input type="password" id="password" placeholder="Enter password" autocomplete="current-password" id="password">
-        <button class="show-pw" type="button" onclick="togglePw()" id="pw-eye">👁</button>
-      </div>
-    </div>
-
-    <button class="login-btn" id="login-btn" onclick="doLogin()">
-      <span id="btn-text">Sign In →</span>
-      <div class="btn-spinner" id="btn-spinner"></div>
-    </button>
-
-    <div class="divider">or use demo credentials</div>
-
-    <div class="demo-creds">
-      <div class="dc-title">Demo Access</div>
-      <div class="dc-row"><span class="dc-label">Username</span><span class="dc-val" onclick="autofill('admin')">admin</span></div>
-      <div class="dc-row"><span class="dc-label">Password</span><span class="dc-val" onclick="autofill(null,'sneha2024')">sneha2024</span></div>
-    </div>
-
-    <a href="../index.html" class="back-link">← Back to Website</a>
   </div>
-</div>
 
-<script src="../js/logo.js"></script>
-<script>
-const API = (() => { const l = window.location; if (l.hostname === 'localhost' || l.hostname === '127.0.0.1') return l.origin + '/sneha-enterprises/api/index.php'; return l.origin + '/api/index.php'; })();
-  ? 'http://localhost/sneha-enterprises/api'
-  : window.location.origin + '/api';
+  <!-- RIGHT LOGIN FORM -->
+  <div class="right">
+    <div class="login-box">
+      <div class="login-brand">
+        <div class="badge">🔐 Secure Admin</div>
+        <h1>Welcome Back</h1>
+        <p>Sign in to the Sneha Enterprises admin panel to manage your trade operations.</p>
+      </div>
 
-// Check if already logged in
-if (sessionStorage.getItem('sneha_token')) {
-  window.location.href = 'dashboard.html';
-}
+      <div class="error-msg" id="error-msg">
+        <span>⚠️</span><span id="error-text">Invalid username or password</span>
+      </div>
 
-function togglePw() {
-  var inp = document.getElementById('password');
-  var eye = document.getElementById('pw-eye');
-  inp.type = inp.type === 'password' ? 'text' : 'password';
-  eye.textContent = inp.type === 'password' ? '👁' : '🙈';
-}
+      <div class="form-group">
+        <label>Username</label>
+        <div class="input-wrap">
+          <span class="input-icon">👤</span>
+          <input type="text" id="username" placeholder="Enter username" autocomplete="username">
+        </div>
+      </div>
 
-function autofill(user, pass) {
-  if (user) document.getElementById('username').value = user;
-  if (pass) document.getElementById('password').value = pass;
-}
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="password" placeholder="Enter password" autocomplete="current-password">
+          <button class="show-pw" type="button" onclick="togglePw()" id="pw-eye">👁</button>
+        </div>
+      </div>
 
-function showError(msg) {
-  var el = document.getElementById('error-msg');
-  document.getElementById('error-text').textContent = msg;
-  el.style.display = 'flex';
-  setTimeout(function() { el.style.display = 'none'; }, 4000);
-}
+      <button class="login-btn" id="login-btn" onclick="doLogin()">
+        <span id="btn-text">Sign In →</span>
+        <div class="btn-spinner" id="btn-spinner"></div>
+      </button>
 
-function setLoading(on) {
-  var btn = document.getElementById('login-btn');
-  var txt = document.getElementById('btn-text');
-  var spin = document.getElementById('btn-spinner');
-  btn.classList.toggle('loading', on);
-  txt.style.display = on ? 'none' : 'block';
-  spin.style.display = on ? 'block' : 'none';
-}
+      <div class="divider">or use demo credentials</div>
 
-async function doLogin() {
-  var username = document.getElementById('username').value.trim();
-  var password = document.getElementById('password').value;
-  if (!username || !password) { showError('Please enter username and password'); return; }
+      <div class="demo-creds">
+        <div class="dc-title">Demo Access</div>
+        <div class="dc-row"><span class="dc-label">Username</span><span class="dc-val"
+            onclick="autofill('admin')">admin</span></div>
+        <div class="dc-row"><span class="dc-label">Password</span><span class="dc-val"
+            onclick="autofill(null,'sneha2024')">sneha2024</span></div>
+      </div>
 
-  setLoading(true);
-  try {
-    var res = await fetch(API + '?route=auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
+      <a href="../index.html" class="back-link">← Back to Website</a>
+    </div>
+  </div>
+
+  <script src="../js/logo.js"></script>
+  <script>
+    const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+      ? window.location.origin + '/sneha/api/index.php'
+      : window.location.origin + '/api/index.php';
+
+    // Check if already logged in
+    if (sessionStorage.getItem('sneha_token')) {
+      window.location.href = 'dashboard.html';
+    }
+
+    function togglePw() {
+      var inp = document.getElementById('password');
+      var eye = document.getElementById('pw-eye');
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+      eye.textContent = inp.type === 'password' ? '👁' : '🙈';
+    }
+
+    function autofill(user, pass) {
+      if (user) document.getElementById('username').value = user;
+      if (pass) document.getElementById('password').value = pass;
+    }
+
+    function showError(msg) {
+      var el = document.getElementById('error-msg');
+      document.getElementById('error-text').textContent = msg;
+      el.style.display = 'flex';
+      setTimeout(function () { el.style.display = 'none'; }, 4000);
+    }
+
+    function setLoading(on) {
+      var btn = document.getElementById('login-btn');
+      var txt = document.getElementById('btn-text');
+      var spin = document.getElementById('btn-spinner');
+      btn.classList.toggle('loading', on);
+      txt.style.display = on ? 'none' : 'block';
+      spin.style.display = on ? 'block' : 'none';
+    }
+
+    async function doLogin() {
+      var username = document.getElementById('username').value.trim();
+      var password = document.getElementById('password').value;
+      if (!username || !password) { showError('Please enter username and password'); return; }
+
+      setLoading(true);
+      try {
+        var res = await fetch(API + '?route=auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        var data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Login failed');
+
+        sessionStorage.setItem('sneha_token', data.token);
+        sessionStorage.setItem('sneha_user', data.username);
+        sessionStorage.setItem('sneha_role', data.role);
+        window.location.href = 'dashboard.html';
+      } catch (err) {
+        setLoading(false);
+        showError(err.message || 'Connection error. Is the server running?');
+      }
+    }
+
+    // Enter key
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') doLogin();
     });
-    var data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Login failed');
-
-    sessionStorage.setItem('sneha_token', data.token);
-    sessionStorage.setItem('sneha_user', data.username);
-    sessionStorage.setItem('sneha_role', data.role);
-    window.location.href = 'dashboard.html';
-  } catch (err) {
-    setLoading(false);
-    showError(err.message || 'Connection error. Is the server running?');
-  }
-}
-
-// Enter key
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') doLogin();
-});
-</script>
+  </script>
 </body>
+
 </html>
