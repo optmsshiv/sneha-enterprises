@@ -6,7 +6,7 @@
 
 Options -Indexes
 RewriteEngine On
-RewriteBase /
+RewriteBase /sneha/
 
 # ── Force HTTPS (uncomment after SSL is active) ──────────────
 # RewriteCond %{HTTPS} off
@@ -103,6 +103,6 @@ RewriteRule ^api/(.*)$ api/index.php [L,QSA]
 </IfModule>
 
 # ── CUSTOM ERROR PAGES ────────────────────────────────────────
-ErrorDocument 404 /404.html
-ErrorDocument 403 /404.html
-ErrorDocument 500 /404.html
+ErrorDocument 404 /sneha/404.html
+ErrorDocument 403 /sneha/404.html
+ErrorDocument 500 /sneha/404.html
