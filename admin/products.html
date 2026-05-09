@@ -224,9 +224,15 @@
     }
 
     function renderEmojiPicker(selected) {
-      document.getElementById('emoji-picker').innerHTML = EMOJIS.map(e =>
-        `< div class="emoji-opt${e === selected ? ' selected' : ''}" onclick = "selectEmoji(this,'${e}')" > ${e}</div > `
-      ).join('');
+      const picker = document.getElementById('emoji-picker');
+      picker.innerHTML = '';
+      EMOJIS.forEach(e => {
+        const div = document.createElement('div');
+        div.className = 'emoji-opt' + (e === selected ? ' selected' : '');
+        div.textContent = e;
+        div.addEventListener('click', function () { selectEmoji(this, e); });
+        picker.appendChild(div);
+      });
     }
     function selectEmoji(el, emoji) {
       document.querySelectorAll('.emoji-opt').forEach(e => e.classList.remove('selected'));
