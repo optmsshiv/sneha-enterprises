@@ -32,11 +32,11 @@
 
     <!-- QUICK STATUS TABS -->
     <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap">
-      <button class="action-btn ab-view" onclick="setStatusFilter('')"    id="tab-all">All</button>
-      <button class="action-btn ab-delete" onclick="setStatusFilter('new')"     id="tab-new">🔴 New</button>
-      <button class="action-btn ab-reply" onclick="setStatusFilter('read')"    id="tab-read">🟡 Read</button>
-      <button class="action-btn ab-toggle" onclick="setStatusFilter('replied')" id="tab-replied">✅ Replied</button>
-      <button class="action-btn ab-edit" onclick="setStatusFilter('closed')"  id="tab-closed">⚫ Closed</button>
+      <button class="action-btn ab-view"   onclick="setStatusFilter('')"         id="tab-all">All</button>
+      <button class="action-btn ab-delete" onclick="setStatusFilter('new')"      id="tab-new">🔴 New</button>
+      <button class="action-btn ab-reply"  onclick="setStatusFilter('read')"     id="tab-read">🟡 Read</button>
+      <button class="action-btn ab-toggle" onclick="setStatusFilter('replied')"  id="tab-replied">✅ Replied</button>
+      <button class="action-btn ab-edit"   onclick="setStatusFilter('closed')"   id="tab-closed">⚫ Closed</button>
     </div>
 
     <div class="table-card">
@@ -65,13 +65,123 @@
   </div>
 </div>
 
-<!-- INQUIRY DETAIL MODAL -->
+<!-- ============================================================
+     INQUIRY DETAIL MODAL
+     ============================================================ -->
 <div class="modal-overlay" id="inq-modal">
-  <div class="modal" style="max-width:620px">
-    <button class="modal-close" onclick="closeModal('inq-modal')">✕</button>
-    <h3 id="modal-inq-title">Inquiry Details</h3>
-    <div id="modal-inq-body"></div>
-    <div class="modal-footer" id="modal-inq-footer"></div>
+  <div class="modal">
+
+    <!-- HEADER -->
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <div class="modal-avatar" id="inq-avatar">—</div>
+        <div>
+          <p class="modal-name" id="inq-name">—</p>
+          <div class="modal-submeta">
+            <span id="inq-email-meta">—</span>
+            <span class="dot"></span>
+            <span id="inq-time-meta">—</span>
+            <span class="dot"></span>
+            <span id="inq-status-badge"></span>
+          </div>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closeInqModal()">✕</button>
+    </div>
+
+    <!-- TABS -->
+    <div class="modal-tabs">
+      <div class="modal-tab active" onclick="switchInqTab('details', this)">Details</div>
+      <div class="modal-tab" onclick="switchInqTab('reply', this)">Reply</div>
+      <div class="modal-tab" onclick="switchInqTab('history', this)">History</div>
+    </div>
+
+    <!-- BODY -->
+    <div class="modal-body">
+
+      <!-- TAB: DETAILS -->
+      <div class="modal-tab-pane active" id="tab-details">
+        <div class="inq-grid">
+          <div class="inq-cell">
+            <div class="inq-cell-label">Product interest</div>
+            <div class="inq-cell-val" id="inq-product">—</div>
+          </div>
+          <div class="inq-cell">
+            <div class="inq-cell-label">Country</div>
+            <div class="inq-cell-val" id="inq-country">—</div>
+          </div>
+          <div class="inq-cell">
+            <div class="inq-cell-label">Quantity</div>
+            <div class="inq-cell-val" id="inq-quantity">—</div>
+          </div>
+          <div class="inq-cell">
+            <div class="inq-cell-label">Phone</div>
+            <div class="inq-cell-val" id="inq-phone">—</div>
+          </div>
+          <div class="inq-cell">
+            <div class="inq-cell-label">Company</div>
+            <div class="inq-cell-val" id="inq-company">—</div>
+          </div>
+          <div class="inq-cell">
+            <div class="inq-cell-label">Incoterm / Source</div>
+            <div class="inq-cell-val" id="inq-incoterm">—</div>
+          </div>
+          <div class="inq-cell" style="grid-column:1/-1">
+            <div class="inq-cell-label">Reference ID</div>
+            <div class="inq-cell-val" id="inq-ref" style="font-family:monospace;font-size:12px;color:var(--text-light)">—</div>
+          </div>
+        </div>
+
+        <div class="inq-msg">
+          <div class="inq-msg-label">Message</div>
+          <div class="inq-msg-text" id="inq-message">—</div>
+        </div>
+
+        <div class="inq-msg" style="margin-bottom:0">
+          <div class="inq-msg-label">Internal Notes</div>
+          <textarea id="modal-notes" class="inq-reply-area" style="margin-top:6px" placeholder="Add internal notes (auto-saved)..."></textarea>
+        </div>
+      </div>
+
+      <!-- TAB: REPLY -->
+      <div class="modal-tab-pane" id="tab-reply">
+        <div style="margin-bottom:14px">
+          <label class="inq-reply-label">Reply to <span id="reply-to-name" style="color:var(--navy);font-weight:700"></span> — <span id="reply-to-email" style="color:var(--text-light)"></span></label>
+          <textarea class="inq-reply-area" id="inq-reply-text" style="height:160px" placeholder="Type your reply here..."></textarea>
+        </div>
+        <div style="margin-bottom:6px;font-size:11px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px">Quick templates</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="action-btn ab-reply" onclick="insertTemplate('price')">📋 Price List</button>
+          <button class="action-btn ab-reply" onclick="insertTemplate('followup')">🔁 Follow Up</button>
+          <button class="action-btn ab-reply" onclick="insertTemplate('thanks')">🙏 Thank You</button>
+          <button class="action-btn ab-reply" onclick="insertTemplate('docs')">📄 Documents Ready</button>
+        </div>
+      </div>
+
+      <!-- TAB: HISTORY -->
+      <div class="modal-tab-pane" id="tab-history">
+        <div class="timeline" id="inq-timeline">
+          <p style="color:var(--text-light);font-size:13px;text-align:center;padding:20px">No history yet</p>
+        </div>
+      </div>
+
+    </div><!-- /modal-body -->
+
+    <!-- FOOTER -->
+    <div class="modal-footer">
+      <div class="modal-footer-left">
+        <button class="action-btn ab-delete" onclick="deleteFromModal()">🗑 Delete</button>
+        <div class="mf-divider"></div>
+        <button class="action-btn ab-toggle off" onclick="setStatus('closed')">✕ Close</button>
+      </div>
+      <div class="modal-footer-right">
+        <button class="action-btn ab-view" id="inq-wa-btn" onclick="openWhatsApp()">💬 WhatsApp</button>
+        <button class="action-btn ab-edit" onclick="setStatus('read')">👁 Mark Read</button>
+        <button class="action-btn ab-reply" onclick="sendReplyEmail()">📧 Send Email</button>
+        <button class="action-btn ab-toggle" onclick="setStatus('replied')">✅ Mark Replied</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -80,9 +190,11 @@
 <script>
 injectLayout('Inquiries');
 
-let currentPage = 1;
+let currentPage  = 1;
 let currentInqId = null;
+let _currentInq  = null;
 
+// ── FILTER / LOAD ──────────────────────────────────────────────
 function setStatusFilter(status) {
   document.getElementById('status-filter').value = status;
   currentPage = 1;
@@ -106,18 +218,19 @@ async function loadInquiries() {
 
     // Populate product filter once
     if (document.getElementById('product-filter').children.length < 2) {
-      const all = await api.get('/inquiries?per_page=1000');
+      const all  = await api.get('/inquiries?per_page=1000');
       const prods = [...new Set(all.inquiries.map(i => i.product_name).filter(Boolean))];
-      const sel = document.getElementById('product-filter');
+      const sel  = document.getElementById('product-filter');
       prods.forEach(p => sel.innerHTML += `<option value="${p}">${p}</option>`);
     }
 
-    // Check for open detail from URL
+    // Auto-open from URL ?id=
     const urlId = new URLSearchParams(window.location.search).get('id');
-    if (urlId) { viewInquiry(urlId); history.replaceState(null, '', 'inquiries.html'); }
-  } catch(e) { toast('Load failed: '+e.message, 'error'); }
+    if (urlId) { viewInquiry(urlId); history.replaceState(null, '', 'inquiries'); }
+  } catch(e) { toast('Load failed: ' + e.message, 'error'); }
 }
 
+// ── TABLE ──────────────────────────────────────────────────────
 function renderTable(rows) {
   const tbody = document.getElementById('inq-tbody');
   if (!rows.length) {
@@ -125,7 +238,7 @@ function renderTable(rows) {
     return;
   }
   tbody.innerHTML = rows.map(i => `
-    <tr>
+    <tr style="cursor:pointer" onclick="viewInquiry('${i.id}')">
       <td style="font-size:11px;color:var(--text-light);font-family:monospace">${i.id}</td>
       <td>
         <strong style="font-size:13px">${i.name}</strong>
@@ -137,10 +250,9 @@ function renderTable(rows) {
       <td style="font-size:12px">${i.quantity||'—'}</td>
       <td>${statusBadge(i.status)}</td>
       <td style="font-size:11px;color:var(--text-light)">${fmtDateShort(i.created_at)}</td>
-      <td>
+      <td onclick="event.stopPropagation()">
         <div style="display:flex;gap:5px;flex-wrap:wrap">
           <button class="action-btn ab-view"   onclick="viewInquiry('${i.id}')">View</button>
-          <button class="action-btn ab-reply"  onclick="replyEmail('${i.email}','${i.name}','${i.product_name||''}','${i.id}')">Reply</button>
           <button class="action-btn ab-delete" onclick="deleteInquiry('${i.id}')">Del</button>
         </div>
       </td>
@@ -150,10 +262,10 @@ function renderTable(rows) {
 function renderPagination(page, pages, total) {
   document.getElementById('page-info').textContent = `Page ${page} of ${pages} (${total} total)`;
   const el = document.getElementById('pagination');
-  if (pages <= 1) { el.innerHTML=''; return; }
+  if (pages <= 1) { el.innerHTML = ''; return; }
   let html = '';
-  if (page > 1)  html += `<button class="action-btn ab-view" onclick="goPage(${page-1})">← Prev</button>`;
-  for (let p = Math.max(1,page-2); p <= Math.min(pages,page+2); p++) {
+  if (page > 1) html += `<button class="action-btn ab-view" onclick="goPage(${page-1})">← Prev</button>`;
+  for (let p = Math.max(1, page-2); p <= Math.min(pages, page+2); p++) {
     html += `<button class="action-btn ${p===page?'ab-toggle':'ab-view'}" onclick="goPage(${p})">${p}</button>`;
   }
   if (page < pages) html += `<button class="action-btn ab-view" onclick="goPage(${page+1})">Next →</button>`;
@@ -162,90 +274,189 @@ function renderPagination(page, pages, total) {
 
 function goPage(p) { currentPage = p; loadInquiries(); }
 
+// ── MODAL OPEN ─────────────────────────────────────────────────
 async function viewInquiry(id) {
   try {
     const i = await api.get('/inquiries/' + id);
     currentInqId = id;
-    document.getElementById('modal-inq-title').textContent = `📨 ${i.name} — ${i.product_name||'Inquiry'}`;
-    document.getElementById('modal-inq-body').innerHTML = [
-      ['Reference ID', `<code style="background:#F0F4FF;padding:3px 8px;border-radius:5px;font-size:13px">${i.id}</code>`],
-      ['Full Name',  i.name],
-      ['Company',    i.company||'—'],
-      ['Email',      `<a href="mailto:${i.email}" style="color:var(--navy)">${i.email}</a>`],
-      ['Phone',      i.phone||'—'],
-      ['Country',    i.country||'—'],
-      ['Product',    i.product_name||'—'],
-      ['Quantity',   i.quantity||'—'],
-      ['Incoterm',   i.incoterm||'—'],
-      ['Source',     i.source||'—'],
-      ['Status',     statusBadge(i.status)],
-      ['Date',       fmtDate(i.created_at)],
-      ['Message',    i.message ? `<div style="background:var(--cream);padding:12px;border-radius:8px;font-size:13px;line-height:1.7">${i.message}</div>` : '—'],
-      ['Admin Notes',`<textarea id="modal-notes" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;resize:vertical;min-height:70px;outline:none" placeholder="Add internal notes...">${i.notes||''}</textarea>`],
-    ].map(([k,v]) => `
-      <div class="detail-row">
-        <span class="detail-label">${k}</span>
-        <span class="detail-val" style="flex:1">${v}</span>
-      </div>`).join('');
+    _currentInq  = i;
 
-    document.getElementById('modal-inq-footer').innerHTML = `
-      <button class="m-btn m-btn-primary" onclick="setStatus('read')">Mark Read</button>
-      <button class="m-btn m-btn-gold"    onclick="setStatus('replied')">✅ Mark Replied</button>
-      <button class="m-btn m-btn-cancel"  onclick="setStatus('closed')">⚫ Close</button>
-      <button class="m-btn" style="background:var(--gold-light);color:var(--gold-dark)" onclick="replyEmail('${i.email}','${i.name}','${i.product_name||''}','${i.id}')">📧 Reply Email</button>
-      <button class="m-btn m-btn-danger"  onclick="deleteFromModal()">🗑</button>
-      <button class="m-btn m-btn-cancel"  onclick="closeModal('inq-modal')">Close</button>`;
+    // Avatar initials
+    const initials = (i.name || '?').split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+    document.getElementById('inq-avatar').textContent = initials;
 
-    openModal('inq-modal');
-    loadInquiries();
-  } catch(e) { toast('Error: '+e.message,'error'); }
+    // Header
+    document.getElementById('inq-name').textContent       = i.name || '—';
+    document.getElementById('inq-email-meta').textContent = i.email || '—';
+    document.getElementById('inq-time-meta').textContent  = fmtDateShort(i.created_at);
+    document.getElementById('inq-status-badge').innerHTML = statusBadge(i.status);
+
+    // Details tab
+    document.getElementById('inq-product').textContent  = i.product_name || '—';
+    document.getElementById('inq-country').textContent  = i.country || '—';
+    document.getElementById('inq-quantity').textContent = i.quantity || '—';
+    document.getElementById('inq-phone').textContent    = i.phone || '—';
+    document.getElementById('inq-company').textContent  = i.company || '—';
+    document.getElementById('inq-incoterm').textContent = [i.incoterm, i.source].filter(Boolean).join(' / ') || '—';
+    document.getElementById('inq-ref').textContent      = i.id;
+    document.getElementById('inq-message').textContent  = i.message || '—';
+    document.getElementById('modal-notes').value        = i.notes || '';
+
+    // Reply tab
+    document.getElementById('reply-to-name').textContent  = i.name || '';
+    document.getElementById('reply-to-email').textContent = i.email || '';
+    document.getElementById('inq-reply-text').value = '';
+
+    // History timeline
+    renderTimeline(i);
+
+    // WhatsApp button
+    const waBtn = document.getElementById('inq-wa-btn');
+    if (i.phone) {
+      const phone = i.phone.replace(/[^0-9]/g, '');
+      waBtn._phone = phone;
+      waBtn.style.display = '';
+    } else {
+      waBtn.style.display = 'none';
+    }
+
+    // Reset to details tab
+    switchInqTab('details', document.querySelector('.modal-tab'));
+    document.getElementById('inq-modal').classList.add('open');
+
+    // Mark as read if new
+    if (i.status === 'new') {
+      await api.patch('/inquiries/' + id, { status: 'read' });
+      loadInquiries();
+      updateNewBadge();
+    }
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
 }
 
+function closeInqModal() {
+  saveNotes();
+  document.getElementById('inq-modal').classList.remove('open');
+  _currentInq  = null;
+  currentInqId = null;
+}
+
+// Close on backdrop click
+document.getElementById('inq-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeInqModal();
+});
+
+// ── TABS ───────────────────────────────────────────────────────
+function switchInqTab(name, el) {
+  document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.modal-tab-pane').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+// ── TIMELINE ───────────────────────────────────────────────────
+function renderTimeline(i) {
+  const el = document.getElementById('inq-timeline');
+  const events = [];
+  events.push({ icon:'📨', action:'Inquiry received',  time: fmtDateShort(i.created_at), note: null });
+  if (['read','replied','closed'].includes(i.status))
+    events.push({ icon:'👁',  action:'Marked as read',   time: '—', note: null });
+  if (['replied','closed'].includes(i.status))
+    events.push({ icon:'✉',  action:'Reply sent',        time: i.replied_at ? fmtDateShort(i.replied_at) : '—', note: i.reply_text || null });
+  if (i.status === 'closed')
+    events.push({ icon:'✅', action:'Inquiry closed',    time: '—', note: null });
+
+  el.innerHTML = events.map(e => `
+    <div class="tl-item">
+      <div class="tl-dot">${e.icon}</div>
+      <div class="tl-content">
+        <div class="tl-action">${e.action}</div>
+        <div class="tl-time">${e.time}</div>
+        ${e.note ? `<div class="tl-note">${e.note}</div>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+// ── TEMPLATES ──────────────────────────────────────────────────
+const TEMPLATES = {
+  price: `Dear {name},\n\nThank you for your inquiry about {product}.\n\nWe are pleased to share our latest FOB price list and available quantities for your consideration.\n\nWe also provide full export documentation — Phytosanitary Certificate, Certificate of Origin, FSSAI, and APEDA. Kindly let us know your preferred Incoterm and destination port.\n\nLooking forward to a mutually beneficial partnership.\n\nBest regards,\nSneha Enterprises\nexports@snehaenterprises.in | +91 98765 43210`,
+
+  followup: `Dear {name},\n\nThis is a gentle follow-up regarding your inquiry about {product}.\n\nWe wanted to ensure you received our previous correspondence and check if you require any additional information from our side.\n\nPlease feel free to reach out — we are happy to assist.\n\nBest regards,\nSneha Enterprises`,
+
+  thanks: `Dear {name},\n\nThank you for your interest in Sneha Enterprises.\n\nWe have received your inquiry about {product} and our team will get back to you within 24 business hours with pricing and availability.\n\nBest regards,\nSneha Enterprises`,
+
+  docs: `Dear {name},\n\nWe are pleased to inform you that all export documents for your {product} order are ready.\n\nDocuments include: Commercial Invoice, Packing List, Phytosanitary Certificate, Certificate of Origin, and Bill of Lading. Please confirm your details so we can proceed.\n\nBest regards,\nSneha Enterprises`
+};
+
+function insertTemplate(key) {
+  if (!_currentInq) return;
+  const txt = TEMPLATES[key]
+    .replace(/{name}/g,    _currentInq.name || 'Sir/Madam')
+    .replace(/{product}/g, _currentInq.product_name || 'our products');
+  document.getElementById('inq-reply-text').value = txt;
+  switchInqTab('reply', document.querySelectorAll('.modal-tab')[1]);
+}
+
+// ── ACTIONS ────────────────────────────────────────────────────
 async function saveNotes() {
   if (!currentInqId) return;
   const notes = document.getElementById('modal-notes')?.value || '';
-  await api.patch('/inquiries/'+currentInqId, { notes });
+  try { await api.patch('/inquiries/' + currentInqId, { notes }); } catch(e) {}
 }
 
 async function setStatus(status) {
   if (!currentInqId) return;
   await saveNotes();
-  await api.patch('/inquiries/'+currentInqId, { status });
-  closeModal('inq-modal');
-  loadInquiries();
-  updateNewBadge();
-  toast('Status updated to: ' + status);
+  try {
+    await api.patch('/inquiries/' + currentInqId, { status });
+    closeInqModal();
+    loadInquiries();
+    updateNewBadge();
+    toast('Status updated: ' + status);
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+function openWhatsApp() {
+  if (!_currentInq) return;
+  const phone = (_currentInq.phone || '').replace(/[^0-9]/g, '');
+  if (!phone) return;
+  const msg = `Dear ${_currentInq.name}, thank you for your inquiry about ${_currentInq.product_name || 'our products'}. We would like to share more details with you.`;
+  window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(msg), '_blank');
+}
+
+function sendReplyEmail() {
+  if (!_currentInq) return;
+  const replyText = document.getElementById('inq-reply-text').value.trim();
+  const subject = `Re: Your Trade Inquiry for ${_currentInq.product_name || 'our products'} — Sneha Enterprises`;
+  const body = replyText ||
+    `Dear ${_currentInq.name},\n\nThank you for your inquiry about ${_currentInq.product_name || 'our products'}.\n\n[Reference: ${_currentInq.id}]\n\nBest regards,\nSneha Enterprises Export Team\nexports@snehaenterprises.in | +91 98765 43210`;
+  window.open(`mailto:${_currentInq.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+  setStatus('replied');
 }
 
 async function deleteInquiry(id) {
   if (!await confirmDelete('Delete this inquiry permanently?')) return;
-  await api.delete('/inquiries/'+id);
-  loadInquiries(); updateNewBadge();
-  toast('Inquiry deleted','warn');
+  await api.delete('/inquiries/' + id);
+  loadInquiries();
+  updateNewBadge();
+  toast('Inquiry deleted', 'warn');
 }
 
 async function deleteFromModal() {
   if (!currentInqId) return;
   if (!await confirmDelete('Delete this inquiry permanently?')) return;
-  await api.delete('/inquiries/'+currentInqId);
-  closeModal('inq-modal');
-  loadInquiries(); updateNewBadge();
-  toast('Inquiry deleted','warn');
+  await api.delete('/inquiries/' + currentInqId);
+  closeInqModal();
+  loadInquiries();
+  updateNewBadge();
+  toast('Inquiry deleted', 'warn');
 }
 
 async function deleteAllInquiries() {
   if (!await confirmDelete('Delete ALL inquiries? This cannot be undone.')) return;
   await api.delete('/inquiries');
-  loadInquiries(); updateNewBadge();
-  toast('All inquiries cleared','warn');
-}
-
-function replyEmail(email, name, product, id) {
-  const subject = `Re: Your Trade Inquiry for ${product} — Sneha Enterprises`;
-  const body = `Dear ${name},\n\nThank you for your inquiry about ${product}.\n\n[Reference: ${id}]\n\nWe are pleased to share the following details...\n\nBest regards,\nSneha Enterprises Export Team\nexports@snehaenterprises.in | +91 98765 43210`;
-  window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
-  if (currentInqId === id) setStatus('replied');
-  else api.patch('/inquiries/'+id, { status:'replied' }).then(() => loadInquiries());
+  loadInquiries();
+  updateNewBadge();
+  toast('All inquiries cleared', 'warn');
 }
 
 window.addEventListener('DOMContentLoaded', loadInquiries);

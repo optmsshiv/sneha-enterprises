@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inquiries — Sneha Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body style="display:flex">
+<div id="sidebar-placeholder"></div>
+<div class="main">
+  <div id="topbar-placeholder"></div>
+  <div class="content">
+
+    <!-- FILTERS -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+      <div class="filters">
+        <input type="text" class="filter-input" id="search-inp" placeholder="🔍 Search name, email, company..." oninput="loadInquiries()">
+        <select class="filter-select" id="status-filter" onchange="loadInquiries()">
+          <option value="">All Status</option>
+          <option value="new">🔴 New</option>
+          <option value="read">🟡 Read</option>
+          <option value="replied">✅ Replied</option>
+          <option value="closed">⚫ Closed</option>
+        </select>
+        <select class="filter-select" id="product-filter" onchange="loadInquiries()">
+          <option value="">All Products</option>
+        </select>
+      </div>
+      <button class="action-btn ab-delete" onclick="deleteAllInquiries()">🗑 Clear All</button>
+    </div>
+
+    <!-- QUICK STATUS TABS -->
+    <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap">
+      <button class="action-btn ab-view" onclick="setStatusFilter('')"    id="tab-all">All</button>
+      <button class="action-btn ab-delete" onclick="setStatusFilter('new')"     id="tab-new">🔴 New</button>
+      <button class="action-btn ab-reply" onclick="setStatusFilter('read')"    id="tab-read">🟡 Read</button>
+      <button class="action-btn ab-toggle" onclick="setStatusFilter('replied')" id="tab-replied">✅ Replied</button>
+      <button class="action-btn ab-edit" onclick="setStatusFilter('closed')"  id="tab-closed">⚫ Closed</button>
+    </div>
+
+    <div class="table-card">
+      <div class="table-head">
+        <h3>Inquiries</h3>
+        <span id="count-label" style="font-size:13px;color:var(--text-light)"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Ref ID</th><th>Buyer</th><th>Product</th>
+              <th>Country</th><th>Qty</th><th>Status</th>
+              <th>Date</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="inq-tbody"></tbody>
+        </table>
+      </div>
+      <!-- PAGINATION -->
+      <div style="padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border)">
+        <span id="page-info" style="font-size:13px;color:var(--text-light)"></span>
+        <div style="display:flex;gap:8px" id="pagination"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INQUIRY DETAIL MODAL -->
+<div class="modal-overlay" id="inq-modal">
+  <div class="modal" style="max-width:620px">
+    <button class="modal-close" onclick="closeModal('inq-modal')">✕</button>
+    <h3 id="modal-inq-title">Inquiry Details</h3>
+    <div id="modal-inq-body"></div>
+    <div class="modal-footer" id="modal-inq-footer"></div>
+  </div>
+</div>
+
+<script src="js/layout.js"></script>
+<script src="js/admin-shared.js"></script>
+<script>
+injectLayout('Inquiries');
+
+let currentPage = 1;
+let currentInqId = null;
+
+function setStatusFilter(status) {
+  document.getElementById('status-filter').value = status;
+  currentPage = 1;
+  loadInquiries();
+}
+
+async function loadInquiries() {
+  const search  = document.getElementById('search-inp').value;
+  const status  = document.getElementById('status-filter').value;
+  const product = document.getElementById('product-filter').value;
+  const params  = new URLSearchParams({ page: currentPage, per_page: 20 });
+  if (search)  params.set('search', search);
+  if (status)  params.set('status', status);
+  if (product) params.set('product', product);
+
+  try {
+    const data = await api.get('/inquiries?' + params.toString());
+    renderTable(data.inquiries);
+    document.getElementById('count-label').textContent = `${data.total} result(s)`;
+    renderPagination(data.page, data.pages, data.total);
+
+    // Populate product filter once
+    if (document.getElementById('product-filter').children.length < 2) {
+      const all = await api.get('/inquiries?per_page=1000');
+      const prods = [...new Set(all.inquiries.map(i => i.product_name).filter(Boolean))];
+      const sel = document.getElementById('product-filter');
+      prods.forEach(p => sel.innerHTML += `<option value="${p}">${p}</option>`);
+    }
+
+    // Check for open detail from URL
+    const urlId = new URLSearchParams(window.location.search).get('id');
+    if (urlId) { viewInquiry(urlId); history.replaceState(null, '', 'inquiries.html'); }
+  } catch(e) { toast('Load failed: '+e.message, 'error'); }
+}
+
+function renderTable(rows) {
+  const tbody = document.getElementById('inq-tbody');
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty"><div class="empty-icon">📭</div><h3>No inquiries found</h3><p>Try different filters.</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = rows.map(i => `
+    <tr>
+      <td style="font-size:11px;color:var(--text-light);font-family:monospace">${i.id}</td>
+      <td>
+        <strong style="font-size:13px">${i.name}</strong>
+        <div style="font-size:11px;color:var(--text-light)">${i.email}</div>
+        <div style="font-size:11px;color:var(--text-light)">${i.company||''}</div>
+      </td>
+      <td style="font-size:12px">${i.product_name||'—'}</td>
+      <td style="font-size:12px">${i.country||'—'}</td>
+      <td style="font-size:12px">${i.quantity||'—'}</td>
+      <td>${statusBadge(i.status)}</td>
+      <td style="font-size:11px;color:var(--text-light)">${fmtDateShort(i.created_at)}</td>
+      <td>
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+          <button class="action-btn ab-view"   onclick="viewInquiry('${i.id}')">View</button>
+          <button class="action-btn ab-reply"  onclick="replyEmail('${i.email}','${i.name}','${i.product_name||''}','${i.id}')">Reply</button>
+          <button class="action-btn ab-delete" onclick="deleteInquiry('${i.id}')">Del</button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+function renderPagination(page, pages, total) {
+  document.getElementById('page-info').textContent = `Page ${page} of ${pages} (${total} total)`;
+  const el = document.getElementById('pagination');
+  if (pages <= 1) { el.innerHTML=''; return; }
+  let html = '';
+  if (page > 1)  html += `<button class="action-btn ab-view" onclick="goPage(${page-1})">← Prev</button>`;
+  for (let p = Math.max(1,page-2); p <= Math.min(pages,page+2); p++) {
+    html += `<button class="action-btn ${p===page?'ab-toggle':'ab-view'}" onclick="goPage(${p})">${p}</button>`;
+  }
+  if (page < pages) html += `<button class="action-btn ab-view" onclick="goPage(${page+1})">Next →</button>`;
+  el.innerHTML = html;
+}
+
+function goPage(p) { currentPage = p; loadInquiries(); }
+
+async function viewInquiry(id) {
+  try {
+    const i = await api.get('/inquiries/' + id);
+    currentInqId = id;
+    document.getElementById('modal-inq-title').textContent = `📨 ${i.name} — ${i.product_name||'Inquiry'}`;
+    document.getElementById('modal-inq-body').innerHTML = [
+      ['Reference ID', `<code style="background:#F0F4FF;padding:3px 8px;border-radius:5px;font-size:13px">${i.id}</code>`],
+      ['Full Name',  i.name],
+      ['Company',    i.company||'—'],
+      ['Email',      `<a href="mailto:${i.email}" style="color:var(--navy)">${i.email}</a>`],
+      ['Phone',      i.phone||'—'],
+      ['Country',    i.country||'—'],
+      ['Product',    i.product_name||'—'],
+      ['Quantity',   i.quantity||'—'],
+      ['Incoterm',   i.incoterm||'—'],
+      ['Source',     i.source||'—'],
+      ['Status',     statusBadge(i.status)],
+      ['Date',       fmtDate(i.created_at)],
+      ['Message',    i.message ? `<div style="background:var(--cream);padding:12px;border-radius:8px;font-size:13px;line-height:1.7">${i.message}</div>` : '—'],
+      ['Admin Notes',`<textarea id="modal-notes" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;resize:vertical;min-height:70px;outline:none" placeholder="Add internal notes...">${i.notes||''}</textarea>`],
+    ].map(([k,v]) => `
+      <div class="detail-row">
+        <span class="detail-label">${k}</span>
+        <span class="detail-val" style="flex:1">${v}</span>
+      </div>`).join('');
+
+    document.getElementById('modal-inq-footer').innerHTML = `
+      <button class="m-btn m-btn-primary" onclick="setStatus('read')">Mark Read</button>
+      <button class="m-btn m-btn-gold"    onclick="setStatus('replied')">✅ Mark Replied</button>
+      <button class="m-btn m-btn-cancel"  onclick="setStatus('closed')">⚫ Close</button>
+      <button class="m-btn" style="background:var(--gold-light);color:var(--gold-dark)" onclick="replyEmail('${i.email}','${i.name}','${i.product_name||''}','${i.id}')">📧 Reply Email</button>
+      <button class="m-btn m-btn-danger"  onclick="deleteFromModal()">🗑</button>
+      <button class="m-btn m-btn-cancel"  onclick="closeModal('inq-modal')">Close</button>`;
+
+    openModal('inq-modal');
+    loadInquiries();
+  } catch(e) { toast('Error: '+e.message,'error'); }
+}
+
+async function saveNotes() {
+  if (!currentInqId) return;
+  const notes = document.getElementById('modal-notes')?.value || '';
+  await api.patch('/inquiries/'+currentInqId, { notes });
+}
+
+async function setStatus(status) {
+  if (!currentInqId) return;
+  await saveNotes();
+  await api.patch('/inquiries/'+currentInqId, { status });
+  closeModal('inq-modal');
+  loadInquiries();
+  updateNewBadge();
+  toast('Status updated to: ' + status);
+}
+
+async function deleteInquiry(id) {
+  if (!await confirmDelete('Delete this inquiry permanently?')) return;
+  await api.delete('/inquiries/'+id);
+  loadInquiries(); updateNewBadge();
+  toast('Inquiry deleted','warn');
+}
+
+async function deleteFromModal() {
+  if (!currentInqId) return;
+  if (!await confirmDelete('Delete this inquiry permanently?')) return;
+  await api.delete('/inquiries/'+currentInqId);
+  closeModal('inq-modal');
+  loadInquiries(); updateNewBadge();
+  toast('Inquiry deleted','warn');
+}
+
+async function deleteAllInquiries() {
+  if (!await confirmDelete('Delete ALL inquiries? This cannot be undone.')) return;
+  await api.delete('/inquiries');
+  loadInquiries(); updateNewBadge();
+  toast('All inquiries cleared','warn');
+}
+
+function replyEmail(email, name, product, id) {
+  const subject = `Re: Your Trade Inquiry for ${product} — Sneha Enterprises`;
+  const body = `Dear ${name},\n\nThank you for your inquiry about ${product}.\n\n[Reference: ${id}]\n\nWe are pleased to share the following details...\n\nBest regards,\nSneha Enterprises Export Team\nexports@snehaenterprises.in | +91 98765 43210`;
+  window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+  if (currentInqId === id) setStatus('replied');
+  else api.patch('/inquiries/'+id, { status:'replied' }).then(() => loadInquiries());
+}
+
+window.addEventListener('DOMContentLoaded', loadInquiries);
+</script>
+</body>
+</html>
