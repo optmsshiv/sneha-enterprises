@@ -26,7 +26,7 @@ RewriteRule ^api(/.*)?$ - [L]
 # Redirect existing .html URLs → clean URLs (301 permanent)
 # Skip admin folder and test.html
 RewriteCond %{THE_REQUEST} \s/+(?!admin/)(?!test\.html)(.+?)\.html[\s?] [NC]
-RewriteRule ^ /%2 [R=301,L,NE]
+RewriteRule ^ /%1 [R=301,L,NE]
 
 # Serve .html internally for clean URL requests (top-level pages)
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -39,6 +39,12 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^pages/([^/]+)/?$ pages/$1.html [L]
+
+# Handle any other subfolder clean URLs (generic catch-all)
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^([^/]+)/([^/]+)/?$ $1/$2.html [L]
 
 # Remove trailing slash (except root, skip admin)
 RewriteCond %{REQUEST_URI} !^/admin
