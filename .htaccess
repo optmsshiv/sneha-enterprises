@@ -25,8 +25,8 @@ RewriteRule ^api(/.*)?$ - [L]
 # ── HIDE .html EXTENSION (main site only) ────────────────────
 # Redirect existing .html URLs → clean URLs (301 permanent)
 # Skip admin folder and test.html
-RewriteCond %{THE_REQUEST} \ /+(?!admin/)(.+?)\.html[\ ?] [NC]
-RewriteRule ^ /%1 [R=301,L,NE]
+RewriteCond %{THE_REQUEST} \ /sneha/(?!admin/)(.+?)\.html[\ ?] [NC]
+RewriteRule ^ /sneha/%1 [R=301,L,NE]
 
 # Serve .html internally for clean URL requests (top-level pages)
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -47,9 +47,9 @@ RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^([^/]+)/([^/]+)/?$ $1/$2.html [L]
 
 # Remove trailing slash (except root, skip admin)
-RewriteCond %{REQUEST_URI} !^/admin
+RewriteCond %{REQUEST_URI} !^/sneha/admin
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.+)/$ /$1 [R=301,L,NE]
+RewriteRule ^(.+)/$ /sneha/$1 [R=301,L,NE]
 
 # ── API ROUTING (PHP) ────────────────────────────────────────
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -103,6 +103,6 @@ RewriteRule ^api/(.*)$ api/index.php [L,QSA]
 </IfModule>
 
 # ── CUSTOM ERROR PAGES ────────────────────────────────────────
-ErrorDocument 404 /404.html
-ErrorDocument 403 /404.html
-ErrorDocument 500 /404.html
+ErrorDocument 404 /sneha/404.html
+ErrorDocument 403 /sneha/404.html
+ErrorDocument 500 /sneha/404.html
