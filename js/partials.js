@@ -30,22 +30,22 @@ var TICKER_HTML = `
 var NAV_HTML = `
 <nav>
   <div class="nav-inner">
-    <a class="logo-wrap" href="../index.html">
+    <a class="logo-wrap" href="../index">
       <img data-logo src="" alt="Sneha Enterprises">
     </a>
     <ul class="nav-links">
-      <li><a href="../index.html">Home</a></li>
-      <li><a href="../pages/products.html">Products</a></li>
+      <li><a href="../index">Home</a></li>
+      <li><a href="../pages/products">Products</a></li>
       <li class="nav-dropdown">
-        <a href="../pages/about.html" class="nav-drop-trigger">About ▾</a>
+        <a href="../pages/about" class="nav-drop-trigger">About ▾</a>
         <div class="nav-drop-menu">
-          <a href="../pages/about.html">About Us</a>
-          <a href="../pages/certificates.html">Certificates</a>
-          <a href="../pages/export-process.html">Export Process</a>
-          <a href="../pages/gallery.html">Gallery</a>
+          <a href="../pages/about">About Us</a>
+          <a href="../pages/certificates">Certificates</a>
+          <a href="../pages/export-process">Export Process</a>
+          <a href="../pages/gallery">Gallery</a>
         </div>
       </li>
-      <li><a href="../pages/contact.html" class="nav-cta">Get a Quote</a></li>
+      <li><a href="../pages/contact" class="nav-cta">Get a Quote</a></li>
     </ul>
     <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -53,17 +53,17 @@ var NAV_HTML = `
   </div>
 </nav>
 <div class="mobile-menu" id="mobile-menu">
-  <a href="../index.html" onclick="closeMenu()">Home</a>
-  <a href="../pages/products.html" onclick="closeMenu()">Products</a>
-  <a href="../pages/about.html" onclick="closeMenu()">About Us</a>
-  <a href="../pages/certificates.html" onclick="closeMenu()">Certificates</a>
-  <a href="../pages/export-process.html" onclick="closeMenu()">Export Process</a>
-  <a href="../pages/gallery.html" onclick="closeMenu()">Gallery</a>
-  <a href="../pages/contact.html" onclick="closeMenu()" class="m-cta">Get a Quote →</a>
+  <a href="../index" onclick="closeMenu()">Home</a>
+  <a href="../pages/products" onclick="closeMenu()">Products</a>
+  <a href="../pages/about" onclick="closeMenu()">About Us</a>
+  <a href="../pages/certificates" onclick="closeMenu()">Certificates</a>
+  <a href="../pages/export-process" onclick="closeMenu()">Export Process</a>
+  <a href="../pages/gallery" onclick="closeMenu()">Gallery</a>
+  <a href="../pages/contact" onclick="closeMenu()" class="m-cta">Get a Quote →</a>
 </div>`;
 
 var NAV_ROOT_HTML = NAV_HTML
-  .replace(/href="\.\.\/index\.html"/g, 'href="index.html"')
+  .replace(/href="\.\.\/index"/g, 'href="index"')
   .replace(/href="\.\.\/pages\//g, 'href="pages/');
 
 var FOOTER_HTML = `
@@ -114,19 +114,19 @@ var FOOTER_HTML = `
       </div>
       <div class="footer-col">
         <h5>Products</h5>
-        <ul id="footer-product-links"><li><a href="pages/products.html">View All Products</a></li></ul>
+        <ul id="footer-product-links"><li><a href="pages/products">View All Products</a></li></ul>
       </div>
       <div class="footer-col">
         <h5>Company</h5>
         <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="pages/about.html">About Us</a></li>
-          <li><a href="pages/certificates.html">Certificates</a></li>
-          <li><a href="pages/export-process.html">Export Process</a></li>
-          <li><a href="pages/gallery.html">Gallery</a></li>
-          <li><a href="pages/contact.html">Contact</a></li>
-          <li><a href="pages/terms.html">Terms &amp; Conditions</a></li>
-          <li><a href="pages/privacy.html">Privacy Policy</a></li>
+          <li><a href="index">Home</a></li>
+          <li><a href="pages/about">About Us</a></li>
+          <li><a href="pages/certificates">Certificates</a></li>
+          <li><a href="pages/export-process">Export Process</a></li>
+          <li><a href="pages/gallery">Gallery</a></li>
+          <li><a href="pages/contact">Contact</a></li>
+          <li><a href="pages/terms">Terms &amp; Conditions</a></li>
+          <li><a href="pages/privacy">Privacy Policy</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -143,11 +143,11 @@ var FOOTER_HTML = `
     <div class="footer-bottom">
       <p>© 2024 Sneha Enterprises. All rights reserved. | Registered Exporter from India | Patna, Bihar</p>
       <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:8px">
-        <a href="pages/terms.html" style="font-size:11px;color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.9)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Terms &amp; Conditions</a>
+        <a href="pages/terms" style="font-size:11px;color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.9)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Terms &amp; Conditions</a>
         <span style="color:rgba(255,255,255,.2);font-size:11px">|</span>
-        <a href="pages/privacy.html" style="font-size:11px;color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.9)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Privacy Policy</a>
+        <a href="pages/privacy" style="font-size:11px;color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.9)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Privacy Policy</a>
         <span style="color:rgba(255,255,255,.2);font-size:11px">|</span>
-        <a href="pages/contact.html" style="font-size:11px;color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.9)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Contact Us</a>
+        <a href="pages/contact" style="font-size:11px;color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.9)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Contact Us</a>
       </div>
       <div class="footer-soc">
         <div class="soc-btn" onclick="window.open('https://wa.me/919876543210','_blank')" title="WhatsApp" style="font-size:16px"><i class="fa-brands fa-whatsapp"></i></div>
@@ -175,7 +175,7 @@ window.addEventListener('DOMContentLoaded', function() {
   if (footerTarget) {
     var fhtml = FOOTER_HTML;
     if (!isRoot) {
-      fhtml = fhtml.replace(/href="index\.html"/g, 'href="../index.html"')
+      fhtml = fhtml.replace(/href="index"/g, 'href="../index"')
                    .replace(/href="pages\//g, 'href="../pages/');
     }
     footerTarget.outerHTML = fhtml;
@@ -186,18 +186,19 @@ window.addEventListener('DOMContentLoaded', function() {
   if (fpLinks && typeof PRODUCTS_DATA !== 'undefined') {
     var prefix = isRoot ? 'pages/' : '../pages/';
     fpLinks.innerHTML = PRODUCTS_DATA.filter(function(p){ return p.active; }).slice(0,6).map(function(p){
-      return '<li><a href="' + prefix + 'products.html">' + p.name + '</a></li>';
+      return '<li><a href="' + prefix + 'products">' + p.name + '</a></li>';
     }).join('');
   }
 
   // Re-run logo injection after DOM insert
   if (typeof injectLogos === 'function') injectLogos();
 
-  // Re-run nav active highlighting
-  var path = window.location.pathname.split('/').pop() || 'index.html';
+  // Re-run nav active highlighting (clean URL aware)
+  var path = window.location.pathname.replace(/\/$/, '').split('/').pop() || 'index';
   document.querySelectorAll('.nav-links a, .mobile-menu a').forEach(function(a) {
     var href = a.getAttribute('href') || '';
-    if (href.includes(path) && path !== 'index.html') a.classList.add('active');
-    if (path === 'index.html' && (href === 'index.html' || href.endsWith('../index.html'))) a.classList.add('active');
+    var hrefPage = href.replace(/\/$/, '').split('/').pop();
+    if (hrefPage && hrefPage === path && path !== 'index') a.classList.add('active');
+    if (path === 'index' && (href === 'index' || href.endsWith('../index'))) a.classList.add('active');
   });
 });
