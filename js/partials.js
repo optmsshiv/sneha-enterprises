@@ -141,7 +141,7 @@ var FOOTER_HTML = `
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2024 Sneha Enterprises. All rights reserved. | Registered Exporter from India | Patna, Bihar</p>
+      <p>© <span id="footer-year"></span> Sneha Enterprises. All rights reserved. | Registered Exporter from India | Patna, Bihar</p>
       <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:8px">
         <a href="pages/terms.html" style="font-size:11px;color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.9)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Terms &amp; Conditions</a>
         <span style="color:rgba(255,255,255,.2);font-size:11px">|</span>
@@ -157,10 +157,10 @@ var FOOTER_HTML = `
     </div>
     <!-- DEVELOPER CREDIT -->
     <div style="text-align:center;margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,.07)">
-      <p style="font-size:11px;color:rgba(255,255,255,.28);letter-spacing:.3px">
-        Designed &amp; Developed with
+      <p style="font-size:11px;letter-spacing:.3px">
+        <span style="color:rgba(255,255,255,.55)">Designed &amp; Developed with</span>
         <span style="color:#e74c3c;font-size:12px">&#10084;</span>
-        by&nbsp;<a href="https://optms.co.in" target="_blank" style="color:rgba(255,255,255,.45);text-decoration:none;font-weight:600;letter-spacing:.4px;transition:color .2s" onmouseover="this.style.color='rgba(200,145,42,.9)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">OPTMS Tech</a>
+        <span style="color:rgba(255,255,255,.55)">by</span>&nbsp;<a href="https://optms.co.in" target="_blank" style="color:var(--gold);text-decoration:none;font-weight:700;letter-spacing:.5px;transition:color .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--gold)'">OPTMS Tech</a>
       </p>
     </div>
   </div>
@@ -187,6 +187,9 @@ window.addEventListener('DOMContentLoaded', function () {
         .replace(/href="pages\//g, 'href="../pages/');
     }
     footerTarget.outerHTML = fhtml;
+    // Auto-update copyright year
+    var yearEl = document.getElementById('footer-year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
   }
 
   // Populate footer product links dynamically
