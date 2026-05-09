@@ -1,171 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Products — Sneha Admin</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/admin.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products — Sneha Admin</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
 </head>
+
 <body style="display:flex">
-<div id="sidebar-placeholder"></div>
-<div class="main">
-  <div id="topbar-placeholder"></div>
-  <div class="content">
+  <div id="sidebar-placeholder"></div>
+  <div class="main">
+    <div id="topbar-placeholder"></div>
+    <div class="content">
 
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
-      <div class="filters">
-        <input class="filter-input" id="prod-search" placeholder="🔍 Search products..." oninput="loadProducts()">
-        <select class="filter-select" id="cat-filter" onchange="loadProducts()">
-          <option value="">All Categories</option>
-          <option value="grains">🌾 Grains</option>
-          <option value="spices">🟡 Spices</option>
-          <option value="foxnuts">🌿 Fox Nuts</option>
-          <option value="vegetables">🥦 Vegetables</option>
-        </select>
-        <select class="filter-select" id="active-filter" onchange="loadProducts()">
-          <option value="">All Status</option>
-          <option value="1">Active Only</option>
-        </select>
-      </div>
-      <button onclick="openProductModal()" style="background:var(--navy);color:white;padding:10px 20px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s" onmouseover="this.style.background='var(--navy-mid)'" onmouseout="this.style.background='var(--navy)'">+ Add New Product</button>
-    </div>
-
-    <div class="table-card">
-      <div class="table-head">
-        <h3>Product Catalogue</h3>
-        <span id="prod-count" style="font-size:13px;color:var(--text-light)"></span>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Product</th><th>Category</th><th>Origin</th><th>MOQ</th><th>Specs</th><th>Enquiries</th><th>Status</th><th>Actions</th></tr></thead>
-          <tbody id="prod-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- PRODUCT MODAL -->
-<div class="modal-overlay" id="prod-modal">
-  <div class="modal" style="max-width:720px">
-    <button class="modal-close" onclick="closeModal('prod-modal')">✕</button>
-    <h3 id="prod-modal-title">Add New Product</h3>
-
-    <div class="prod-form-grid">
-      <!-- LEFT -->
-      <div>
-        <div class="mfg"><label>Product Name *</label><input id="pm-name" placeholder="e.g. Premium Wheat"></div>
-        <div class="mfg"><label>Category *</label>
-          <select id="pm-cat">
-            <option value="grains">🌾 Grains &amp; Cereals</option>
+      <div
+        style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+        <div class="filters">
+          <input class="filter-input" id="prod-search" placeholder="🔍 Search products..." oninput="loadProducts()">
+          <select class="filter-select" id="cat-filter" onchange="loadProducts()">
+            <option value="">All Categories</option>
+            <option value="grains">🌾 Grains</option>
             <option value="spices">🟡 Spices</option>
             <option value="foxnuts">🌿 Fox Nuts</option>
             <option value="vegetables">🥦 Vegetables</option>
           </select>
-        </div>
-        <div class="mfg"><label>Origin *</label><input id="pm-origin" placeholder="e.g. Madhya Pradesh & Rajasthan"></div>
-        <div class="mfg"><label>Min Order Qty</label><input id="pm-moq" placeholder="e.g. 25 Metric Tons"></div>
-        <div class="mfg"><label>Badge</label>
-          <div class="badge-opts" id="badge-opts">
-            <div class="badge-opt selected" onclick="selectBadge(this,'')">None</div>
-            <div class="badge-opt" onclick="selectBadge(this,'Best Seller')">Best Seller</div>
-            <div class="badge-opt" onclick="selectBadge(this,'Export Grade')">Export Grade</div>
-            <div class="badge-opt" onclick="selectBadge(this,'Organic')">Organic</div>
-            <div class="badge-opt" onclick="selectBadge(this,'Superfood')">Superfood</div>
-            <div class="badge-opt" onclick="selectBadge(this,'High Demand')">High Demand</div>
-            <div class="badge-opt" onclick="selectBadge(this,'New')">New</div>
-          </div>
-          <input type="hidden" id="pm-badge" value="">
-        </div>
-        <div class="mfg">
-          <label>Status</label>
-          <div class="toggle-switch" onclick="toggleStatus()">
-            <div class="toggle-track on" id="pm-track"><div class="toggle-thumb"></div></div>
-            <span id="pm-status-lbl" style="font-size:13px;font-weight:600;color:var(--green)">Active</span>
-          </div>
-          <input type="hidden" id="pm-active" value="true">
-        </div>
-      </div>
-      <!-- RIGHT -->
-      <div>
-        <div class="mfg"><label>Emoji Icon</label>
-          <div class="emoji-picker" id="emoji-picker"></div>
-          <input type="hidden" id="pm-emoji" value="🌾">
-        </div>
-        <div class="mfg"><label>Card Background</label>
-          <select id="pm-bg">
-            <option value="linear-gradient(135deg,#FFF8E1,#FFF0C0)">🟡 Golden Wheat</option>
-            <option value="linear-gradient(135deg,#FFFDE7,#FFF59D)">🌽 Corn Yellow</option>
-            <option value="linear-gradient(135deg,#E8F5E9,#C8E6C9)">🌿 Fresh Green</option>
-            <option value="linear-gradient(135deg,#FFF3E0,#FFCC80)">🟠 Spice Orange</option>
-            <option value="linear-gradient(135deg,#F3E5F5,#E1BEE7)">🔮 Purple</option>
-            <option value="linear-gradient(135deg,#FFEBEE,#FFCDD2)">🌶 Chilli Red</option>
-            <option value="linear-gradient(135deg,#E3F2FD,#BBDEFB)">💧 Ocean Blue</option>
-            <option value="linear-gradient(135deg,#EFEBE9,#D7CCC8)">🪨 Stone Grey</option>
+          <select class="filter-select" id="active-filter" onchange="loadProducts()">
+            <option value="">All Status</option>
+            <option value="1">Active Only</option>
           </select>
-          <div id="bg-preview" style="height:50px;border-radius:8px;margin-top:8px;transition:background .3s"></div>
         </div>
-        <div class="mfg"><label>Description *</label>
-          <textarea id="pm-desc" placeholder="Describe the product for buyers..." style="min-height:90px"></textarea>
+        <button onclick="openProductModal()"
+          style="background:var(--navy);color:white;padding:10px 20px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s"
+          onmouseover="this.style.background='var(--navy-mid)'" onmouseout="this.style.background='var(--navy)'">+ Add
+          New Product</button>
+      </div>
+
+      <div class="table-card">
+        <div class="table-head">
+          <h3>Product Catalogue</h3>
+          <span id="prod-count" style="font-size:13px;color:var(--text-light)"></span>
         </div>
-        <div class="mfg"><label>Packaging (comma separated)</label>
-          <input id="pm-pack" placeholder="25kg PP Bags, 50kg Jute Bags, Bulk">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Origin</th>
+                <th>MOQ</th>
+                <th>Specs</th>
+                <th>Enquiries</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="prod-tbody"></tbody>
+          </table>
         </div>
       </div>
-    </div>
-
-    <!-- SPECS -->
-    <div class="mfg" style="margin-top:4px">
-      <label>Quality Specifications</label>
-      <div id="spec-rows"></div>
-      <button type="button" class="add-spec-btn" onclick="addSpecRow()">+ Add Spec</button>
-    </div>
-
-    <div class="modal-footer">
-      <button class="m-btn m-btn-primary" onclick="saveProduct()">💾 Save Product</button>
-      <button class="m-btn m-btn-cancel"  onclick="closeModal('prod-modal')">Cancel</button>
     </div>
   </div>
-</div>
 
-<script src="js/layout.js"></script>
-<script src="js/admin-shared.js"></script>
-<script>
-injectLayout('Products');
-let editingId = null;
-const EMOJIS = ['🌾','🌽','🍚','🟡','🌿','🥦','🧅','🌶','🍅','🥕','🧄','🌰','🫘','🫑','🌴','🫚'];
+  <!-- PRODUCT MODAL -->
+  <div class="modal-overlay" id="prod-modal">
+    <div class="modal" style="max-width:720px">
+      <button class="modal-close" onclick="closeModal('prod-modal')">✕</button>
+      <h3 id="prod-modal-title">Add New Product</h3>
 
-async function loadProducts() {
-  const search = document.getElementById('prod-search').value;
-  const cat    = document.getElementById('cat-filter').value;
-  const active = document.getElementById('active-filter').value;
-  const params = new URLSearchParams();
-  if (search) params.set('search', search);
-  if (cat)    params.set('category', cat);
-  if (active) params.set('active', active);
+      <div class="prod-form-grid">
+        <!-- LEFT -->
+        <div>
+          <div class="mfg"><label>Product Name *</label><input id="pm-name" placeholder="e.g. Premium Wheat"></div>
+          <div class="mfg"><label>Category *</label>
+            <select id="pm-cat">
+              <option value="grains">🌾 Grains &amp; Cereals</option>
+              <option value="spices">🟡 Spices</option>
+              <option value="foxnuts">🌿 Fox Nuts</option>
+              <option value="vegetables">🥦 Vegetables</option>
+            </select>
+          </div>
+          <div class="mfg"><label>Origin *</label><input id="pm-origin" placeholder="e.g. Madhya Pradesh & Rajasthan">
+          </div>
+          <div class="mfg"><label>Min Order Qty</label><input id="pm-moq" placeholder="e.g. 25 Metric Tons"></div>
+          <div class="mfg"><label>Badge</label>
+            <div class="badge-opts" id="badge-opts">
+              <div class="badge-opt selected" onclick="selectBadge(this,'')">None</div>
+              <div class="badge-opt" onclick="selectBadge(this,'Best Seller')">Best Seller</div>
+              <div class="badge-opt" onclick="selectBadge(this,'Export Grade')">Export Grade</div>
+              <div class="badge-opt" onclick="selectBadge(this,'Organic')">Organic</div>
+              <div class="badge-opt" onclick="selectBadge(this,'Superfood')">Superfood</div>
+              <div class="badge-opt" onclick="selectBadge(this,'High Demand')">High Demand</div>
+              <div class="badge-opt" onclick="selectBadge(this,'New')">New</div>
+            </div>
+            <input type="hidden" id="pm-badge" value="">
+          </div>
+          <div class="mfg">
+            <label>Status</label>
+            <div class="toggle-switch" onclick="toggleStatus()">
+              <div class="toggle-track on" id="pm-track">
+                <div class="toggle-thumb"></div>
+              </div>
+              <span id="pm-status-lbl" style="font-size:13px;font-weight:600;color:var(--green)">Active</span>
+            </div>
+            <input type="hidden" id="pm-active" value="true">
+          </div>
+        </div>
+        <!-- RIGHT -->
+        <div>
+          <div class="mfg"><label>Emoji Icon</label>
+            <div class="emoji-picker" id="emoji-picker"></div>
+            <input type="hidden" id="pm-emoji" value="🌾">
+          </div>
+          <div class="mfg"><label>Card Background</label>
+            <select id="pm-bg">
+              <option value="linear-gradient(135deg,#FFF8E1,#FFF0C0)">🟡 Golden Wheat</option>
+              <option value="linear-gradient(135deg,#FFFDE7,#FFF59D)">🌽 Corn Yellow</option>
+              <option value="linear-gradient(135deg,#E8F5E9,#C8E6C9)">🌿 Fresh Green</option>
+              <option value="linear-gradient(135deg,#FFF3E0,#FFCC80)">🟠 Spice Orange</option>
+              <option value="linear-gradient(135deg,#F3E5F5,#E1BEE7)">🔮 Purple</option>
+              <option value="linear-gradient(135deg,#FFEBEE,#FFCDD2)">🌶 Chilli Red</option>
+              <option value="linear-gradient(135deg,#E3F2FD,#BBDEFB)">💧 Ocean Blue</option>
+              <option value="linear-gradient(135deg,#EFEBE9,#D7CCC8)">🪨 Stone Grey</option>
+            </select>
+            <div id="bg-preview" style="height:50px;border-radius:8px;margin-top:8px;transition:background .3s"></div>
+          </div>
+          <div class="mfg"><label>Description *</label>
+            <textarea id="pm-desc" placeholder="Describe the product for buyers..." style="min-height:90px"></textarea>
+          </div>
+          <div class="mfg"><label>Packaging (comma separated)</label>
+            <input id="pm-pack" placeholder="25kg PP Bags, 50kg Jute Bags, Bulk">
+          </div>
+        </div>
+      </div>
 
-  // Load inquiries to count per product
-  let inqCounts = {};
-  try {
-    const inqData = await api.get('/inquiries?per_page=1000');
-    inqData.inquiries.forEach(i => {
-      inqCounts[i.product_id] = (inqCounts[i.product_id]||0) + 1;
-    });
-  } catch(e) {}
+      <!-- SPECS -->
+      <div class="mfg" style="margin-top:4px">
+        <label>Quality Specifications</label>
+        <div id="spec-rows"></div>
+        <button type="button" class="add-spec-btn" onclick="addSpecRow()">+ Add Spec</button>
+      </div>
 
-  try {
-    const data = await api.get('/products?' + params.toString());
-    document.getElementById('prod-count').textContent = data.total + ' product(s)';
-    const tbody = document.getElementById('prod-tbody');
-    if (!data.products.length) {
-      tbody.innerHTML = `<tr><td colspan="8"><div class="empty"><div class="empty-icon">📦</div><h3>No products found</h3></div></td></tr>`;
-      return;
-    }
-    tbody.innerHTML = data.products.map(p => {
-      const badge = p.badge ? `<span style="background:var(--navy);color:white;font-size:9px;padding:2px 7px;border-radius:8px;margin-left:6px">${p.badge}</span>` : '';
-      const specCount = Object.keys(p.specs||{}).length;
-      const enquiries = inqCounts[p.id] || 0;
-      return `<tr>
+      <div class="modal-footer">
+        <button class="m-btn m-btn-primary" onclick="saveProduct()">💾 Save Product</button>
+        <button class="m-btn m-btn-cancel" onclick="closeModal('prod-modal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/layout.js"></script>
+  <script src="js/admin-shared.js"></script>
+  <script>
+    injectLayout('Products');
+    let editingId = null;
+    const EMOJIS = ['🌾', '🌽', '🍚', '🟡', '🌿', '🥦', '🧅', '🌶', '🍅', '🥕', '🧄', '🌰', '🫘', '🫑', '🌴', '🫚'];
+
+    async function loadProducts() {
+      const search = document.getElementById('prod-search').value;
+      const cat = document.getElementById('cat-filter').value;
+      const active = document.getElementById('active-filter').value;
+      const params = new URLSearchParams();
+      if (search) params.set('search', search);
+      if (cat) params.set('category', cat);
+      if (active) params.set('active', active);
+
+      // Load inquiries to count per product
+      let inqCounts = {};
+      try {
+        const inqData = await api.get('/inquiries?per_page=1000');
+        inqData.inquiries.forEach(i => {
+          inqCounts[i.product_id] = (inqCounts[i.product_id] || 0) + 1;
+        });
+      } catch (e) { }
+
+      try {
+        const data = await api.get('/products?' + params.toString());
+        document.getElementById('prod-count').textContent = data.total + ' product(s)';
+        const tbody = document.getElementById('prod-tbody');
+        if (!data.products.length) {
+          tbody.innerHTML = `<tr><td colspan="8"><div class="empty"><div class="empty-icon">📦</div><h3>No products found</h3></div></td></tr>`;
+          return;
+        }
+        tbody.innerHTML = data.products.map(p => {
+          const badge = p.badge ? `<span style="background:var(--navy);color:white;font-size:9px;padding:2px 7px;border-radius:8px;margin-left:6px">${p.badge}</span>` : '';
+          const rawSpecs = p.specs;
+          const specsNorm = Array.isArray(rawSpecs)
+            ? Object.fromEntries(rawSpecs.map((s, i) => [s.key || s.k || ('Spec ' + (i + 1)), s.value || s.v || '']))
+            : (rawSpecs || {});
+          const specCount = Object.keys(specsNorm).length;
+          const enquiries = inqCounts[p.id] || 0;
+          return `<tr>
         <td>
           <div style="display:flex;align-items:center;gap:10px">
             <div style="width:44px;height:44px;border-radius:10px;background:${p.bg};display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${p.emoji}</div>
@@ -177,183 +204,189 @@ async function loadProducts() {
         </td>
         <td style="text-transform:capitalize;font-size:12px">${p.category}</td>
         <td style="font-size:12px">${p.origin}</td>
-        <td style="font-size:12px">${p.min_order||'—'}</td>
-        <td><span style="background:#EEF1FB;color:var(--navy);font-size:11px;padding:3px 8px;border-radius:8px">${specCount} specs</span></td>
+        <td style="font-size:12px">${p.min_order || '—'}</td>
+        <td>${specCount > 0 ? `<span style="background:#EEF1FB;color:var(--navy);font-size:11px;padding:3px 8px;border-radius:8px">${specCount} spec${specCount > 1 ? 's' : ''}</span>` : '<span style="color:var(--text-light)">—</span>'}</td>
         <td><strong style="color:var(--navy)">${enquiries}</strong></td>
         <td>
-          <button class="action-btn ${p.active?'ab-toggle':'ab-toggle off'}" onclick="toggleProduct('${p.id}')">
-            ${p.active?'✓ Active':'✗ Hidden'}
+          <button class="action-btn ${p.active ? 'ab-toggle' : 'ab-toggle off'}" onclick="toggleProduct('${p.id}')">
+            ${p.active ? '✓ Active' : '✗ Hidden'}
           </button>
         </td>
         <td>
           <div style="display:flex;gap:5px">
             <button class="action-btn ab-edit"   onclick="openEditModal('${p.id}')">Edit</button>
-            <button class="action-btn ab-delete" onclick="deleteProduct('${p.id}','${p.name.replace(/'/g,'\\'')}')">Del</button>
-          </div>
-        </td>
-      </tr>`;
-    }).join('');
-  } catch(e) { toast('Load failed: '+e.message,'error'); }
-}
-
-function renderEmojiPicker(selected) {
-  document.getElementById('emoji-picker').innerHTML = EMOJIS.map(e =>
-    `<div class="emoji-opt${e===selected?' selected':''}" onclick="selectEmoji(this,'${e}')">${e}</div>`
-  ).join('');
-}
-function selectEmoji(el, emoji) {
-  document.querySelectorAll('.emoji-opt').forEach(e => e.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById('pm-emoji').value = emoji;
-}
-function selectBadge(el, badge) {
-  document.querySelectorAll('.badge-opt').forEach(b => b.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById('pm-badge').value = badge;
-}
-function toggleStatus() {
-  const isActive = document.getElementById('pm-active').value === 'true';
-  const newVal = !isActive;
-  document.getElementById('pm-active').value = String(newVal);
-  const track = document.getElementById('pm-track');
-  const lbl = document.getElementById('pm-status-lbl');
-  if (newVal) { track.classList.add('on'); lbl.textContent='Active'; lbl.style.color='var(--green)'; }
-  else { track.classList.remove('on'); lbl.textContent='Hidden'; lbl.style.color='var(--red)'; }
-}
-function addSpecRow(key='', val='') {
-  const row = document.createElement('div');
-  row.className = 'spec-row';
-  row.innerHTML = `
-    <input type="text" class="spec-key-inp" placeholder="Key (e.g. Moisture)" value="${key}">
-    <input type="text" class="spec-val-inp" placeholder="Value (e.g. Max 12%)" value="${val}">
-    <button class="spec-del" onclick="this.parentElement.remove()">✕</button>`;
-  document.getElementById('spec-rows').appendChild(row);
-}
-function getSpecs() {
-  const specs = {};
-  document.querySelectorAll('.spec-row').forEach(r => {
-    const k = r.querySelector('.spec-key-inp').value.trim();
-    const v = r.querySelector('.spec-val-inp').value.trim();
-    if (k && v) specs[k] = v;
-  });
-  return specs;
-}
-function resetForm() {
-  ['pm-name','pm-origin','pm-moq','pm-desc','pm-pack'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
-  document.getElementById('pm-cat').value = 'grains';
-  document.getElementById('pm-bg').value  = 'linear-gradient(135deg,#FFF8E1,#FFF0C0)';
-  document.getElementById('pm-emoji').value = '🌾';
-  document.getElementById('pm-badge').value = '';
-  document.getElementById('pm-active').value = 'true';
-  document.getElementById('pm-track').classList.add('on');
-  document.getElementById('pm-status-lbl').textContent = 'Active';
-  document.getElementById('pm-status-lbl').style.color = 'var(--green)';
-  document.getElementById('spec-rows').innerHTML = '';
-  document.querySelectorAll('.badge-opt').forEach((b,i) => b.classList.toggle('selected', i===0));
-  renderEmojiPicker('🌾');
-  updateBgPreview();
-}
-
-document.getElementById('pm-bg').addEventListener('change', updateBgPreview);
-function updateBgPreview() {
-  const bg = document.getElementById('pm-bg').value;
-  document.getElementById('bg-preview').style.background = bg;
-}
-
-function openProductModal() {
-  editingId = null;
-  document.getElementById('prod-modal-title').textContent = '+ Add New Product';
-  resetForm();
-  addSpecRow('Moisture','Max 12%'); addSpecRow('Purity','99%');
-  openModal('prod-modal');
-}
-
-async function openEditModal(id) {
-  try {
-    const p = await api.get('/products/'+id);
-    editingId = id;
-    document.getElementById('prod-modal-title').textContent = `✏️ Edit — ${p.name}`;
-    document.getElementById('pm-name').value   = p.name;
-    document.getElementById('pm-cat').value    = p.category;
-    document.getElementById('pm-origin').value = p.origin;
-    document.getElementById('pm-moq').value    = p.min_order||'';
-    document.getElementById('pm-desc').value   = p.description;
-    document.getElementById('pm-pack').value   = (p.packaging||[]).join(', ');
-    document.getElementById('pm-bg').value     = p.bg;
-    document.getElementById('pm-emoji').value  = p.emoji;
-    document.getElementById('pm-badge').value  = p.badge||'';
-    document.getElementById('pm-active').value = String(p.active);
-    const track = document.getElementById('pm-track');
-    const lbl   = document.getElementById('pm-status-lbl');
-    if (p.active){ track.classList.add('on'); lbl.textContent='Active'; lbl.style.color='var(--green)'; }
-    else { track.classList.remove('on'); lbl.textContent='Hidden'; lbl.style.color='var(--red)'; }
-    // Specs
-    document.getElementById('spec-rows').innerHTML='';
-    Object.entries(p.specs||{}).forEach(([k,v]) => addSpecRow(k,v));
-    // Badge
-    document.querySelectorAll('.badge-opt').forEach(b => {
-      const onclick = b.getAttribute('onclick')||'';
-      b.classList.toggle('selected', onclick.includes(`'${p.badge||''}'`));
-    });
-    renderEmojiPicker(p.emoji);
-    updateBgPreview();
-    openModal('prod-modal');
-  } catch(e) { toast('Load error: '+e.message,'error'); }
-}
-
-async function saveProduct() {
-  const name    = document.getElementById('pm-name').value.trim();
-  const origin  = document.getElementById('pm-origin').value.trim();
-  const desc    = document.getElementById('pm-desc').value.trim();
-  if (!name || !origin || !desc) { toast('Name, origin and description required.','error'); return; }
-  const payload = {
-    name, origin, description: desc,
-    category: document.getElementById('pm-cat').value,
-    emoji:    document.getElementById('pm-emoji').value||'🌾',
-    badge:    document.getElementById('pm-badge').value,
-    bg:       document.getElementById('pm-bg').value,
-    packaging: document.getElementById('pm-pack').value.split(',').map(s=>s.trim()).filter(Boolean),
-    minOrder:  document.getElementById('pm-moq').value||'On Request',
-    specs:     getSpecs(),
-    active:    document.getElementById('pm-active').value === 'true'
-  };
-  try {
-    if (editingId) {
-      await api.put('/products/'+editingId, payload);
-      toast(`Product updated: ${name}`);
-    } else {
-      await api.post('/products', payload);
-      toast(`Product added: ${name}`);
+            <button class="action-btn ab-delete" onclick="deleteProduct('${p.id}','${p.name.replace(/'/g, '&#39;')}')">Del</button>
+          </div >
+        </td >
+      </tr > `;
+        }).join('');
+      } catch (e) { toast('Load failed: ' + e.message, 'error'); }
     }
-    closeModal('prod-modal');
-    loadProducts();
-  } catch(e) { toast('Save failed: '+e.message,'error'); }
-}
 
-async function toggleProduct(id) {
-  try {
-    const r = await api.patch('/products/'+id+'/toggle');
-    toast(`Product ${r.active?'activated':'hidden'}`);
-    loadProducts();
-  } catch(e) { toast('Toggle failed','error'); }
-}
+    function renderEmojiPicker(selected) {
+      document.getElementById('emoji-picker').innerHTML = EMOJIS.map(e =>
+        `< div class="emoji-opt${e === selected ? ' selected' : ''}" onclick = "selectEmoji(this,'${e}')" > ${e}</div > `
+      ).join('');
+    }
+    function selectEmoji(el, emoji) {
+      document.querySelectorAll('.emoji-opt').forEach(e => e.classList.remove('selected'));
+      el.classList.add('selected');
+      document.getElementById('pm-emoji').value = emoji;
+    }
+    function selectBadge(el, badge) {
+      document.querySelectorAll('.badge-opt').forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+      document.getElementById('pm-badge').value = badge;
+    }
+    function toggleStatus() {
+      const isActive = document.getElementById('pm-active').value === 'true';
+      const newVal = !isActive;
+      document.getElementById('pm-active').value = String(newVal);
+      const track = document.getElementById('pm-track');
+      const lbl = document.getElementById('pm-status-lbl');
+      if (newVal) { track.classList.add('on'); lbl.textContent = 'Active'; lbl.style.color = 'var(--green)'; }
+      else { track.classList.remove('on'); lbl.textContent = 'Hidden'; lbl.style.color = 'var(--red)'; }
+    }
+    function addSpecRow(key = '', val = '') {
+      const row = document.createElement('div');
+      row.className = 'spec-row';
+      const ki = document.createElement('input');
+      ki.type = 'text'; ki.className = 'spec-key-inp'; ki.placeholder = 'Key (e.g. Moisture)'; ki.value = key;
+      const vi = document.createElement('input');
+      vi.type = 'text'; vi.className = 'spec-val-inp'; vi.placeholder = 'Value (e.g. Max 12%)'; vi.value = val;
+      const db = document.createElement('button');
+      db.className = 'spec-del'; db.textContent = '✕'; db.onclick = function () { this.parentElement.remove(); };
+      row.appendChild(ki); row.appendChild(vi); row.appendChild(db);
+      document.getElementById('spec-rows').appendChild(row);
+    }
+    function getSpecs() {
+      const specs = {};
+      document.querySelectorAll('.spec-row').forEach(r => {
+        const k = r.querySelector('.spec-key-inp').value.trim();
+        const v = r.querySelector('.spec-val-inp').value.trim();
+        if (k && v) specs[k] = v;
+      });
+      return specs;
+    }
+    function resetForm() {
+      ['pm-name', 'pm-origin', 'pm-moq', 'pm-desc', 'pm-pack'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+      document.getElementById('pm-cat').value = 'grains';
+      document.getElementById('pm-bg').value = 'linear-gradient(135deg,#FFF8E1,#FFF0C0)';
+      document.getElementById('pm-emoji').value = '🌾';
+      document.getElementById('pm-badge').value = '';
+      document.getElementById('pm-active').value = 'true';
+      document.getElementById('pm-track').classList.add('on');
+      document.getElementById('pm-status-lbl').textContent = 'Active';
+      document.getElementById('pm-status-lbl').style.color = 'var(--green)';
+      document.getElementById('spec-rows').innerHTML = '';
+      document.querySelectorAll('.badge-opt').forEach((b, i) => b.classList.toggle('selected', i === 0));
+      renderEmojiPicker('🌾');
+      updateBgPreview();
+    }
 
-async function deleteProduct(id, name) {
-  if (!await confirmDelete(`Delete "${name}"? This cannot be undone.`)) return;
-  try {
-    await api.delete('/products/'+id);
-    toast(`Deleted: ${name}`,'warn');
-    loadProducts();
-  } catch(e) { toast('Delete failed: '+e.message,'error'); }
-}
+    document.getElementById('pm-bg').addEventListener('change', updateBgPreview);
+    function updateBgPreview() {
+      const bg = document.getElementById('pm-bg').value;
+      document.getElementById('bg-preview').style.background = bg;
+    }
 
-window.addEventListener('DOMContentLoaded', () => {
-  loadProducts();
-  // Auto-open add modal if ?add=1
-  if (new URLSearchParams(window.location.search).get('add') === '1') {
-    setTimeout(openProductModal, 400);
-  }
-});
-</script>
+    function openProductModal() {
+      editingId = null;
+      document.getElementById('prod-modal-title').textContent = '+ Add New Product';
+      resetForm();
+      addSpecRow('Moisture', 'Max 12%'); addSpecRow('Purity', '99%');
+      openModal('prod-modal');
+    }
+
+    async function openEditModal(id) {
+      try {
+        const p = await api.get('/products/' + id);
+        editingId = id;
+        document.getElementById('prod-modal-title').textContent = `✏️ Edit — ${p.name} `;
+        document.getElementById('pm-name').value = p.name;
+        document.getElementById('pm-cat').value = p.category;
+        document.getElementById('pm-origin').value = p.origin;
+        document.getElementById('pm-moq').value = p.min_order || '';
+        document.getElementById('pm-desc').value = p.description;
+        document.getElementById('pm-pack').value = (p.packaging || []).join(', ');
+        document.getElementById('pm-bg').value = p.bg;
+        document.getElementById('pm-emoji').value = p.emoji;
+        document.getElementById('pm-badge').value = p.badge || '';
+        document.getElementById('pm-active').value = String(p.active);
+        const track = document.getElementById('pm-track');
+        const lbl = document.getElementById('pm-status-lbl');
+        if (p.active) { track.classList.add('on'); lbl.textContent = 'Active'; lbl.style.color = 'var(--green)'; }
+        else { track.classList.remove('on'); lbl.textContent = 'Hidden'; lbl.style.color = 'var(--red)'; }
+        // Specs
+        document.getElementById('spec-rows').innerHTML = '';
+        Object.entries(p.specs || {}).forEach(([k, v]) => addSpecRow(k, v));
+        // Badge — match by data value set on each option
+        document.querySelectorAll('.badge-opt').forEach(b => {
+          const onclick = b.getAttribute('onclick') || '';
+          const match = onclick.match(/selectBadge\(this,'(.*?)'\)/);
+          const bval = match ? match[1] : '';
+          b.classList.toggle('selected', bval === (p.badge || ''));
+        });
+        renderEmojiPicker(p.emoji);
+        updateBgPreview();
+        openModal('prod-modal');
+      } catch (e) { toast('Load error: ' + e.message, 'error'); }
+    }
+
+    async function saveProduct() {
+      const name = document.getElementById('pm-name').value.trim();
+      const origin = document.getElementById('pm-origin').value.trim();
+      const desc = document.getElementById('pm-desc').value.trim();
+      if (!name || !origin || !desc) { toast('Name, origin and description required.', 'error'); return; }
+      const payload = {
+        name, origin, description: desc,
+        category: document.getElementById('pm-cat').value,
+        emoji: document.getElementById('pm-emoji').value || '🌾',
+        badge: document.getElementById('pm-badge').value,
+        bg: document.getElementById('pm-bg').value,
+        packaging: document.getElementById('pm-pack').value.split(',').map(s => s.trim()).filter(Boolean),
+        minOrder: document.getElementById('pm-moq').value || 'On Request',
+        specs: getSpecs(),
+        active: document.getElementById('pm-active').value === 'true'
+      };
+      try {
+        if (editingId) {
+          await api.put('/products/' + editingId, payload);
+          toast(`Product updated: ${name} `);
+        } else {
+          await api.post('/products', payload);
+          toast(`Product added: ${name} `);
+        }
+        closeModal('prod-modal');
+        loadProducts();
+      } catch (e) { toast('Save failed: ' + e.message, 'error'); }
+    }
+
+    async function toggleProduct(id) {
+      try {
+        const r = await api.patch('/products/' + id + '/toggle');
+        toast(`Product ${r.active ? 'activated' : 'hidden'} `);
+        loadProducts();
+      } catch (e) { toast('Toggle failed', 'error'); }
+    }
+
+    async function deleteProduct(id, name) {
+      if (!await confirmDelete(`Delete "${name}" ? This cannot be undone.`)) return;
+      try {
+        await api.delete('/products/' + id);
+        toast(`Deleted: ${name}`, 'warn');
+        loadProducts();
+      } catch (e) { toast('Delete failed: ' + e.message, 'error'); }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadProducts();
+      // Auto-open add modal if ?add=1
+      if (new URLSearchParams(window.location.search).get('add') === '1') {
+        setTimeout(openProductModal, 400);
+      }
+    });
+  </script>
 </body>
+
 </html>
