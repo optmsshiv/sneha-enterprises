@@ -25,8 +25,8 @@ RewriteRule ^api(/.*)?$ - [L]
 # ── HIDE .html EXTENSION (main site only) ────────────────────
 # Redirect existing .html URLs → clean URLs (301 permanent)
 # Skip admin folder and test.html
-RewriteCond %{THE_REQUEST} \s/+(?!admin/)(?!test\.html)(.+?)\.html[\s?] [NC]
-RewriteRule ^ /%1 [R=301,L,NE]
+RewriteCond %{THE_REQUEST} \s/+sneha/(?!admin/)(?!test\.html)(.+?)\.html[\s?] [NC]
+RewriteRule ^ /sneha/%1 [R=301,L,NE]
 
 # Serve .html internally for clean URL requests (top-level pages)
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -47,9 +47,9 @@ RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^([^/]+)/([^/]+)/?$ $1/$2.html [L]
 
 # Remove trailing slash (except root, skip admin)
-RewriteCond %{REQUEST_URI} !^/admin
+RewriteCond %{REQUEST_URI} !^/sneha/admin
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.+)/$ /$1 [R=301,L,NE]
+RewriteRule ^(.+)/$ /sneha/$1 [R=301,L,NE]
 
 # ── API ROUTING (PHP) ────────────────────────────────────────
 RewriteCond %{REQUEST_FILENAME} !-f
