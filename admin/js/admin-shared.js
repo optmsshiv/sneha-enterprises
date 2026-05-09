@@ -9,7 +9,7 @@ const API_BASE = (() => {
   const loc = window.location;
   // If running on localhost with a local PHP server
   if (loc.hostname === 'localhost' || loc.hostname === '127.0.0.1') {
-    return loc.origin + '/sneha-enterprises/api/index.php';
+    return loc.origin + '/sneha/api/index.php';
   }
   // On cPanel server — same domain, /api/index.php
   return loc.origin + '/api/index.php';
