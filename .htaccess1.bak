@@ -25,7 +25,7 @@ RewriteRule ^api(/.*)?$ - [L]
 # ── HIDE .html EXTENSION (main site only) ────────────────────
 # Redirect existing .html URLs → clean URLs (301 permanent)
 # Skip admin folder and test.html
-RewriteCond %{THE_REQUEST} \ /sneha/(?!admin/)(.+?)\.html[\ ?] [NC]
+RewriteCond %{THE_REQUEST} \s/+sneha/(?!admin/)(?!test\.html)(.+?)\.html[\s?] [NC]
 RewriteRule ^ /sneha/%1 [R=301,L,NE]
 
 # Serve .html internally for clean URL requests (top-level pages)
