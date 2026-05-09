@@ -6,7 +6,6 @@
 
 Options -Indexes
 RewriteEngine On
-RewriteBase /
 
 # ── Force HTTPS (uncomment after SSL is active) ──────────────
 # RewriteCond %{HTTPS} off
@@ -28,7 +27,7 @@ RewriteRule ^api(/.*)?$ - [L]
 RewriteCond %{THE_REQUEST} \s/+(?!admin/)(?!test\.html)(.+?)\.html[\s?] [NC]
 RewriteRule ^ /%2 [R=301,L,NE]
 
-# Serve .html internally for clean URL requests (top-level pages)
+# Serve .html internally for clean URL requests
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}.html -f
@@ -38,7 +37,7 @@ RewriteRule ^([^/]+)/?$ $1.html [L]
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}.html -f
-RewriteRule ^pages/([^/]+)/?$ pages/$1.html [L]
+RewriteRule ^(pages/[^/]+)/?$ $1.html [L]
 
 # Remove trailing slash (except root, skip admin)
 RewriteCond %{REQUEST_URI} !^/admin
