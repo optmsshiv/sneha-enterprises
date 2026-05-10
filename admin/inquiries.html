@@ -9,6 +9,7 @@
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     /* ── PILL TABS ─────────────────────────────────────────── */
@@ -425,6 +426,30 @@
       height: 20px;
       background: var(--border)
     }
+
+    .status-new {
+      background: #EEF1FB;
+      color: var(--navy);
+      border: 1px solid #C5D0F0
+    }
+
+    .status-read {
+      background: var(--orange-light);
+      color: var(--orange);
+      border: 1px solid #F5C89A
+    }
+
+    .status-replied {
+      background: var(--green-light);
+      color: var(--green);
+      border: 1px solid #A5D6A7
+    }
+
+    .status-closed {
+      background: #F0F0F0;
+      color: #888;
+      border: 1px solid #D0D0D0
+    }
   </style>
 </head>
 
@@ -438,33 +463,38 @@
       <div
         style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">
         <div class="filters">
-          <input type="text" class="filter-input" id="search-inp" placeholder="🔍 Search name, email, company..."
-            oninput="loadInquiries()">
-          <select class="filter-select" id="status-filter" style="display:none">
+          <div style="position:relative;display:inline-flex;align-items:center">
+            <i class="fa-solid fa-magnifying-glass"
+              style="position:absolute;left:11px;color:var(--text-light);font-size:12px;pointer-events:none"></i>
+            <input type="text" class="filter-input" id="search-inp" placeholder="Search name, email, company..."
+              oninput="loadInquiries()" style="padding-left:32px">
+          </div>
+          <select class="filter-select" id="product-filter" onchange="loadInquiries()">
+            <option value="">All Products</option>
+          </select>
+          <select class="filter-select" id="status-filter" onchange="loadInquiries()">
             <option value="">All Status</option>
             <option value="new">New</option>
             <option value="read">Read</option>
             <option value="replied">Replied</option>
             <option value="closed">Closed</option>
           </select>
-          <select class="filter-select" id="product-filter" onchange="loadInquiries()">
-            <option value="">All Products</option>
-          </select>
         </div>
-        <button class="action-btn ab-delete" onclick="deleteAllInquiries()">🗑 Clear All</button>
+        <button class="action-btn ab-delete" onclick="deleteAllInquiries()"><i class="fa-solid fa-trash-can"
+            style="margin-right:5px"></i>Clear All</button>
       </div>
 
       <!-- PILL TABS -->
       <div class="inq-tabs-bar">
         <button class="inq-tab-btn active" onclick="setStatusFilter('',this)" id="tab-all">All <span class="tab-count"
             id="cnt-all">0</span></button>
-        <button class="inq-tab-btn" onclick="setStatusFilter('new',this)" id="tab-new">🔴 New <span class="tab-count"
+        <button class="inq-tab-btn" onclick="setStatusFilter('new',this)" id="tab-new">New <span class="tab-count"
             id="cnt-new">0</span></button>
-        <button class="inq-tab-btn" onclick="setStatusFilter('read',this)" id="tab-read">🟡 Read <span class="tab-count"
+        <button class="inq-tab-btn" onclick="setStatusFilter('read',this)" id="tab-read">Read <span class="tab-count"
             id="cnt-read">0</span></button>
-        <button class="inq-tab-btn" onclick="setStatusFilter('replied',this)" id="tab-replied">✅ Replied <span
+        <button class="inq-tab-btn" onclick="setStatusFilter('replied',this)" id="tab-replied">Replied <span
             class="tab-count" id="cnt-replied">0</span></button>
-        <button class="inq-tab-btn" onclick="setStatusFilter('closed',this)" id="tab-closed">⚫ Closed <span
+        <button class="inq-tab-btn" onclick="setStatusFilter('closed',this)" id="tab-closed">Closed <span
             class="tab-count" id="cnt-closed">0</span></button>
       </div>
 
@@ -524,9 +554,12 @@
 
       <!-- TABS -->
       <div class="modal-tabs">
-        <div class="modal-tab active" onclick="switchInqTab('details',this)">Details</div>
-        <div class="modal-tab" onclick="switchInqTab('reply',this)">Reply</div>
-        <div class="modal-tab" onclick="switchInqTab('history',this)">History</div>
+        <div class="modal-tab active" onclick="switchInqTab('details',this)"><i class="fa-solid fa-circle-info"
+            style="margin-right:6px"></i>Details</div>
+        <div class="modal-tab" onclick="switchInqTab('reply',this)"><i class="fa-solid fa-reply"
+            style="margin-right:6px"></i>Reply</div>
+        <div class="modal-tab" onclick="switchInqTab('history',this)"><i class="fa-solid fa-clock-rotate-left"
+            style="margin-right:6px"></i>History</div>
       </div>
 
       <!-- BODY -->
@@ -594,10 +627,14 @@
             style="font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">
             Quick Templates</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="action-btn ab-reply" onclick="insertTemplate('price')">📋 Price List</button>
-            <button class="action-btn ab-reply" onclick="insertTemplate('followup')">🔁 Follow Up</button>
-            <button class="action-btn ab-reply" onclick="insertTemplate('thanks')">🙏 Thank You</button>
-            <button class="action-btn ab-reply" onclick="insertTemplate('docs')">📄 Documents Ready</button>
+            <button class="action-btn ab-reply" onclick="insertTemplate('price')"><i class="fa-solid fa-list-ul"
+                style="margin-right:5px"></i>Price List</button>
+            <button class="action-btn ab-reply" onclick="insertTemplate('followup')"><i class="fa-solid fa-rotate-right"
+                style="margin-right:5px"></i>Follow Up</button>
+            <button class="action-btn ab-reply" onclick="insertTemplate('thanks')"><i class="fa-solid fa-handshake"
+                style="margin-right:5px"></i>Thank You</button>
+            <button class="action-btn ab-reply" onclick="insertTemplate('docs')"><i class="fa-solid fa-file-lines"
+                style="margin-right:5px"></i>Documents Ready</button>
           </div>
         </div>
 
@@ -616,17 +653,21 @@
           <select class="filter-select" id="status-select" onchange="setStatus(this.value)"
             style="font-size:12px;padding:6px 10px;border-radius:7px">
             <option value="">Set Status...</option>
-            <option value="read">🟡 Mark Read</option>
-            <option value="replied">✅ Mark Replied</option>
-            <option value="closed">⚫ Close</option>
+            <option value="read">Mark Read</option>
+            <option value="replied">Mark Replied</option>
+            <option value="closed">Close</option>
           </select>
           <div class="mf-divider"></div>
-          <button class="action-btn ab-delete" onclick="deleteFromModal()" title="Delete inquiry">🗑</button>
+          <button class="action-btn ab-delete" onclick="deleteFromModal()" title="Delete inquiry"><i
+              class="fa-solid fa-trash-can"></i></button>
         </div>
         <div class="modal-footer-right">
-          <button class="action-btn ab-view" id="inq-wa-btn" onclick="openWhatsApp()">💬 WhatsApp</button>
-          <button class="action-btn ab-view" onclick="openMailClient()" id="open-mail-btn">📧 Open Mail</button>
-          <button class="action-btn ab-reply" onclick="sendReplyEmail()" id="send-email-btn">✈️ Send Mail</button>
+          <button class="action-btn ab-view" id="inq-wa-btn" onclick="openWhatsApp()"><i class="fa-brands fa-whatsapp"
+              style="margin-right:5px;font-size:13px"></i>WhatsApp</button>
+          <button class="action-btn ab-view" onclick="openMailClient()" id="open-mail-btn"><i
+              class="fa-solid fa-envelope-open-text" style="margin-right:5px"></i>Open Mail</button>
+          <button class="action-btn ab-reply" onclick="sendReplyEmail()" id="send-email-btn"><i
+              class="fa-solid fa-paper-plane" style="margin-right:5px"></i>Send Mail</button>
         </div>
       </div>
 
@@ -652,6 +693,16 @@
       }
       loadInquiries();
     }
+    // Sync tab highlight when status dropdown changes
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('status-filter').addEventListener('change', function () {
+        var val = this.value;
+        document.querySelectorAll('.inq-tab-btn').forEach(function (b) { b.classList.remove('active'); });
+        var map = { '': 'tab-all', 'new': 'tab-new', 'read': 'tab-read', 'replied': 'tab-replied', 'closed': 'tab-closed' };
+        var target = document.getElementById(map[val] || 'tab-all');
+        if (target) target.classList.add('active');
+      });
+    });
 
     async function loadTabCounts() {
       try {
