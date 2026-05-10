@@ -9,7 +9,448 @@
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <style>
+    /* ── PILL TABS ─────────────────────────────────────────── */
+    .inq-tabs-bar {
+      display: flex;
+      gap: 4px;
+      background: #F0F2F8;
+      padding: 4px;
+      border-radius: 12px;
+      width: fit-content;
+      margin-bottom: 18px
+    }
+
+    .inq-tab-btn {
+      padding: 7px 16px;
+      border-radius: 9px;
+      border: none;
+      background: transparent;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-light);
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .inq-tab-btn.active {
+      background: white;
+      color: var(--navy);
+      box-shadow: 0 2px 8px rgba(26, 46, 107, .1)
+    }
+
+    .inq-tab-btn .tab-count {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-weight: 700;
+      background: rgba(192, 57, 43, .15);
+      color: var(--red)
+    }
+
+    .inq-tab-btn.active .tab-count {
+      background: var(--navy);
+      color: white
+    }
+
+    /* ── BUYER AVATAR ──────────────────────────────────────── */
+    .buyer-row {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .buyer-av {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+      font-family: 'Playfair Display', serif
+    }
+
+    .buyer-info strong {
+      font-size: 13px;
+      display: block;
+      color: var(--text)
+    }
+
+    .buyer-info span {
+      font-size: 11px;
+      color: var(--text-light)
+    }
+
+    /* ── MODAL REDESIGN ───────────────────────────────────── */
+    #inq-modal .modal {
+      max-width: 660px;
+      padding: 0;
+      border-radius: 20px;
+      overflow: hidden
+    }
+
+    /* White header */
+    .modal-header {
+      background: white;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .modal-header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px
+    }
+
+    .modal-avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: 'Playfair Display', serif;
+      flex-shrink: 0
+    }
+
+    .modal-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: var(--navy);
+      margin: 0 0 5px;
+      font-weight: 700
+    }
+
+    .modal-submeta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .modal-submeta span {
+      font-size: 12px;
+      color: var(--text-light)
+    }
+
+    .modal-submeta .dot {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--border);
+      display: inline-block
+    }
+
+    .modal-header .modal-close {
+      background: var(--cream);
+      color: var(--text-light);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all .2s;
+      position: static;
+      transform: none;
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .modal-header .modal-close:hover {
+      background: var(--border);
+      color: var(--navy)
+    }
+
+    /* Tabs */
+    .modal-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      background: white;
+      padding: 0 24px
+    }
+
+    .modal-tab {
+      padding: 11px 16px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-light);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all .2s;
+      text-transform: uppercase;
+      letter-spacing: .5px
+    }
+
+    .modal-tab:hover {
+      color: var(--navy)
+    }
+
+    .modal-tab.active {
+      color: var(--navy);
+      border-bottom-color: var(--navy)
+    }
+
+    /* Body */
+    .modal-body {
+      padding: 20px 24px;
+      max-height: 56vh;
+      overflow-y: auto
+    }
+
+    .modal-tab-pane {
+      display: none
+    }
+
+    .modal-tab-pane.active {
+      display: block
+    }
+
+    /* Details grid */
+    .inq-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px
+    }
+
+    .inq-cell {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 13px
+    }
+
+    .inq-cell-label {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px
+    }
+
+    .inq-cell-val {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      word-break: break-word
+    }
+
+    /* Message & notes */
+    .inq-msg {
+      margin-bottom: 14px
+    }
+
+    .inq-msg-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-light);
+      margin-bottom: 6px
+    }
+
+    .inq-msg-text {
+      background: var(--warm);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 13px;
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text-mid)
+    }
+
+    /* Reply area */
+    .inq-reply-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--text-light);
+      display: block;
+      margin-bottom: 6px
+    }
+
+    .inq-reply-area {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      resize: vertical;
+      min-height: 90px;
+      outline: none;
+      transition: border-color .2s;
+      line-height: 1.6;
+      background: var(--cream)
+    }
+
+    .inq-reply-area:focus {
+      border-color: var(--navy);
+      background: white
+    }
+
+    /* Email notice */
+    .ejs-notice {
+      background: var(--gold-light);
+      border: 1px solid var(--gold);
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 12px;
+      color: var(--gold-dark);
+      margin-bottom: 14px;
+      line-height: 1.65
+    }
+
+    .ejs-notice code {
+      background: white;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 11px;
+      border: 1px solid var(--border)
+    }
+
+    /* Timeline */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0
+    }
+
+    .tl-item {
+      display: flex;
+      gap: 14px;
+      position: relative;
+      padding-bottom: 20px
+    }
+
+    .tl-item:last-child {
+      padding-bottom: 0
+    }
+
+    .tl-item:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 32px;
+      bottom: 0;
+      width: 1px;
+      background: var(--border)
+    }
+
+    .tl-dot {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #EEF1FB;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+      z-index: 1
+    }
+
+    .tl-content {
+      flex: 1;
+      padding: 6px 0
+    }
+
+    .tl-action {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy)
+    }
+
+    .tl-time {
+      font-size: 11px;
+      color: var(--text-light);
+      margin-top: 2px
+    }
+
+    .tl-note {
+      font-size: 12px;
+      color: var(--text-mid);
+      margin-top: 5px;
+      background: var(--warm);
+      border-radius: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      line-height: 1.6
+    }
+
+    /* Footer */
+    .modal-footer {
+      padding: 13px 24px;
+      border-top: 1px solid var(--border);
+      background: #FAFBFF;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px
+    }
+
+    .modal-footer-left {
+      display: flex;
+      gap: 8px;
+      align-items: center
+    }
+
+    .modal-footer-right {
+      display: flex;
+      gap: 8px;
+      align-items: center
+    }
+
+    .mf-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border)
+    }
+
+    .status-new {
+      background: #EEF1FB;
+      color: var(--navy);
+      border: 1px solid #C5D0F0
+    }
+
+    .status-read {
+      background: var(--orange-light);
+      color: var(--orange);
+      border: 1px solid #F5C89A
+    }
+
+    .status-replied {
+      background: var(--green-light);
+      color: var(--green);
+      border: 1px solid #A5D6A7
+    }
+
+    .status-closed {
+      background: #F0F0F0;
+      color: #888;
+      border: 1px solid #D0D0D0
+    }
+  </style>
 </head>
 
 <body style="display:flex">
@@ -20,31 +461,41 @@
 
       <!-- FILTERS -->
       <div
-        style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+        style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">
         <div class="filters">
-          <input type="text" class="filter-input" id="search-inp" placeholder="🔍 Search name, email, company..."
-            oninput="loadInquiries()">
-          <select class="filter-select" id="status-filter" onchange="loadInquiries()">
-            <option value="">All Status</option>
-            <option value="new">🔴 New</option>
-            <option value="read">🟡 Read</option>
-            <option value="replied">✅ Replied</option>
-            <option value="closed">⚫ Closed</option>
-          </select>
+          <div style="position:relative;display:inline-flex;align-items:center">
+            <i class="fa-solid fa-magnifying-glass"
+              style="position:absolute;left:11px;color:var(--text-light);font-size:12px;pointer-events:none"></i>
+            <input type="text" class="filter-input" id="search-inp" placeholder="Search name, email, company..."
+              oninput="loadInquiries()" style="padding-left:32px">
+          </div>
           <select class="filter-select" id="product-filter" onchange="loadInquiries()">
             <option value="">All Products</option>
           </select>
+          <select class="filter-select" id="status-filter" onchange="loadInquiries()">
+            <option value="">All Status</option>
+            <option value="new">New</option>
+            <option value="read">Read</option>
+            <option value="replied">Replied</option>
+            <option value="closed">Closed</option>
+          </select>
         </div>
-        <button class="action-btn ab-delete" onclick="deleteAllInquiries()">🗑 Clear All</button>
+        <button class="action-btn ab-delete" onclick="deleteAllInquiries()"><i class="fa-solid fa-trash-can"
+            style="margin-right:5px"></i>Clear All</button>
       </div>
 
-      <!-- QUICK STATUS TABS -->
-      <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap">
-        <button class="action-btn ab-view" onclick="setStatusFilter('')" id="tab-all">All</button>
-        <button class="action-btn ab-delete" onclick="setStatusFilter('new')" id="tab-new">🔴 New</button>
-        <button class="action-btn ab-reply" onclick="setStatusFilter('read')" id="tab-read">🟡 Read</button>
-        <button class="action-btn ab-toggle" onclick="setStatusFilter('replied')" id="tab-replied">✅ Replied</button>
-        <button class="action-btn ab-edit" onclick="setStatusFilter('closed')" id="tab-closed">⚫ Closed</button>
+      <!-- PILL TABS -->
+      <div class="inq-tabs-bar">
+        <button class="inq-tab-btn active" onclick="setStatusFilter('',this)" id="tab-all">All <span class="tab-count"
+            id="cnt-all">0</span></button>
+        <button class="inq-tab-btn" onclick="setStatusFilter('new',this)" id="tab-new">New <span class="tab-count"
+            id="cnt-new">0</span></button>
+        <button class="inq-tab-btn" onclick="setStatusFilter('read',this)" id="tab-read">Read <span class="tab-count"
+            id="cnt-read">0</span></button>
+        <button class="inq-tab-btn" onclick="setStatusFilter('replied',this)" id="tab-replied">Replied <span
+            class="tab-count" id="cnt-replied">0</span></button>
+        <button class="inq-tab-btn" onclick="setStatusFilter('closed',this)" id="tab-closed">Closed <span
+            class="tab-count" id="cnt-closed">0</span></button>
       </div>
 
       <div class="table-card">
@@ -79,13 +530,11 @@
     </div>
   </div>
 
-  <!-- ============================================================
-     INQUIRY DETAIL MODAL
-     ============================================================ -->
+  <!-- INQUIRY DETAIL MODAL -->
   <div class="modal-overlay" id="inq-modal">
     <div class="modal">
 
-      <!-- HEADER -->
+      <!-- HEADER (white) -->
       <div class="modal-header">
         <div class="modal-header-left">
           <div class="modal-avatar" id="inq-avatar">—</div>
@@ -105,9 +554,12 @@
 
       <!-- TABS -->
       <div class="modal-tabs">
-        <div class="modal-tab active" onclick="switchInqTab('details', this)">Details</div>
-        <div class="modal-tab" onclick="switchInqTab('reply', this)">Reply</div>
-        <div class="modal-tab" onclick="switchInqTab('history', this)">History</div>
+        <div class="modal-tab active" onclick="switchInqTab('details',this)"><i class="fa-solid fa-circle-info"
+            style="margin-right:6px"></i>Details</div>
+        <div class="modal-tab" onclick="switchInqTab('reply',this)"><i class="fa-solid fa-reply"
+            style="margin-right:6px"></i>Reply</div>
+        <div class="modal-tab" onclick="switchInqTab('history',this)"><i class="fa-solid fa-clock-rotate-left"
+            style="margin-right:6px"></i>History</div>
       </div>
 
       <!-- BODY -->
@@ -117,7 +569,7 @@
         <div class="modal-tab-pane active" id="tab-details">
           <div class="inq-grid">
             <div class="inq-cell">
-              <div class="inq-cell-label">Product interest</div>
+              <div class="inq-cell-label">Product Interest</div>
               <div class="inq-cell-val" id="inq-product">—</div>
             </div>
             <div class="inq-cell">
@@ -146,12 +598,10 @@
                 style="font-family:monospace;font-size:12px;color:var(--text-light)">—</div>
             </div>
           </div>
-
           <div class="inq-msg">
             <div class="inq-msg-label">Message</div>
             <div class="inq-msg-text" id="inq-message">—</div>
           </div>
-
           <div class="inq-msg" style="margin-bottom:0">
             <div class="inq-msg-label">Internal Notes</div>
             <textarea id="modal-notes" class="inq-reply-area" style="margin-top:6px"
@@ -161,21 +611,30 @@
 
         <!-- TAB: REPLY -->
         <div class="modal-tab-pane" id="tab-reply">
+          <div class="ejs-notice" id="ejs-notice">
+            ⚙️ <strong>EmailJS not configured.</strong> Set your <code>EJS_PUBLIC_KEY</code>,
+            <code>EJS_SERVICE_ID</code>, and <code>EJS_TEMPLATE_ID</code> in lines 446–448 to enable direct sending.
+            Until then, use <strong>Open Mail</strong> below.
+          </div>
           <div style="margin-bottom:14px">
             <label class="inq-reply-label">Reply to <span id="reply-to-name"
                 style="color:var(--navy);font-weight:700"></span> — <span id="reply-to-email"
                 style="color:var(--text-light)"></span></label>
-            <textarea class="inq-reply-area" id="inq-reply-text" style="height:160px"
+            <textarea class="inq-reply-area" id="inq-reply-text" style="height:150px"
               placeholder="Type your reply here..."></textarea>
           </div>
           <div
-            style="margin-bottom:6px;font-size:11px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px">
-            Quick templates</div>
+            style="font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">
+            Quick Templates</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="action-btn ab-reply" onclick="insertTemplate('price')">📋 Price List</button>
-            <button class="action-btn ab-reply" onclick="insertTemplate('followup')">🔁 Follow Up</button>
-            <button class="action-btn ab-reply" onclick="insertTemplate('thanks')">🙏 Thank You</button>
-            <button class="action-btn ab-reply" onclick="insertTemplate('docs')">📄 Documents Ready</button>
+            <button class="action-btn ab-reply" onclick="insertTemplate('price')"><i class="fa-solid fa-list-ul"
+                style="margin-right:5px"></i>Price List</button>
+            <button class="action-btn ab-reply" onclick="insertTemplate('followup')"><i class="fa-solid fa-rotate-right"
+                style="margin-right:5px"></i>Follow Up</button>
+            <button class="action-btn ab-reply" onclick="insertTemplate('thanks')"><i class="fa-solid fa-handshake"
+                style="margin-right:5px"></i>Thank You</button>
+            <button class="action-btn ab-reply" onclick="insertTemplate('docs')"><i class="fa-solid fa-file-lines"
+                style="margin-right:5px"></i>Documents Ready</button>
           </div>
         </div>
 
@@ -191,13 +650,19 @@
       <!-- FOOTER -->
       <div class="modal-footer">
         <div class="modal-footer-left">
-          <button class="action-btn ab-delete" onclick="deleteFromModal()">🗑 Delete</button>
+          <button class="action-btn ab-toggle off" onclick="setStatus('closed')"><i class="fa-solid fa-circle-xmark"
+              style="margin-right:5px"></i>Close Inquiry</button>
           <div class="mf-divider"></div>
-          <button class="action-btn ab-toggle off" onclick="setStatus('closed')">✕ Close</button>
+          <button class="action-btn ab-delete" onclick="deleteFromModal()" title="Delete inquiry"><i
+              class="fa-solid fa-trash-can"></i></button>
         </div>
         <div class="modal-footer-right">
-          <button class="action-btn ab-view" id="inq-wa-btn" onclick="openWhatsApp()">💬 WhatsApp</button>
-          <button class="action-btn ab-reply" onclick="sendReplyEmail()" id="send-email-btn">📧 Send Reply</button>
+          <button class="action-btn ab-view" id="inq-wa-btn" onclick="openWhatsApp()"><i class="fa-brands fa-whatsapp"
+              style="margin-right:5px;font-size:13px"></i>WhatsApp</button>
+          <button class="action-btn ab-view" onclick="openMailClient()" id="open-mail-btn"><i
+              class="fa-solid fa-envelope-open-text" style="margin-right:5px"></i>Open Mail</button>
+          <button class="action-btn ab-reply" onclick="sendReplyEmail()" id="send-email-btn"><i
+              class="fa-solid fa-paper-plane" style="margin-right:5px"></i>Send Mail</button>
         </div>
       </div>
 
@@ -214,10 +679,37 @@
     let _currentInq = null;
 
     // ── FILTER / LOAD ──────────────────────────────────────────────
-    function setStatusFilter(status) {
+    function setStatusFilter(status, btn) {
       document.getElementById('status-filter').value = status;
       currentPage = 1;
+      if (btn) {
+        document.querySelectorAll('.inq-tab-btn').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+      }
       loadInquiries();
+    }
+    // Sync tab highlight when status dropdown changes
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('status-filter').addEventListener('change', function () {
+        var val = this.value;
+        document.querySelectorAll('.inq-tab-btn').forEach(function (b) { b.classList.remove('active'); });
+        var map = { '': 'tab-all', 'new': 'tab-new', 'read': 'tab-read', 'replied': 'tab-replied', 'closed': 'tab-closed' };
+        var target = document.getElementById(map[val] || 'tab-all');
+        if (target) target.classList.add('active');
+      });
+    });
+
+    async function loadTabCounts() {
+      try {
+        var s = await api.get('/inquiries/stats');
+        document.getElementById('cnt-all').textContent = s.total || 0;
+        var byStatus = {};
+        (s.byStatus || []).forEach(function (r) { byStatus[r.status] = r.count; });
+        document.getElementById('cnt-new').textContent = byStatus.new || 0;
+        document.getElementById('cnt-read').textContent = byStatus.read || 0;
+        document.getElementById('cnt-replied').textContent = byStatus.replied || 0;
+        document.getElementById('cnt-closed').textContent = byStatus.closed || 0;
+      } catch (e) { }
     }
 
     async function loadInquiries() {
@@ -256,26 +748,38 @@
         tbody.innerHTML = `<tr><td colspan="8"><div class="empty"><div class="empty-icon">📭</div><h3>No inquiries found</h3><p>Try different filters.</p></div></td></tr>`;
         return;
       }
-      tbody.innerHTML = rows.map(i => `
-    <tr style="cursor:pointer" onclick="viewInquiry('${i.id}')">
-      <td style="font-size:11px;color:var(--text-light);font-family:monospace">${i.id}</td>
-      <td>
-        <strong style="font-size:13px">${i.name}</strong>
-        <div style="font-size:11px;color:var(--text-light)">${i.email}</div>
-        <div style="font-size:11px;color:var(--text-light)">${i.company || ''}</div>
-      </td>
-      <td style="font-size:12px">${i.product_name || '—'}</td>
-      <td style="font-size:12px">${i.country || '—'}</td>
-      <td style="font-size:12px">${i.quantity || '—'}</td>
-      <td>${statusBadge(i.status)}</td>
-      <td style="font-size:11px;color:var(--text-light)">${fmtDateShort(i.created_at)}</td>
-      <td onclick="event.stopPropagation()">
-        <div style="display:flex;gap:5px;flex-wrap:wrap">
-          <button class="action-btn ab-view"   onclick="viewInquiry('${i.id}')">View</button>
-          <button class="action-btn ab-delete" onclick="deleteInquiry('${i.id}')">Del</button>
-        </div>
-      </td>
-    </tr>`).join('');
+      var avatarColors = [
+        { bg: '#EEF1FB', color: '#1A2E6B' }, { bg: '#E8F5E9', color: '#1B6B2A' },
+        { bg: '#FFF3E0', color: '#8B4000' }, { bg: '#F3E5F5', color: '#6A1B9A' },
+        { bg: '#E3F2FD', color: '#0D47A1' }, { bg: '#FFF8E1', color: '#F57F17' },
+        { bg: '#FCE4EC', color: '#880E4F' }, { bg: '#E0F2F1', color: '#004D40' }
+      ];
+      function getAvatarColor(name) {
+        var idx = (name || '?').charCodeAt(0) % avatarColors.length;
+        return avatarColors[idx];
+      }
+      tbody.innerHTML = rows.map(function (i) {
+        var initials = (i.name || '?').split(' ').map(function (w) { return w[0] || ''; }).slice(0, 2).join('').toUpperCase();
+        var col = getAvatarColor(i.name);
+        var isNew = i.status === 'new';
+        var newDot = isNew ? '<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red);margin-right:5px;vertical-align:middle"></span>' : '';
+        return '<tr style="cursor:pointer" onclick="viewInquiry(\'' + i.id + '\')">'
+          + '<td style="font-size:10px;color:var(--text-light);font-family:monospace;white-space:nowrap">' + newDot + i.id + '</td>'
+          + '<td><div class="buyer-row">'
+          + '<div class="buyer-av" style="background:' + col.bg + ';color:' + col.color + '">' + initials + '</div>'
+          + '<div class="buyer-info"><strong>' + i.name + '</strong><span>' + i.email + (i.company ? ' · ' + i.company : '') + '</span></div>'
+          + '</div></td>'
+          + '<td style="font-size:12px;font-weight:600;color:var(--navy)">' + (i.product_name || '—') + '</td>'
+          + '<td style="font-size:12px">' + (i.country || '—') + '</td>'
+          + '<td style="font-size:12px">' + (i.quantity || '—') + '</td>'
+          + '<td>' + statusBadge(i.status) + '</td>'
+          + '<td style="font-size:11px;color:var(--text-light)">' + fmtDateShort(i.created_at) + '</td>'
+          + '<td onclick="event.stopPropagation()"><div style="display:flex;gap:5px">'
+          + '<button class="action-btn ab-view" onclick="viewInquiry(\'' + i.id + '\')">View</button>'
+          + '<button class="action-btn ab-delete" onclick="deleteInquiry(\'' + i.id + '\')">Del</button>'
+          + '</div></td>'
+          + '</tr>';
+      }).join('');
     }
 
     function renderPagination(page, pages, total) {
@@ -302,7 +806,12 @@
 
         // Avatar initials
         const initials = (i.name || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
-        document.getElementById('inq-avatar').textContent = initials;
+        var avColors = [{ bg: '#EEF1FB', color: '#1A2E6B' }, { bg: '#E8F5E9', color: '#1B6B2A' }, { bg: '#FFF3E0', color: '#8B4000' }, { bg: '#F3E5F5', color: '#6A1B9A' }, { bg: '#E3F2FD', color: '#0D47A1' }, { bg: '#FFF8E1', color: '#F57F17' }, { bg: '#FCE4EC', color: '#880E4F' }, { bg: '#E0F2F1', color: '#004D40' }];
+        var avCol = avColors[(i.name || '?').charCodeAt(0) % avColors.length];
+        var avEl = document.getElementById('inq-avatar');
+        avEl.textContent = initials;
+        avEl.style.background = avCol.bg;
+        avEl.style.color = avCol.color;
 
         // Header
         document.getElementById('inq-name').textContent = i.name || '—';
@@ -423,15 +932,25 @@
     }
 
     async function setStatus(status) {
-      if (!currentInqId) return;
+      if (!status || !currentInqId) return;
       await saveNotes();
       try {
         await api.patch('/inquiries/' + currentInqId, { status });
         closeInqModal();
         loadInquiries();
+        loadTabCounts();
         updateNewBadge();
-        toast('Status updated: ' + status);
+        toast('Inquiry closed');
       } catch (e) { toast('Error: ' + e.message, 'error'); }
+    }
+
+    function openMailClient() {
+      if (!_currentInq) return;
+      var replyText = document.getElementById('inq-reply-text').value.trim();
+      var subject = 'Re: Your Trade Inquiry — ' + (_currentInq.product_name || 'Sneha Enterprises') + ' [' + _currentInq.id + ']';
+      var body = replyText || 'Dear ' + _currentInq.name + ',\n\nThank you for your inquiry about ' + (_currentInq.product_name || 'our products') + '.\n\n[Reference: ' + _currentInq.id + ']\n\nWe are pleased to share the following details...\n\nBest regards,\nSneha Enterprises\nexports@snehaenterprises.in';
+      window.open('mailto:' + _currentInq.email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body));
+      api.patch('/inquiries/' + currentInqId, { status: 'replied' }).then(function () { loadInquiries(); updateNewBadge(); });
     }
 
     function openWhatsApp() {
@@ -448,7 +967,11 @@
     const EJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // Email Templates
 
     (function initEmailJS() {
-      emailjs.init({ publicKey: EJS_PUBLIC_KEY });
+      if (EJS_PUBLIC_KEY && EJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+        emailjs.init({ publicKey: EJS_PUBLIC_KEY });
+        var n = document.getElementById('ejs-notice');
+        if (n) n.style.display = 'none';
+      }
     })();
 
     async function sendReplyEmail() {
@@ -494,6 +1017,7 @@
       if (!await confirmDelete('Delete this inquiry permanently?')) return;
       await api.delete('/inquiries/' + id);
       loadInquiries();
+      loadTabCounts();
       updateNewBadge();
       toast('Inquiry deleted', 'warn');
     }
@@ -516,7 +1040,10 @@
       toast('All inquiries cleared', 'warn');
     }
 
-    window.addEventListener('DOMContentLoaded', loadInquiries);
+    window.addEventListener('DOMContentLoaded', function () {
+      loadInquiries();
+      loadTabCounts();
+    });
   </script>
 </body>
 
