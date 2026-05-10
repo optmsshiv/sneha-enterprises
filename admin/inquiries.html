@@ -650,13 +650,8 @@
       <!-- FOOTER -->
       <div class="modal-footer">
         <div class="modal-footer-left">
-          <select class="filter-select" id="status-select" onchange="setStatus(this.value)"
-            style="font-size:12px;padding:6px 10px;border-radius:7px">
-            <option value="">Set Status...</option>
-            <option value="read">Mark Read</option>
-            <option value="replied">Mark Replied</option>
-            <option value="closed">Close</option>
-          </select>
+          <button class="action-btn ab-toggle off" onclick="setStatus('closed')"><i class="fa-solid fa-circle-xmark"
+              style="margin-right:5px"></i>Close Inquiry</button>
           <div class="mf-divider"></div>
           <button class="action-btn ab-delete" onclick="deleteFromModal()" title="Delete inquiry"><i
               class="fa-solid fa-trash-can"></i></button>
@@ -937,19 +932,15 @@
     }
 
     async function setStatus(status) {
-      if (!status || !currentInqId) {
-        document.getElementById('status-select').value = '';
-        return;
-      }
+      if (!status || !currentInqId) return;
       await saveNotes();
       try {
         await api.patch('/inquiries/' + currentInqId, { status });
-        document.getElementById('status-select').value = '';
         closeInqModal();
         loadInquiries();
         loadTabCounts();
         updateNewBadge();
-        toast('Status updated: ' + status);
+        toast('Inquiry closed');
       } catch (e) { toast('Error: ' + e.message, 'error'); }
     }
 
