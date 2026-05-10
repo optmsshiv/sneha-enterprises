@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Products — Sneha Enterprises</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../css/shared.css">
+<style>
+.page-hero { background: linear-gradient(135deg,var(--navy-dark),var(--navy)); padding: 60px 2rem 50px; }
+.page-hero .sec-label { color: var(--gold); }
+.page-hero .sec-title { color: white; font-size: 42px; }
+.page-hero p { font-size: 15px; color: rgba(255,255,255,.7); max-width: 520px; line-height: 1.75; margin-bottom: 32px; }
+
+.cat-tabs { display: flex; gap: 10px; flex-wrap: wrap; }
+.cat-tab { padding: 9px 20px; border-radius: 22px; border: 1.5px solid rgba(255,255,255,.3); background: transparent; font-size: 13px; font-weight: 500; cursor: pointer; transition: all .2s; color: rgba(255,255,255,.8); font-family: 'DM Sans', sans-serif; }
+.cat-tab:hover, .cat-tab.active { background: var(--gold); color: white; border-color: var(--gold); }
+
+.prod-section { background: var(--cream); padding: 50px 2rem; }
+.prod-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+.prod-card { background: white; border: 1px solid var(--border); border-radius: 18px; overflow: hidden; transition: all .35s cubic-bezier(.34,1.56,.64,1); position: relative; display: flex; flex-direction: column; }
+.prod-card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 20px 56px rgba(26,46,107,.18); border-color: var(--gold); }
+.prod-card::after { content:''; position: absolute; bottom:0; left:0; height: 3px; width:0; background: linear-gradient(90deg,var(--gold),var(--navy)); transition: width .4s; }
+.prod-card:hover::after { width: 100%; }
+.prod-card::before { content:''; position: absolute; top:0; left:-100%; width:60%; height:100%; background: linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent); transition: left .5s; z-index:2; pointer-events:none; }
+.prod-card:hover::before { left:150%; }
+
+.prod-img { height: 180px; display: flex; align-items: center; justify-content: center; font-size: 72px; position: relative; transition: transform .4s; }
+.prod-card:hover .prod-img { transform: scale(1.06); }
+.prod-badge { position: absolute; top: 12px; right: 12px; background: var(--navy); color: white; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 10px; animation: bounceIn .5s .3s both; }
+
+.prod-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+.prod-body h3 { font-family: 'Playfair Display', serif; font-size: 19px; margin-bottom: 7px; color: var(--navy); }
+.prod-body p { font-size: 13px; color: var(--text-light); line-height: 1.6; margin-bottom: 14px; flex: 1; }
+
+.prod-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 14px; padding: 12px; background: var(--cream); border-radius: 10px; }
+.spec-item { font-size: 11px; }
+.spec-key { color: var(--text-light); font-weight: 600; text-transform: uppercase; letter-spacing: .3px; }
+.spec-val { color: var(--navy); font-weight: 600; }
+
+.prod-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid var(--border); }
+.prod-origin span { font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: .3px; display: block; }
+.prod-origin strong { color: var(--green); font-size: 12px; font-weight: 600; }
+.prod-moq { font-size: 11px; color: var(--text-light); }
+.prod-moq strong { color: var(--navy); display: block; }
+
+.enquire-btn { background: var(--gold-light); color: var(--gold-dark); padding: 8px 16px; border-radius: 7px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all .2s; text-decoration: none; display: inline-block; }
+.enquire-btn:hover { background: var(--gold); color: white; transform: translateY(-1px); }
+
+.pack-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+.pack-tag { background: #EEF1FB; color: var(--navy); font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px; }
+
+.empty-state { grid-column: 1/-1; text-align: center; padding: 80px 20px; }
+.empty-state .es-icon { font-size: 48px; margin-bottom: 16px; }
+.empty-state h3 { font-family: 'Playfair Display',serif; font-size: 22px; color: var(--navy); margin-bottom: 8px; }
+.empty-state p { color: var(--text-light); font-size: 14px; }
+
+/* PACKAGING SECTION */
+.pack-section { background: white; padding: 60px 2rem; border-top: 1px solid var(--border); }
+
+/* MODAL */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(10,22,40,.7); z-index: 9000; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
+.modal-overlay.open { display: flex; animation: fadeUp .3s ease; }
+.modal { background: white; border-radius: 20px; max-width: 560px; width: calc(100% - 32px); padding: 36px; position: relative; max-height: 90vh; overflow-y: auto; animation: fadeUp .4s cubic-bezier(.34,1.56,.64,1); }
+.modal h3 { font-family: 'Playfair Display',serif; font-size: 22px; color: var(--navy); margin-bottom: 6px; }
+.modal .msub { font-size: 13px; color: var(--text-light); margin-bottom: 28px; }
+.modal-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; background: var(--cream); border: none; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: background .2s; }
+.modal-close:hover { background: var(--border); }
+.frow { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.fg { margin-bottom: 16px; }
+.sbtn { width: 100%; background: var(--navy); color: white; padding: 13px; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'DM Sans',sans-serif; transition: all .2s; margin-top: 6px; }
+.sbtn:hover { background: var(--navy-mid); transform: translateY(-1px); }
+.fsuccess { display: none; background: var(--green-light); border: 1px solid var(--green); border-radius: 10px; padding: 18px; text-align: center; color: var(--green); font-weight: 600; margin-top: 12px; font-size: 14px; }
+.selected-product-label { background: var(--gold-light); color: var(--gold-dark); padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 20px; display: inline-block; }
+
+@media(max-width:900px){ .prod-grid { grid-template-columns: 1fr 1fr; } .frow { grid-template-columns: 1fr; } }
+@media(max-width:600px){ .prod-grid { grid-template-columns: 1fr; } .modal { padding: 24px; } }
+</style>
+</head>
+<body>
+
+<div id="ticker-placeholder"></div>
+<div id="nav-placeholder"></div>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="sec-inner">
+    <div class="sec-label">Our Portfolio</div>
+    <h2 class="sec-title">Premium Agri-Products</h2>
+    <p>Every product sourced from verified farms across India — tested, graded and packaged to meet international import standards.</p>
+    <div class="cat-tabs" id="cat-tabs"></div>
+  </div>
+</div>
+
+<!-- PRODUCTS GRID -->
+<div class="prod-section">
+  <div class="sec-inner">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;flex-wrap:wrap;gap:12px">
+      <p id="results-count" style="font-size:14px;color:var(--text-light)"></p>
+      <div style="display:flex;gap:10px;align-items:center">
+        <label style="font-size:12px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin:0">Sort:</label>
+        <select id="sort-select" style="padding:8px 12px;font-size:13px;border:1.5px solid var(--border);border-radius:8px;background:white;color:var(--text);font-family:'DM Sans',sans-serif;cursor:pointer;outline:none">
+          <option value="default">Default</option>
+          <option value="name">Name A–Z</option>
+          <option value="cat">By Category</option>
+        </select>
+      </div>
+    </div>
+    <div class="prod-grid" id="prod-grid"></div>
+  </div>
+</div>
+
+<!-- PACKAGING -->
+<div class="pack-section">
+  <div class="sec-inner">
+    <div class="sec-header reveal">
+      <div class="sec-label">Packaging Solutions</div>
+      <h2 class="sec-title">Flexible Packaging for Every Market</h2>
+    </div>
+    <div class="feat-grid">
+      <div class="card-base feat-card reveal d1"><div class="feat-icon fi-navy">📦</div><h3>PP Woven Bags</h3><p>25kg &amp; 50kg HDPP woven bags with inner liner — standard for grains, paddy and bulk commodities globally.</p></div>
+      <div class="card-base feat-card reveal d2"><div class="feat-icon fi-green">🌿</div><h3>Jute Bags</h3><p>Eco-friendly 30–50kg jute bags preferred for organic products — widely accepted in European and North American markets.</p></div>
+      <div class="card-base feat-card reveal d3"><div class="feat-icon fi-gold">🔒</div><h3>Vacuum Sealed</h3><p>Moisture-proof vacuum pouches for spices and fox nuts — extends shelf life and preserves aroma and freshness.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ENQUIRY MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3>Request a Quote</h3>
+    <p class="msub">Fill your trade requirements. Our team responds within 24 hours.</p>
+    <div class="selected-product-label" id="modal-product-label">Product</div>
+    <input type="hidden" id="modal-product-id">
+    <div class="frow">
+      <div class="fg"><label>Full Name *</label><input type="text" id="f-name" placeholder="John Smith"></div>
+      <div class="fg"><label>Company *</label><input type="text" id="f-company" placeholder="Your Company Ltd."></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Email *</label><input type="email" id="f-email" placeholder="you@company.com"></div>
+      <div class="fg"><label>Country *</label><input type="text" id="f-country" placeholder="United Arab Emirates"></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Quantity</label><input type="text" id="f-qty" placeholder="e.g. 50 Metric Tons"></div>
+      <div class="fg"><label>Incoterm</label>
+        <select id="f-inco"><option>FOB</option><option>CIF</option><option>CFR</option><option>EXW</option><option>Not Sure</option></select>
+      </div>
+    </div>
+    <div class="fg"><label>Phone / WhatsApp</label><input type="text" id="f-phone" placeholder="+1 234 567 890"></div>
+    <div class="fg"><label>Message</label><textarea id="f-msg" placeholder="Packaging preferences, quality specs, destination port..."></textarea></div>
+    <button class="sbtn" id="sbtn" onclick="submitEnquiry()">Send Inquiry →</button>
+    <div class="fsuccess" id="fsuccess">✅ Inquiry received! Our trade team will contact you within 24 hours.</div>
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="../data/products.js"></script>
+<script src="../data/inquiries.js"></script>
+<script src="../js/logo.js"></script>
+<script src="../js/partials.js"></script>
+<script src="../js/shared.js"></script>
+<script>
+var SNEHA_API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? window.location.origin + '/sneha-enterprises/api/index.php' : window.location.origin + '/api/index.php';
+var ALL_PRODUCTS = [];
+var currentCat = 'all';
+
+async function loadAllProducts() {
+  try {
+    var res  = await fetch(SNEHA_API + '?route=products&active=1');
+    var data = await res.json();
+    ALL_PRODUCTS = data.products || [];
+  } catch(e) {
+    // Fallback to static
+    if (typeof PRODUCTS_DATA !== 'undefined') {
+      ALL_PRODUCTS = PRODUCTS_DATA.filter(function(p){ return p.active; }).map(function(p){
+        return Object.assign({}, p, { min_order: p.minOrder });
+      });
+    }
+  }
+  renderCategories();
+  renderProducts();
+}
+
+function renderCategories() {
+  var tabs = document.getElementById('cat-tabs');
+  if (!tabs) return;
+  var cats = { all: 'All Products' };
+  var catEmojis = { grains:'🌾', spices:'🟡', foxnuts:'🌿', vegetables:'🥦' };
+  ALL_PRODUCTS.forEach(function(p){
+    if (!cats[p.category]) {
+      cats[p.category] = (catEmojis[p.category]||'') + ' ' + p.category.charAt(0).toUpperCase() + p.category.slice(1);
+    }
+  });
+  tabs.innerHTML = '';
+  Object.keys(cats).forEach(function(cat) {
+    var btn = document.createElement('button');
+    btn.className = 'cat-tab' + (cat === 'all' ? ' active' : '');
+    btn.textContent = cats[cat];
+    btn.onclick = function() {
+      document.querySelectorAll('.cat-tab').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      currentCat = cat;
+      renderProducts();
+    };
+    tabs.appendChild(btn);
+  });
+}
+
+function renderProducts() {
+  var grid    = document.getElementById('prod-grid');
+  var sortVal = document.getElementById('sort-select').value;
+  if (!grid) return;
+
+  var products = ALL_PRODUCTS.filter(function(p){
+    return currentCat === 'all' || p.category === currentCat;
+  });
+  if (sortVal === 'name') products.sort(function(a,b){ return a.name.localeCompare(b.name); });
+  if (sortVal === 'cat')  products.sort(function(a,b){ return a.category.localeCompare(b.category); });
+
+  var countEl = document.getElementById('results-count');
+  if (countEl) countEl.textContent = 'Showing ' + products.length + ' product' + (products.length !== 1 ? 's' : '');
+
+  if (products.length === 0) {
+    grid.innerHTML = '<div class="empty-state"><div class="es-icon">🔍</div><h3>No products found</h3><p>Try selecting a different category.</p></div>';
+    return;
+  }
+
+  grid.innerHTML = products.map(function(p, i) {
+    var badge  = p.badge ? '<span class="prod-badge">' + p.badge + '</span>' : '';
+    var specsObj = typeof p.specs === 'string' ? JSON.parse(p.specs||'{}') : (p.specs||{});
+    var packArr  = typeof p.packaging === 'string' ? JSON.parse(p.packaging||'[]') : (p.packaging||[]);
+    var specs  = Object.entries(specsObj).slice(0,4).map(function(kv){
+      return '<div class="spec-item"><span class="spec-key">' + kv[0] + '</span><div class="spec-val">' + kv[1] + '</div></div>';
+    }).join('');
+    var packs  = packArr.map(function(pk){ return '<span class="pack-tag">' + pk + '</span>'; }).join('');
+    var moq    = p.min_order || p.minOrder || 'On Request';
+    return '<div class="prod-card reveal d' + ((i%3)+1) + '" data-id="' + p.id + '">' +
+      badge +
+      '<div class="prod-img" style="background:' + p.bg + '">' + p.emoji + '</div>' +
+      '<div class="prod-body">' +
+        '<h3>' + p.name + '</h3>' +
+        '<p>' + p.description + '</p>' +
+        (packs ? '<div class="pack-tags">' + packs + '</div>' : '') +
+        '<div class="prod-specs">' + specs + '</div>' +
+        '<div class="prod-footer">' +
+          '<div class="prod-origin"><span>Origin</span><strong>' + p.origin + '</strong></div>' +
+          '<div class="prod-moq"><span>Min Order</span><strong>' + moq + '</strong></div>' +
+          '<button class="enquire-btn" onclick="openModal(\'' + p.id + '\')">Enquire Now</button>' +
+        '</div>' +
+      '</div></div>';
+  }).join('');
+
+  grid.querySelectorAll('.reveal').forEach(function(el){ revealObserver.observe(el); });
+}
+
+function openModal(productId) {
+  var product = ALL_PRODUCTS.find(function(p){ return p.id === productId; });
+  if (!product) return;
+  document.getElementById('modal-product-label').textContent = product.emoji + ' ' + product.name;
+  document.getElementById('modal-product-id').value = productId;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  ['f-name','f-company','f-email','f-country','f-qty','f-phone','f-msg'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.value = '';
+  });
+  document.getElementById('sbtn').style.display = 'block';
+  document.getElementById('sbtn').textContent = 'Send Inquiry →';
+  document.getElementById('sbtn').disabled = false;
+  document.getElementById('fsuccess').style.display = 'none';
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modal').addEventListener('click', function(e){
+  if (e.target === this) closeModal();
+});
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeModal(); });
+
+async function submitEnquiry() {
+  var name    = document.getElementById('f-name').value.trim();
+  var email   = document.getElementById('f-email').value.trim();
+  var company = document.getElementById('f-company').value.trim();
+  if (!name || !email || !company) {
+    showToast('Please fill in name, email and company.', 'error'); return;
+  }
+  var productId = document.getElementById('modal-product-id').value;
+  var product   = ALL_PRODUCTS.find(function(p){ return p.id === productId; });
+  var payload   = {
+    name: name, email: email, company: company,
+    country:     document.getElementById('f-country').value,
+    phone:       document.getElementById('f-phone').value,
+    qty:         document.getElementById('f-qty').value,
+    incoterm:    document.getElementById('f-inco').value,
+    message:     document.getElementById('f-msg').value,
+    productId:   productId,
+    productName: product ? product.name : productId,
+    source:      'products-page'
+  };
+  var btn = document.getElementById('sbtn');
+  btn.textContent = 'Sending...'; btn.disabled = true;
+
+  try {
+    var res  = await fetch(SNEHA_API + '?route=inquiries', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    var data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Submission failed');
+    btn.style.display = 'none';
+    document.getElementById('fsuccess').style.display = 'block';
+    document.getElementById('fsuccess').innerHTML = '✅ Inquiry received! Reference: <strong>' + data.id + '</strong><br>Our team will contact you within 24 hours.';
+    showToast('✅ Saved to database! Ref: ' + data.id);
+  } catch(err) {
+    // Offline fallback
+    if (typeof InquiryStore !== 'undefined') {
+      var id = InquiryStore.save(payload);
+      btn.style.display = 'none';
+      document.getElementById('fsuccess').style.display = 'block';
+      showToast('Saved locally. Ref: ' + id, 'warn');
+    } else {
+      btn.textContent = 'Send Inquiry →'; btn.disabled = false;
+      showToast('Error: ' + err.message, 'error');
+    }
+  }
+}
+
+document.getElementById('sort-select').addEventListener('change', renderProducts);
+
+window.addEventListener('DOMContentLoaded', loadAllProducts);
+</script>
+</body>
+</html>
