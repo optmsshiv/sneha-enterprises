@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sneha Enterprises — Global Agri Export & Import</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-dark: #8B6914;
+    --cream: #FAF6EF;
+    --deep: #0E1A0F;
+    --green: #1A3320;
+    --green-mid: #2D5238;
+    --green-light: #4A7C59;
+    --muted: #8A9B8D;
+    --border: rgba(201,168,76,0.25);
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--deep);
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* Animated grain texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  /* Background decorative blobs */
+  .bg-blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .blob-1 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(42,90,55,0.4) 0%, transparent 70%);
+    top: -150px; left: -100px;
+  }
+  .blob-2 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+    bottom: 50px; right: -80px;
+  }
+  .blob-3 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(26,51,32,0.6) 0%, transparent 70%);
+    top: 40%; left: 55%;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+  }
+
+  /* TOP NAV */
+  .topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    z-index: 100;
+    background: linear-gradient(to bottom, rgba(14,26,15,0.9) 0%, transparent 100%);
+  }
+  .topbar-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+  }
+  .topbar-tag {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* MAIN CONTENT */
+  .main {
+    text-align: center;
+    max-width: 820px;
+    width: 100%;
+    animation: fadeUp 1.2s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(32px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Decorative line */
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 28px;
+    animation: fadeUp 1.2s ease 0.1s both;
+  }
+  .eyebrow-line {
+    width: 48px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.6;
+  }
+  .eyebrow-text {
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 400;
+  }
+
+  .headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(56px, 9vw, 100px);
+    font-weight: 300;
+    line-height: 0.95;
+    color: var(--cream);
+    margin-bottom: 10px;
+    animation: fadeUp 1.2s ease 0.15s both;
+  }
+  .headline em {
+    font-style: italic;
+    color: var(--gold-light);
+    display: block;
+  }
+
+  .sub-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    animation: fadeUp 1.2s ease 0.2s both;
+  }
+
+  /* Gold divider */
+  .divider {
+    width: 100%;
+    max-width: 400px;
+    height: 1px;
+    margin: 0 auto 32px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    animation: fadeUp 1.2s ease 0.25s both;
+  }
+
+  .tagline {
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 520px;
+    margin: 0 auto 52px;
+    letter-spacing: 0.02em;
+    animation: fadeUp 1.2s ease 0.3s both;
+  }
+
+  /* COUNTDOWN */
+  .countdown {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 60px;
+    animation: fadeUp 1.2s ease 0.35s both;
+  }
+  .count-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px;
+  }
+  .count-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    min-width: 80px;
+    text-align: center;
+  }
+  .count-label {
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-top: 6px;
+  }
+  .count-sep {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 44px;
+    font-weight: 300;
+    color: var(--gold);
+    opacity: 0.5;
+    line-height: 1;
+    padding-top: 2px;
+    align-self: flex-start;
+    margin-top: 2px;
+  }
+
+  /* EMAIL FORM */
+  .notify-form {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    max-width: 480px;
+    margin: 0 auto 60px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    animation: fadeUp 1.2s ease 0.4s both;
+  }
+  .notify-form input {
+    flex: 1;
+    background: rgba(255,255,255,0.04);
+    border: none;
+    outline: none;
+    padding: 15px 20px;
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+  }
+  .notify-form input::placeholder {
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+  .notify-form button {
+    background: var(--gold);
+    border: none;
+    padding: 15px 28px;
+    color: var(--deep);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    white-space: nowrap;
+  }
+  .notify-form button:hover { background: var(--gold-light); }
+
+  /* PRODUCTS STRIP */
+  .products-section {
+    animation: fadeUp 1.2s ease 0.45s both;
+    margin-bottom: 64px;
+    width: 100%;
+  }
+  .products-label {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    opacity: 0.8;
+  }
+  .products-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  .product-pill {
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 8px 18px;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--cream);
+    text-transform: uppercase;
+    opacity: 0.75;
+    transition: all 0.25s ease;
+    cursor: default;
+  }
+  .product-pill:hover {
+    border-color: var(--gold);
+    color: var(--gold-light);
+    opacity: 1;
+  }
+  .product-pill .dot {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--gold);
+    margin-right: 8px;
+    opacity: 0.7;
+    vertical-align: middle;
+    margin-top: -2px;
+  }
+
+  /* BOTTOM STRIP */
+  .bottom-strip {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 48px;
+    border-top: 1px solid rgba(201,168,76,0.12);
+    background: linear-gradient(to top, rgba(14,26,15,0.95) 0%, transparent 100%);
+    z-index: 100;
+    animation: fadeUp 1.2s ease 0.6s both;
+  }
+  .bottom-info {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+  .bottom-info a {
+    color: var(--gold);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+  }
+  .social-links {
+    display: flex;
+    gap: 20px;
+  }
+  .social-links a {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .social-links a:hover { color: var(--gold); }
+
+  /* GLOBE ILLUSTRATION */
+  .globe-ring {
+    position: absolute;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .globe-container {
+    position: fixed;
+    right: -80px;
+    bottom: 60px;
+    width: 380px;
+    height: 380px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.12;
+  }
+
+  /* Success state */
+  .success-msg {
+    display: none;
+    font-size: 13px;
+    color: var(--gold-light);
+    letter-spacing: 0.1em;
+    margin-top: 10px;
+    text-align: center;
+  }
+  .success-msg.show { display: block; animation: fadeUp 0.5s ease both; }
+
+  @media (max-width: 600px) {
+    .topbar { padding: 16px 20px; }
+    .bottom-strip { padding: 14px 20px; flex-direction: column; gap: 8px; }
+    .count-num { font-size: 38px; }
+    .count-block { width: 60px; }
+    .globe-container { display: none; }
+    .notify-form { flex-direction: column; }
+    .notify-form input, .notify-form button { width: 100%; }
+    .notify-form { border-radius: 3px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-blob blob-1"></div>
+<div class="bg-blob blob-2"></div>
+<div class="bg-blob blob-3"></div>
+
+<!-- Decorative globe -->
+<div class="globe-container">
+  <svg viewBox="0 0 380 380" xmlns="http://www.w3.org/2000/svg" fill="none">
+    <circle cx="190" cy="190" r="160" stroke="#C9A84C" stroke-width="0.8"/>
+    <circle cx="190" cy="190" r="120" stroke="#C9A84C" stroke-width="0.5"/>
+    <circle cx="190" cy="190" r="80" stroke="#C9A84C" stroke-width="0.4"/>
+    <ellipse cx="190" cy="190" rx="160" ry="60" stroke="#C9A84C" stroke-width="0.5"/>
+    <ellipse cx="190" cy="190" rx="160" ry="110" stroke="#C9A84C" stroke-width="0.4"/>
+    <line x1="30" y1="190" x2="350" y2="190" stroke="#C9A84C" stroke-width="0.5"/>
+    <line x1="190" y1="30" x2="190" y2="350" stroke="#C9A84C" stroke-width="0.5"/>
+  </svg>
+</div>
+
+<!-- Top bar -->
+<header class="topbar">
+  <div class="topbar-logo">Sneha Enterprises</div>
+  <div class="topbar-tag">Established · Bihar, India</div>
+</header>
+
+<div class="wrapper">
+  <main class="main">
+
+    <div class="eyebrow">
+      <div class="eyebrow-line"></div>
+      <span class="eyebrow-text">Global Agri Trade · Est. India</span>
+      <div class="eyebrow-line"></div>
+    </div>
+
+    <h1 class="headline">
+      Grown with
+      <em>Purpose.</em>
+    </h1>
+
+    <p class="sub-brand">Sneha Enterprises</p>
+
+    <div class="divider"></div>
+
+    <p class="tagline">
+      A world-class export & import house specialising in premium grains, spices, and fresh produce — connecting Indian harvests to global markets.
+    </p>
+
+    <!-- Countdown -->
+    <div class="countdown">
+      <div class="count-block">
+        <span class="count-num" id="days">00</span>
+        <span class="count-label">Days</span>
+      </div>
+      <div class="count-sep">:</div>
+      <div class="count-block">
+        <span class="count-num" id="hours">00</span>
+        <span class="count-label">Hours</span>
+      </div>
+      <div class="count-sep">:</div>
+      <div class="count-block">
+        <span class="count-num" id="mins">00</span>
+        <span class="count-label">Minutes</span>
+      </div>
+      <div class="count-sep">:</div>
+      <div class="count-block">
+        <span class="count-num" id="secs">00</span>
+        <span class="count-label">Seconds</span>
+      </div>
+    </div>
+
+    <!-- Email form -->
+    <div class="notify-form" id="form-wrap">
+      <input type="email" id="email-input" placeholder="Your email address — be first to know" />
+      <button onclick="submitEmail()">Notify Me</button>
+    </div>
+    <div class="success-msg" id="success-msg">
+      ✦ &nbsp;Thank you. We'll reach you when we launch.
+    </div>
+
+    <!-- Products -->
+    <div class="products-section">
+      <p class="products-label">Our Export Portfolio</p>
+      <div class="products-grid">
+        <div class="product-pill"><span class="dot"></span>Wheat</div>
+        <div class="product-pill"><span class="dot"></span>Maize</div>
+        <div class="product-pill"><span class="dot"></span>Paddy & Rice</div>
+        <div class="product-pill"><span class="dot"></span>Turmeric</div>
+        <div class="product-pill"><span class="dot"></span>Fox Nuts (Makhana)</div>
+        <div class="product-pill"><span class="dot"></span>Fresh Vegetables</div>
+        <div class="product-pill"><span class="dot"></span>Assorted Spices</div>
+        <div class="product-pill"><span class="dot"></span>Grain Food Products</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Bottom bar -->
+<footer class="bottom-strip">
+  <div class="bottom-info">
+    &copy; 2025 Sneha Enterprises &nbsp;·&nbsp;
+    <a href="mailto:info@snehaenterprises.in">info@snehaenterprises.in</a>
+  </div>
+  <div class="social-links">
+    <a href="#">LinkedIn</a>
+    <a href="#">WhatsApp</a>
+    <a href="#">Contact</a>
+  </div>
+</footer>
+
+<script>
+  // Countdown — targeting 90 days from now
+  const target = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function tick() {
+    const now = new Date();
+    const diff = target - now;
+    if (diff <= 0) {
+      document.getElementById('days').textContent = '00';
+      document.getElementById('hours').textContent = '00';
+      document.getElementById('mins').textContent = '00';
+      document.getElementById('secs').textContent = '00';
+      return;
+    }
+    document.getElementById('days').textContent  = pad(Math.floor(diff / 86400000));
+    document.getElementById('hours').textContent = pad(Math.floor((diff % 86400000) / 3600000));
+    document.getElementById('mins').textContent  = pad(Math.floor((diff % 3600000) / 60000));
+    document.getElementById('secs').textContent  = pad(Math.floor((diff % 60000) / 1000));
+  }
+
+  tick();
+  setInterval(tick, 1000);
+
+  function submitEmail() {
+    const val = document.getElementById('email-input').value.trim();
+    if (!val || !val.includes('@')) {
+      document.getElementById('email-input').style.outline = '1px solid #E24B4A';
+      return;
+    }
+    document.getElementById('form-wrap').style.display = 'none';
+    document.getElementById('success-msg').classList.add('show');
+  }
+
+  document.getElementById('email-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') submitEmail();
+    this.style.outline = '';
+  });
+</script>
+</body>
+</html>
