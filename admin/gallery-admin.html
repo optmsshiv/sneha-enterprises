@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery Manager — Sneha Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin.css">
+<style>
+.stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:28px}
+
+/* UPLOAD ZONE */
+.upload-zone{border:2.5px dashed var(--border);border-radius:16px;padding:44px 24px;text-align:center;background:var(--cream);transition:all .25s;cursor:pointer;position:relative}
+.upload-zone.drag-over{border-color:var(--navy);background:#EEF1FB;transform:scale(1.005)}
+.upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;z-index:2}
+.upload-icon{font-size:46px;margin-bottom:12px;display:block}
+.upload-zone h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--navy);margin-bottom:7px}
+.upload-zone p{font-size:13px;color:var(--text-light);line-height:1.7}
+
+/* PROGRESS */
+.prog-wrap{display:none;background:var(--warm);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-top:16px}
+.prog-wrap.show{display:block}
+.prog-item{margin-bottom:10px}.prog-item:last-child{margin-bottom:0}
+.prog-row{display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--navy);margin-bottom:5px}
+.prog-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--navy),var(--gold));border-radius:3px;transition:width .3s;width:0%}
+
+/* BATCH CONFIRM */
+.batch-confirm{display:none;margin-top:16px}
+.batch-confirm.show{display:block}
+.batch-inner{background:var(--warm);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.batch-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:14px}
+.file-list{display:flex;flex-direction:column;gap:8px;max-height:240px;overflow-y:auto;margin-bottom:14px}
+.file-row{display:flex;gap:10px;align-items:center;background:white;border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+.file-thumb{width:48px;height:36px;object-fit:cover;border-radius:6px;flex-shrink:0;background:var(--warm)}
+.file-row input{flex:1;border:1.5px solid var(--border);border-radius:7px;padding:6px 10px;font-size:12px;font-family:'DM Sans',sans-serif;outline:none;color:var(--text)}
+.file-row input:focus{border-color:var(--navy)}
+.file-size{font-size:11px;color:var(--text-light);white-space:nowrap}
+
+/* GALLERY GRID */
+.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-top:4px}
+.gal-card{background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all .25s;position:relative;animation:fadeUp .35s ease both}
+.gal-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(26,46,107,.12)}
+.gal-card.inactive{opacity:.5}
+.gal-thumb{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--warm);cursor:pointer}
+.gal-info{padding:12px 14px}
+.gal-title{font-size:13px;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gal-meta{font-size:11px;color:var(--text-light);margin-top:3px}
+.gal-cat-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px;margin-top:6px;text-transform:capitalize}
+.cat-products{background:#FFF8E1;color:#8B6318}.cat-facility{background:#E3F2FD;color:#0D47A1}
+.cat-shipping{background:#E8EAF6;color:#1A237E}.cat-farms{background:#E8F5E9;color:#1B5E20}.cat-other{background:#F3E5F5;color:#4A148C}
+.gal-actions{padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:6px}
+.gal-overlay{position:absolute;top:8px;right:8px;display:flex;gap:5px;opacity:0;transition:opacity .2s}
+.gal-card:hover .gal-overlay{opacity:1}
+.gal-ov-btn{width:30px;height:30px;border-radius:8px;border:none;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.gal-ov-del{background:var(--red);color:white}.gal-ov-del:hover{background:#a93226}
+.gal-ov-edit{background:white;color:var(--navy)}.gal-ov-edit:hover{background:var(--navy);color:white}
+
+/* FILTER BAR */
+.gal-filter-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:20px}
+.gal-tab{padding:7px 18px;border-radius:20px;border:1.5px solid var(--border);background:white;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;color:var(--text-mid);font-family:'DM Sans',sans-serif}
+.gal-tab:hover,.gal-tab.active{background:var(--navy);color:white;border-color:var(--navy)}
+.gal-search{margin-left:auto;padding:7px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;min-width:200px;transition:border-color .2s}
+.gal-search:focus{border-color:var(--navy)}
+
+/* EMPTY */
+.gal-empty{text-align:center;padding:60px 20px;color:var(--text-light);font-size:13px;display:none}
+.gal-empty-icon{font-size:48px;margin-bottom:14px}
+.gal-empty h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--navy);margin-bottom:8px}
+
+/* TB BADGE */
+.tb-new-badge{background:var(--red-light);color:var(--red);padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px}
+
+/* EDIT MODAL */
+.edit-preview{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;background:var(--warm);margin-bottom:16px;display:block}
+.cat-opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.cat-opt{padding:6px 16px;border-radius:20px;border:1.5px solid var(--border);background:white;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;color:var(--text-mid)}
+.cat-opt.sel{background:var(--navy);color:white;border-color:var(--navy)}
+
+/* LIGHTBOX */
+#lb{display:none;position:fixed;inset:0;background:rgba(5,10,25,.95);z-index:9200;align-items:center;justify-content:center;backdrop-filter:blur(10px)}
+#lb.open{display:flex}
+.lb-inner{position:relative;max-width:880px;width:calc(100% - 40px);max-height:90vh}
+.lb-img{width:100%;max-height:78vh;object-fit:contain;border-radius:14px;display:block}
+.lb-close-btn{position:absolute;top:-42px;right:0;background:rgba(255,255,255,.15);border:none;color:white;font-size:18px;width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.lb-cap{text-align:center;margin-top:12px;color:rgba(255,255,255,.85);font-family:'Playfair Display',serif;font-size:15px;font-weight:600}
+.lb-sub{text-align:center;margin-top:4px;color:rgba(255,255,255,.5);font-size:12px}
+
+@media(max-width:900px){.stat-cards{grid-template-columns:1fr 1fr}.gal-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}.gal-search{min-width:140px}}
+@media(max-width:600px){.gal-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body style="display:flex">
+<div id="sidebar-placeholder"></div>
+<div class="main">
+  <div id="topbar-placeholder"></div>
+  <div class="content">
+
+    <!-- STAT CARDS -->
+    <div class="stat-cards">
+      <div class="stat-card sc-blue">
+        <div class="sc-icon">🖼️</div><div class="sc-num" id="sc-total">—</div>
+        <div class="sc-label">Total Images</div><div class="sc-change up" id="sc-last">Loading…</div>
+      </div>
+      <div class="stat-card sc-green">
+        <div class="sc-icon">🌾</div><div class="sc-num" id="sc-products">—</div>
+        <div class="sc-label">Products</div><div class="sc-change up">Category</div>
+      </div>
+      <div class="stat-card sc-gold">
+        <div class="sc-icon">🏭</div><div class="sc-num" id="sc-facility">—</div>
+        <div class="sc-label">Facility</div><div class="sc-change up">Category</div>
+      </div>
+      <div class="stat-card sc-red">
+        <div class="sc-icon">🚢</div><div class="sc-num" id="sc-shipping">—</div>
+        <div class="sc-label">Shipping & Farms</div><div class="sc-change up">Category</div>
+      </div>
+    </div>
+
+    <!-- UPLOAD PANEL -->
+    <div class="table-card" style="margin-bottom:20px">
+      <div class="table-head">
+        <h3>Upload Images</h3>
+        <span style="font-size:12px;color:var(--text-light)">JPG · PNG · WEBP — max 5 MB each · multiple allowed</span>
+      </div>
+      <div style="padding:20px">
+        <div class="upload-zone" id="upload-zone">
+          <input type="file" id="file-input" accept="image/*" multiple>
+          <span class="upload-icon">📸</span>
+          <h3>Drag & drop images here</h3>
+          <p>or click to browse · select multiple files at once</p>
+        </div>
+        <div class="prog-wrap" id="prog-wrap"></div>
+        <div class="batch-confirm" id="batch-confirm">
+          <div class="batch-inner">
+            <div class="batch-title">📝 Set details before uploading</div>
+            <div class="mrow" style="margin-bottom:12px">
+              <div class="mfg">
+                <label>Category (applies to all)</label>
+                <select id="batch-cat" class="filter-select" style="width:100%">
+                  <option value="products">🌾 Products</option>
+                  <option value="facility">🏭 Facility</option>
+                  <option value="shipping">🚢 Shipping</option>
+                  <option value="farms">🌱 Farms</option>
+                  <option value="other">📂 Other</option>
+                </select>
+              </div>
+              <div class="mfg">
+                <label>Sub-label / Location</label>
+                <input type="text" id="batch-sub" placeholder="e.g. Patna, Bihar" style="width:100%">
+              </div>
+            </div>
+            <div class="file-list" id="file-list"></div>
+            <div style="display:flex;gap:10px;justify-content:flex-end">
+              <button class="m-btn m-btn-cancel" onclick="cancelBatch()">Cancel</button>
+              <button class="m-btn m-btn-primary" id="upload-btn" onclick="doUpload()">✅ Upload to Gallery</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GALLERY MANAGER -->
+    <div class="table-card">
+      <div class="table-head">
+        <h3>Manage Gallery</h3>
+        <span id="gal-count" style="font-size:12px;color:var(--text-light)">Loading…</span>
+      </div>
+      <div style="padding:18px 20px 0">
+        <div class="gal-filter-bar">
+          <button class="gal-tab active" onclick="filterGal('all',this)">All</button>
+          <button class="gal-tab" onclick="filterGal('products',this)">🌾 Products</button>
+          <button class="gal-tab" onclick="filterGal('facility',this)">🏭 Facility</button>
+          <button class="gal-tab" onclick="filterGal('shipping',this)">🚢 Shipping</button>
+          <button class="gal-tab" onclick="filterGal('farms',this)">🌱 Farms</button>
+          <button class="gal-tab" onclick="filterGal('other',this)">📂 Other</button>
+          <input class="gal-search" type="text" placeholder="🔍 Search images…" oninput="searchGal(this.value)">
+        </div>
+      </div>
+      <div style="padding:0 20px 20px">
+        <div class="gal-grid"  id="gal-grid"></div>
+        <div class="gal-empty" id="gal-empty">
+          <div class="gal-empty-icon">🖼️</div>
+          <h3>No images yet</h3>
+          <p>Upload your first photos using the panel above.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <div class="modal-avatar">🖼️</div>
+        <div>
+          <div class="modal-name">Edit Image</div>
+          <div class="modal-submeta" id="edit-meta">Update title, category & location</div>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closeModal('edit-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <img id="edit-preview" class="edit-preview" src="" alt="">
+      <div class="mfg">
+        <label>Title</label>
+        <input type="text" id="edit-title" placeholder="e.g. Premium Wheat Sacks">
+      </div>
+      <div class="mfg">
+        <label>Sub-label / Location</label>
+        <input type="text" id="edit-sub" placeholder="e.g. Madhya Pradesh Farms">
+      </div>
+      <div class="mfg">
+        <label>Category</label>
+        <div class="cat-opts" id="edit-cat-opts">
+          <button class="cat-opt" data-cat="products" onclick="selCat(this)">🌾 Products</button>
+          <button class="cat-opt" data-cat="facility" onclick="selCat(this)">🏭 Facility</button>
+          <button class="cat-opt" data-cat="shipping" onclick="selCat(this)">🚢 Shipping</button>
+          <button class="cat-opt" data-cat="farms"    onclick="selCat(this)">🌱 Farms</button>
+          <button class="cat-opt" data-cat="other"    onclick="selCat(this)">📂 Other</button>
+        </div>
+      </div>
+      <div class="mfg">
+        <label>Display Order <small style="color:var(--text-light);font-weight:400">(lower = first)</small></label>
+        <input type="number" id="edit-order" min="0" placeholder="0">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-left">
+        <button class="m-btn m-btn-danger" onclick="deleteFromEdit()">🗑️ Delete</button>
+      </div>
+      <div class="modal-footer-right">
+        <button class="m-btn m-btn-cancel" onclick="closeModal('edit-modal')">Cancel</button>
+        <button class="m-btn m-btn-primary" onclick="saveEdit()">💾 Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lb" onclick="closeLbBg(event)">
+  <div class="lb-inner">
+    <button class="lb-close-btn" onclick="closeLb()">✕</button>
+    <img id="lb-img" class="lb-img" src="" alt="">
+    <div class="lb-cap" id="lb-cap"></div>
+    <div class="lb-sub" id="lb-sub"></div>
+  </div>
+</div>
+
+<script src="js/layout.js"></script>
+<script src="js/admin-shared.js"></script>
+<script>
+injectLayout('Gallery Manager');
+
+const CAT_LABELS = {
+  products:'🌾 Products', facility:'🏭 Facility',
+  shipping:'🚢 Shipping', farms:'🌱 Farms', other:'📂 Other'
+};
+
+let ALL_ITEMS    = [];
+let activeFilter = 'all';
+let searchQuery  = '';
+let editingId    = null;
+let pendingFiles = [];
+
+// ── LOAD ──────────────────────────────────────────────────────
+async function loadGallery() {
+  try {
+    const data = await api.get('/gallery');
+    ALL_ITEMS = data.items || [];
+    renderGrid();
+    loadStats();
+  } catch(e) { toast('Failed to load gallery: ' + e.message, 'error'); }
+}
+
+async function loadStats() {
+  try {
+    const s = await api.get('/gallery/stats');
+    document.getElementById('sc-total').textContent = s.total;
+    const byCat = {};
+    (s.by_category || []).forEach(r => byCat[r.category] = r.count);
+    document.getElementById('sc-products').textContent = byCat.products || 0;
+    document.getElementById('sc-facility').textContent = byCat.facility || 0;
+    document.getElementById('sc-shipping').textContent = (byCat.shipping||0) + (byCat.farms||0);
+    document.getElementById('sc-last').textContent = s.latest_upload
+      ? 'Last: ' + fmtDateShort(s.latest_upload) : 'No uploads yet';
+  } catch(e) {}
+}
+
+// ── RENDER ────────────────────────────────────────────────────
+function renderGrid() {
+  let items = [...ALL_ITEMS];
+  if (activeFilter !== 'all') items = items.filter(i => i.category === activeFilter);
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    items = items.filter(i =>
+      (i.title||'').toLowerCase().includes(q) || (i.sub_label||'').toLowerCase().includes(q));
+  }
+  items.sort((a,b) => (a.sort_order||0)-(b.sort_order||0) || new Date(b.created_at)-new Date(a.created_at));
+
+  const grid  = document.getElementById('gal-grid');
+  const empty = document.getElementById('gal-empty');
+  document.getElementById('gal-count').textContent = `${items.length} image${items.length!==1?'s':''}`;
+
+  if (!items.length) { grid.innerHTML = ''; empty.style.display='block'; return; }
+  empty.style.display = 'none';
+
+  grid.innerHTML = items.map((item,i) => `
+    <div class="gal-card${item.active?'':' inactive'}" style="animation-delay:${i*35}ms">
+      <img class="gal-thumb" src="${esc(item.url)}" alt="${esc(item.title)}"
+           loading="lazy" onclick="openLb('${item.id}')"
+           onerror="this.style.background='var(--warm)';this.style.minHeight='120px'">
+      <div class="gal-overlay">
+        <button class="gal-ov-btn gal-ov-edit" onclick="openEdit('${item.id}')">✏️</button>
+        <button class="gal-ov-btn gal-ov-del"  onclick="quickDelete('${item.id}')">🗑️</button>
+      </div>
+      <div class="gal-info">
+        <div class="gal-title">${esc(item.title)}</div>
+        <div class="gal-meta">${esc(item.sub_label||'')}</div>
+        <span class="gal-cat-badge cat-${item.category}">${CAT_LABELS[item.category]||item.category}</span>
+        ${!item.active?'<span style="font-size:10px;color:var(--text-light);margin-left:4px">Hidden</span>':''}
+      </div>
+      <div class="gal-actions">
+        <button class="action-btn ab-view"  style="flex:1" onclick="openLb('${item.id}')">👁 Preview</button>
+        <button class="action-btn ab-edit"  style="flex:1" onclick="openEdit('${item.id}')">✏️ Edit</button>
+        <button class="action-btn ${item.active?'ab-toggle':'ab-toggle off'}" onclick="toggleItem('${item.id}')" title="${item.active?'Hide from site':'Show on site'}">
+          ${item.active?'✅':'🚫'}
+        </button>
+      </div>
+    </div>`).join('');
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+}
+
+function filterGal(cat,btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.gal-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGrid();
+}
+function searchGal(q) { searchQuery=q; renderGrid(); }
+
+// ── FILE INPUT & DRAG/DROP ────────────────────────────────────
+const zone = document.getElementById('upload-zone');
+const finput = document.getElementById('file-input');
+
+finput.addEventListener('change', e => handleFiles(e.target.files));
+zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('drag-over') });
+zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('drag-over'); handleFiles(e.dataTransfer.files); });
+
+function handleFiles(fileList) {
+  const valid = [...fileList].filter(f => f.type.startsWith('image/'));
+  if (!valid.length) { toast('Please select image files only.','warn'); return; }
+  const over = valid.filter(f => f.size > 5*1024*1024);
+  if (over.length) toast(`${over.length} file(s) exceed 5 MB — skipped.`,'warn');
+  const ok = valid.filter(f => f.size <= 5*1024*1024);
+  if (!ok.length) return;
+
+  const pw = document.getElementById('prog-wrap');
+  pw.classList.add('show');
+  pw.innerHTML = ok.map((f,i) => `
+    <div class="prog-item">
+      <div class="prog-row"><span>${f.name}</span><span id="pct-${i}">0%</span></div>
+      <div class="prog-bar"><div class="prog-fill" id="bar-${i}"></div></div>
+    </div>`).join('');
+
+  pendingFiles = [];
+  let done = 0;
+  ok.forEach((file,i) => {
+    const reader = new FileReader();
+    let p = 0;
+    const t = setInterval(() => {
+      p = Math.min(p + Math.random()*25, 88);
+      document.getElementById(`bar-${i}`).style.width = p+'%';
+      document.getElementById(`pct-${i}`).textContent = Math.round(p)+'%';
+    }, 60);
+    reader.onload = ev => {
+      clearInterval(t);
+      document.getElementById(`bar-${i}`).style.width = '100%';
+      document.getElementById(`pct-${i}`).textContent = '100%';
+      pendingFiles.push({ file, dataURL: ev.target.result,
+        name: file.name.replace(/\.[^.]+$/,'').replace(/[-_]/g,' ').replace(/\b\w/g,c=>c.toUpperCase()) });
+      if (++done === ok.length) setTimeout(() => { pw.classList.remove('show'); showBatch(); }, 500);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function showBatch() {
+  const bc = document.getElementById('batch-confirm');
+  document.getElementById('file-list').innerHTML = pendingFiles.map((pf,i) => `
+    <div class="file-row">
+      <img class="file-thumb" src="${pf.dataURL}" alt="">
+      <input type="text" id="ft-${i}" value="${esc(pf.name)}" placeholder="Image title">
+      <span class="file-size">${(pf.file.size/1024).toFixed(0)} KB</span>
+    </div>`).join('');
+  bc.classList.add('show');
+  bc.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function cancelBatch() {
+  pendingFiles = [];
+  document.getElementById('batch-confirm').classList.remove('show');
+  document.getElementById('file-input').value = '';
+}
+
+// ── UPLOAD TO SERVER ──────────────────────────────────────────
+async function doUpload() {
+  if (!pendingFiles.length) return;
+  const btn = document.getElementById('upload-btn');
+  btn.disabled = true; btn.textContent = '⏳ Uploading…';
+
+  const fd = new FormData();
+  fd.append('category',  document.getElementById('batch-cat').value);
+  fd.append('sub_label', document.getElementById('batch-sub').value.trim());
+  pendingFiles.forEach((pf,i) => {
+    fd.append('images[]', pf.file);
+    const el = document.getElementById(`ft-${i}`);
+    fd.append('title[]', el ? el.value.trim() : pf.name);
+  });
+
+  try {
+    // Multipart upload: don't set Content-Type, browser sets it with boundary
+    const base = (window.location.hostname==='localhost'||window.location.hostname==='127.0.0.1')
+      ? window.location.origin+'/sneha/api/index.php'
+      : window.location.origin+'/api/index.php';
+    const token = Auth.getToken();
+    const res = await fetch(base+'?route=gallery/upload', {
+      method:'POST',
+      headers: token ? {'Authorization':'Bearer '+token} : {},
+      body: fd
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error||'Upload failed');
+
+    toast(`✅ ${data.uploaded} image${data.uploaded!==1?'s':''} uploaded!`);
+    (data.errors||[]).forEach(e => toast('⚠️ '+e,'warn'));
+    cancelBatch();
+    await loadGallery();
+
+  } catch(e) {
+    toast('Upload failed: '+e.message, 'error');
+  }
+  btn.disabled = false; btn.textContent = '✅ Upload to Gallery';
+}
+
+// ── TOGGLE VISIBILITY ─────────────────────────────────────────
+async function toggleItem(id) {
+  try {
+    const res  = await api.patch(`/gallery/${id}/toggle`);
+    const item = ALL_ITEMS.find(i=>i.id===id);
+    if (item) item.active = res.active;
+    renderGrid();
+    toast(res.active ? 'Image visible on site.' : 'Image hidden from site.', 'info');
+  } catch(e) { toast('Failed: '+e.message,'error'); }
+}
+
+// ── DELETE ────────────────────────────────────────────────────
+async function quickDelete(id) {
+  const item = ALL_ITEMS.find(i=>i.id===id);
+  if (!item) return;
+  const ok = await confirmDelete(`Delete "${item.title}"?\nThis permanently removes the image file from the server.`);
+  if (!ok) return;
+  try {
+    await api.delete(`/gallery/${id}`);
+    ALL_ITEMS = ALL_ITEMS.filter(i=>i.id!==id);
+    renderGrid(); loadStats();
+    toast('Image deleted.','warn');
+  } catch(e) { toast('Delete failed: '+e.message,'error'); }
+}
+
+// ── EDIT MODAL ────────────────────────────────────────────────
+function openEdit(id) {
+  const item = ALL_ITEMS.find(i=>i.id===id);
+  if (!item) return;
+  editingId = id;
+  document.getElementById('edit-preview').src  = item.url;
+  document.getElementById('edit-title').value  = item.title||'';
+  document.getElementById('edit-sub').value    = item.sub_label||'';
+  document.getElementById('edit-order').value  = item.sort_order||0;
+  document.getElementById('edit-meta').textContent =
+    `Added ${fmtDateShort(item.created_at)} · ${(item.file_size/1024).toFixed(0)} KB · ${item.category}`;
+  document.querySelectorAll('.cat-opt').forEach(b=>b.classList.toggle('sel', b.dataset.cat===item.category));
+  openModal('edit-modal');
+}
+
+function selCat(btn) {
+  document.querySelectorAll('.cat-opt').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+async function saveEdit() {
+  const item = ALL_ITEMS.find(i=>i.id===editingId);
+  if (!item) return;
+  const sc = document.querySelector('.cat-opt.sel');
+  const payload = {
+    title:      document.getElementById('edit-title').value.trim(),
+    sub_label:  document.getElementById('edit-sub').value.trim(),
+    category:   sc ? sc.dataset.cat : item.category,
+    sort_order: parseInt(document.getElementById('edit-order').value)||0
+  };
+  try {
+    await api.put(`/gallery/${editingId}`, payload);
+    Object.assign(item, payload);
+    renderGrid(); closeModal('edit-modal');
+    toast('Image updated!'); loadStats();
+  } catch(e) { toast('Save failed: '+e.message,'error'); }
+}
+
+async function deleteFromEdit() {
+  closeModal('edit-modal');
+  await quickDelete(editingId);
+}
+
+// ── LIGHTBOX ──────────────────────────────────────────────────
+function openLb(id) {
+  const item = ALL_ITEMS.find(i=>i.id===id);
+  if (!item) return;
+  document.getElementById('lb-img').src = item.url;
+  document.getElementById('lb-cap').textContent = item.title;
+  document.getElementById('lb-sub').textContent = item.sub_label||CAT_LABELS[item.category]||'';
+  document.getElementById('lb').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeLb() {
+  document.getElementById('lb').classList.remove('open');
+  document.getElementById('lb-img').src='';
+  document.body.style.overflow='';
+}
+function closeLbBg(e) { if(e.target===document.getElementById('lb')) closeLb(); }
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeLb(); });
+
+// ── INIT ──────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', loadGallery);
+</script>
+</body>
+</html>

@@ -23,6 +23,7 @@ const SIDEBAR_HTML = `
     <div class="nav-section-label">Catalogue</div>
     <a class="nav-item" href="products.html"><span class="ni-icon">🌾</span>Products</a>
     <a class="nav-item" href="products.html?add=1"><span class="ni-icon">➕</span>Add Product</a>
+    <a class="nav-item" href="gallery-admin.html"><span class="ni-icon">🖼️</span>Gallery Manager</a>
     <div class="nav-section-label">Account</div>
     <a class="nav-item" href="settings.html"><span class="ni-icon">⚙️</span>Settings</a>
     <a class="nav-item" href="../index.html" target="_blank"><span class="ni-icon">🌐</span>View Website</a>

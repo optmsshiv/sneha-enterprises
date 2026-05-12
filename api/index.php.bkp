@@ -268,12 +268,5 @@ if ($r0 === 'dashboard') {
     ]);
 }
 
-// ════════════════════════════════════════════════
-//  GALLERY
-// ════════════════════════════════════════════════
-if ($r0 === 'gallery') {
-    require_once __DIR__ . '/gallery.php';
-}
-
 // FALLBACK
 respond(['error'=>'Endpoint not found','tip'=>'Try: api/index.php?route=health','route_received'=>$route],404);
