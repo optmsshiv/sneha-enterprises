@@ -778,45 +778,9 @@ function showToast(msg,type){ var t=document.createElement('div'); t.className='
 var pre = new URLSearchParams(window.location.search).get('product');
 if(pre){ window.addEventListener('load',function(){ var found = ALL_PRODUCTS.find(function(p){ return p.id === pre; }); if(found) openModal(pre); }); }
 
-// ── INIT — API first, hardcoded fallback ──
-async function loadProducts() {
-  var SNEHA_API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-    ? window.location.origin + '/sneha-enterprises/api/index.php'
-    : window.location.origin + '/api/index.php';
-
-  try {
-    var res  = await fetch(SNEHA_API + '?route=products&active=1');
-    if (!res.ok) throw new Error('API error ' + res.status);
-    var data = await res.json();
-    if (data.products && data.products.length > 0) {
-      // Normalise API response fields to match local data shape
-      ALL_PRODUCTS = data.products.map(function(p) {
-        return {
-          id:          p.id,
-          name:        p.name,
-          category:    p.category,
-          emoji:       p.emoji       || '🌾',
-          badge:       p.badge       || '',
-          bg:          p.bg          || 'linear-gradient(135deg,#FFF8E1,#FFF0C0)',
-          origin:      p.origin      || '',
-          description: p.description || '',
-          specs:       typeof p.specs    === 'object' ? p.specs    : {},
-          packaging:   Array.isArray(p.packaging) ? p.packaging : [],
-          minOrder:    p.min_order   || p.minOrder || 'On Request',
-          active:      true
-        };
-      });
-    }
-  } catch(e) {
-    // API unavailable — ALL_PRODUCTS already has hardcoded fallback data
-    console.warn('Products API unavailable, using local data:', e.message);
-  }
-
-  renderCategories();
-  renderProducts();
-}
-
-loadProducts();
+// ── INIT ──
+renderCategories();
+renderProducts();
 </script>
 </body>
 </html>
