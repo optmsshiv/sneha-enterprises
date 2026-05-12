@@ -221,8 +221,10 @@ const API_BASE = (() => {
 })();
 
 async function apiFetch(route) {
-  const url = API_BASE + '?route=' + encodeURIComponent(route.replace(/^\//,''));
-  const res  = await fetch(url);
+  const [path, qs] = route.replace(/^\//, '').split('?');
+  let url = API_BASE + '?route=' + encodeURIComponent(path);
+  if (qs) url += '&' + qs;
+  const res = await fetch(url);
   if (!res.ok) throw new Error('API error ' + res.status);
   return res.json();
 }
