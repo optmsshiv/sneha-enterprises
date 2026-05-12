@@ -204,87 +204,187 @@
 
 <div id="footer-placeholder"></div>
 
-<script src="../data/products.js"></script>
-<script src="../data/inquiries.js"></script>
 <script src="../js/logo.js"></script>
 <script src="../js/partials.js"></script>
 <script src="../js/shared.js"></script>
 <script>
-// ── GALLERY DATA ─────────────────────────────────────────────
-// Replace src with real image paths like '../assets/images/wheat-farm.jpg'
-const GALLERY_ITEMS = [
-  { emoji:'🌾', bg:'linear-gradient(135deg,#FFF8E1,#FFD54F)', title:'Premium Wheat', sub:'Madhya Pradesh Farms', cat:'products', tall:true },
-  { emoji:'🌽', bg:'linear-gradient(135deg,#FFFDE7,#FFF176)', title:'Yellow Maize', sub:'Maharashtra', cat:'products' },
-  { emoji:'🏭', bg:'linear-gradient(135deg,#E3F2FD,#BBDEFB)', title:'Warehouse Facility', sub:'Patna, Bihar', cat:'facility', tall:true },
-  { emoji:'🟡', bg:'linear-gradient(135deg,#FFF3E0,#FFCC80)', title:'Turmeric Fingers', sub:'Erode, Tamil Nadu', cat:'products' },
-  { emoji:'🚢', bg:'linear-gradient(135deg,#E8EAF6,#C5CAE9)', title:'Container Loading', sub:'Kolkata Port', cat:'shipping' },
-  { emoji:'🌿', bg:'linear-gradient(135deg,#F3E5F5,#E1BEE7)', title:'Fox Nuts (Makhana)', sub:'Darbhanga, Bihar', cat:'products', tall:true },
-  { emoji:'🌱', bg:'linear-gradient(135deg,#E8F5E9,#A5D6A7)', title:'Paddy Fields', sub:'West Bengal', cat:'farms' },
-  { emoji:'📦', bg:'linear-gradient(135deg,#EFEBE9,#D7CCC8)', title:'PP Bag Packing', sub:'Processing Unit', cat:'facility' },
-  { emoji:'🧅', bg:'linear-gradient(135deg,#FFF3E0,#FFAB40)', title:'Red Onions', sub:'Nashik, Maharashtra', cat:'products' },
-  { emoji:'🚛', bg:'linear-gradient(135deg,#E8EAF6,#9FA8DA)', title:'Truck Dispatch', sub:'Loading Bay', cat:'shipping', tall:true },
-  { emoji:'🌾', bg:'linear-gradient(135deg,#F9FBE7,#DCEDC8)', title:'Wheat Harvest', sub:'Rajasthan Fields', cat:'farms' },
-  { emoji:'🌶', bg:'linear-gradient(135deg,#FFEBEE,#EF9A9A)', title:'Red Chilli Drying', sub:'Andhra Pradesh', cat:'products' },
-  { emoji:'🔬', bg:'linear-gradient(135deg,#E3F2FD,#90CAF9)', title:'Lab Quality Check', sub:'Testing Facility', cat:'facility' },
-  { emoji:'🚢', bg:'linear-gradient(135deg,#E8EAF6,#C5CAE9)', title:'Port of Mumbai', sub:'Export Terminal', cat:'shipping' },
-  { emoji:'🥦', bg:'linear-gradient(135deg,#E8F5E9,#66BB6A)', title:'Fresh Vegetables', sub:'Pan India Farms', cat:'farms' },
-];
+// ══════════════════════════════════════════════════════════════
+//  SNEHA GALLERY — Dynamic, loaded from MySQL via API
+// ══════════════════════════════════════════════════════════════
 
-let filteredItems = [...GALLERY_ITEMS];
-let currentLbIdx = 0;
+// API base — same logic as admin-shared.js
+const API_BASE = (() => {
+  const loc = window.location;
+  if (loc.hostname === 'localhost' || loc.hostname === '127.0.0.1')
+    return loc.origin + '/sneha/api/index.php';
+  return loc.origin + '/api/index.php';
+})();
 
-function renderGallery(items) {
-  const grid = document.getElementById('gallery-grid');
-  grid.innerHTML = items.map((item, i) => `
-    <div class="gallery-item${item.tall?' tall':''}" data-idx="${i}" onclick="openLightbox(${i})" style="display:${item._hidden?'none':'block'}">
-      <div class="gimg-placeholder" style="background:${item.bg};min-height:${item.tall?'280px':'180px'}">${item.emoji}</div>
-      <div class="gallery-overlay">
-        <div class="gallery-title">${item.title}</div>
-        <div class="gallery-cat">${item.sub}</div>
-      </div>
-    </div>`).join('');
-  items.forEach((_, i) => {
-    const el = grid.children[i];
-    if (el) setTimeout(() => el.style.animation = `fadeUp .4s ${i*0.05}s both`, 10);
-  });
+async function apiFetch(route) {
+  const url = API_BASE + '?route=' + encodeURIComponent(route.replace(/^\//,''));
+  const res  = await fetch(url);
+  if (!res.ok) throw new Error('API error ' + res.status);
+  return res.json();
 }
 
+// ── STATE ─────────────────────────────────────────────────────
+let ALL_ITEMS      = [];   // all active images from DB
+let FILTERED_ITEMS = [];   // currently shown after tab filter
+let currentLbIdx   = 0;
+let activeFilter   = 'all';
+
+// ── LOAD FROM API ─────────────────────────────────────────────
+async function loadGallery() {
+  const grid = document.getElementById('gallery-grid');
+
+  // Show skeleton while loading
+  grid.innerHTML = Array(6).fill(0).map(() => `
+    <div class="gallery-item" style="pointer-events:none">
+      <div class="gimg-placeholder" style="background:linear-gradient(135deg,#F0F2F8,#E4E8F0);min-height:200px;animation:pulse 1.5s infinite alternate">
+        <span style="opacity:.3">🖼️</span>
+      </div>
+    </div>`).join('');
+
+  try {
+    const data = await apiFetch('/gallery?active=1');
+    ALL_ITEMS = data.items || [];
+
+    if (!ALL_ITEMS.length) {
+      grid.innerHTML = `
+        <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-light)">
+          <div style="font-size:48px;margin-bottom:14px">🖼️</div>
+          <h3 style="font-family:'Playfair Display',serif;font-size:20px;color:var(--navy);margin-bottom:8px">Gallery Coming Soon</h3>
+          <p style="font-size:13px">We're uploading our photos. Check back soon!</p>
+        </div>`;
+      // Hide upload CTA since it's a dev hint
+      document.querySelector('.upload-cta')?.remove();
+      return;
+    }
+
+    // Remove the "add photos" dev hint — we have real images now
+    document.querySelector('.upload-cta')?.remove();
+
+    applyFilter(activeFilter);
+
+  } catch(e) {
+    console.error('Gallery load failed:', e);
+    grid.innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-light);font-size:13px">
+        Unable to load gallery. Please refresh the page.
+      </div>`;
+  }
+}
+
+// ── FILTER ────────────────────────────────────────────────────
 function filterGallery(cat, btn) {
   document.querySelectorAll('.gtab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  filteredItems = cat === 'all' ? [...GALLERY_ITEMS] : GALLERY_ITEMS.filter(item => item.cat === cat);
-  renderGallery(filteredItems);
+  activeFilter = cat;
+  applyFilter(cat);
 }
 
+function applyFilter(cat) {
+  FILTERED_ITEMS = cat === 'all'
+    ? [...ALL_ITEMS]
+    : ALL_ITEMS.filter(item => item.category === cat);
+  renderGallery(FILTERED_ITEMS);
+}
+
+// ── RENDER GRID ───────────────────────────────────────────────
+function renderGallery(items) {
+  const grid = document.getElementById('gallery-grid');
+
+  if (!items.length) {
+    grid.innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--text-light)">
+        <div style="font-size:36px;margin-bottom:10px">🔍</div>
+        <p style="font-size:13px">No images in this category yet.</p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = items.map((item, i) => `
+    <div class="gallery-item" data-idx="${i}" onclick="openLightbox(${i})">
+      <img
+        class="gallery-img"
+        src="${escHtml(item.url)}"
+        alt="${escHtml(item.title)}"
+        loading="lazy"
+        onerror="this.parentElement.querySelector('.gallery-img').style.display='none';this.parentElement.querySelector('.img-fallback').style.display='flex'"
+      >
+      <div class="img-fallback gimg-placeholder" style="display:none;background:linear-gradient(135deg,#F0F2F8,#E4E8F0);min-height:180px">🖼️</div>
+      <div class="gallery-overlay">
+        <div class="gallery-title">${escHtml(item.title)}</div>
+        <div class="gallery-cat">${escHtml(item.sub_label || catLabel(item.category))}</div>
+      </div>
+    </div>`).join('');
+
+  // Staggered fade-in
+  [...grid.children].forEach((el, i) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(16px)';
+    setTimeout(() => {
+      el.style.transition = `opacity .4s ${i*0.04}s, transform .4s ${i*0.04}s`;
+      el.style.opacity    = '1';
+      el.style.transform  = 'translateY(0)';
+    }, 20);
+  });
+}
+
+function catLabel(cat) {
+  return { products:'Products', facility:'Facility', shipping:'Shipping', farms:'Farms', other:'Gallery' }[cat] || 'Gallery';
+}
+
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+}
+
+// ── LIGHTBOX ──────────────────────────────────────────────────
 function openLightbox(idx) {
   currentLbIdx = idx;
-  const item = filteredItems[idx];
-  document.getElementById('lb-content').innerHTML = `<div class="lb-emoji" style="background:${item.bg}">${item.emoji}</div>`;
-  document.getElementById('lb-caption').textContent = item.title;
-  document.getElementById('lb-sub').textContent = item.sub;
-  document.getElementById('lb-counter').textContent = `${idx+1} / ${filteredItems.length}`;
+  const item = FILTERED_ITEMS[idx];
+  if (!item) return;
+
+  document.getElementById('lb-content').innerHTML =
+    `<img class="lb-img" src="${escHtml(item.url)}" alt="${escHtml(item.title)}"
+          onerror="this.style.display='none'">`;
+  document.getElementById('lb-caption').textContent = item.title || '';
+  document.getElementById('lb-sub').textContent     = item.sub_label || catLabel(item.category);
+  document.getElementById('lb-counter').textContent = `${idx + 1} / ${FILTERED_ITEMS.length}`;
   document.getElementById('lightbox').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow = ''; }
-function closeLightboxOnBg(e) { if(e.target===document.getElementById('lightbox')) closeLightbox(); }
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeLightboxOnBg(e) {
+  if (e.target === document.getElementById('lightbox')) closeLightbox();
+}
+
 function lbNav(dir) {
-  currentLbIdx = (currentLbIdx + dir + filteredItems.length) % filteredItems.length;
+  currentLbIdx = (currentLbIdx + dir + FILTERED_ITEMS.length) % FILTERED_ITEMS.length;
   openLightbox(currentLbIdx);
 }
 
+// ── VIDEO ─────────────────────────────────────────────────────
 function openVideo(url) {
   document.getElementById('video-frame').src = url + '?autoplay=1';
   document.getElementById('video-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-function closeVideo(e) { if(e.target===document.getElementById('video-modal')) closeVideoModal(); }
+function closeVideo(e) {
+  if (e.target === document.getElementById('video-modal')) closeVideoModal();
+}
 function closeVideoModal() {
   document.getElementById('video-frame').src = '';
   document.getElementById('video-modal').classList.remove('open');
   document.body.style.overflow = '';
 }
 
+// ── KEYBOARD ──────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
   if (document.getElementById('lightbox').classList.contains('open')) {
     if (e.key === 'ArrowRight') lbNav(1);
@@ -294,7 +394,13 @@ document.addEventListener('keydown', e => {
   if (document.getElementById('video-modal').classList.contains('open') && e.key === 'Escape') closeVideoModal();
 });
 
-window.addEventListener('DOMContentLoaded', () => renderGallery(GALLERY_ITEMS));
+// ── PULSE ANIMATION (skeleton) ────────────────────────────────
+const style = document.createElement('style');
+style.textContent = `@keyframes pulse{from{opacity:.6}to{opacity:1}}`;
+document.head.appendChild(style);
+
+// ── INIT ──────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', loadGallery);
 </script>
 </body>
 </html>
