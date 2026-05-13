@@ -73,11 +73,11 @@ var FOOTER_HTML = `
 <!-- FLOATING CONTACT BUTTONS -->
 <div class="float-btns" id="float-btns">
   <div class="float-options" id="float-opts">
-    <a href="https://wa.me/919876543210?text=Hi%20Sneha%20Enterprises%2C%20I%20am%20interested%20in%20your%20products." target="_blank" class="float-option">
+    <a href="https://wa.me/917631711371?text=Hi%20Sneha%20Enterprises%2C%20I%20am%20interested%20in%20your%20products." target="_blank" class="float-option">
       <span class="float-label">WhatsApp Chat</span>
       <div class="float-icon fi-wa"><i class="fa-brands fa-whatsapp"></i></div>
     </a>
-    <a href="tel:+919876543210" class="float-option">
+    <a href="tel:+917631711371" class="float-option">
       <span class="float-label">Call Now</span>
       <div class="float-icon fi-call"><i class="fa-solid fa-phone"></i></div>
     </a>
@@ -106,8 +106,8 @@ var FOOTER_HTML = `
           <span style="font-size:11px;color:rgba(255,255,255,.4)">IEC · GST · FSSAI · APEDA · Phytosanitary</span>
         </div>
         <div style="display:flex;gap:10px;margin-top:16px">
-          <a href="https://wa.me/919876543210" target="_blank" style="width:36px;height:36px;border-radius:8px;background:#25D366;display:flex;align-items:center;justify-content:center;font-size:18px;text-decoration:none;color:white"><i class="fa-brands fa-whatsapp"></i></a>
-          <a href="tel:+919876543210" style="width:36px;height:36px;border-radius:8px;background:#233480;display:flex;align-items:center;justify-content:center;font-size:15px;text-decoration:none;color:white"><i class="fa-solid fa-phone"></i></a>
+          <a href="https://wa.me/917631711371" target="_blank" style="width:36px;height:36px;border-radius:8px;background:#25D366;display:flex;align-items:center;justify-content:center;font-size:18px;text-decoration:none;color:white"><i class="fa-brands fa-whatsapp"></i></a>
+          <a href="tel:+917631711371" style="width:36px;height:36px;border-radius:8px;background:#233480;display:flex;align-items:center;justify-content:center;font-size:15px;text-decoration:none;color:white"><i class="fa-solid fa-phone"></i></a>
           <a href="mailto:exports@snehaenterprises.in" style="width:36px;height:36px;border-radius:8px;background:#8B6318;display:flex;align-items:center;justify-content:center;font-size:15px;text-decoration:none;color:white"><i class="fa-solid fa-envelope"></i></a>
           <a href="https://maps.google.com/?q=25.5941,85.1376" target="_blank" style="width:36px;height:36px;border-radius:8px;background:#e74c3c;display:flex;align-items:center;justify-content:center;font-size:15px;text-decoration:none;color:white"><i class="fa-solid fa-location-dot"></i></a>
         </div>
@@ -132,16 +132,16 @@ var FOOTER_HTML = `
       <div class="footer-col">
         <h5>Contact</h5>
         <ul>
-          <li><a><i class="fa-solid fa-location-dot" style="color:var(--gold);margin-right:6px"></i>Patna, Bihar – 800001, India</a></li>
-          <li><a href="tel:+919876543210"><i class="fa-solid fa-phone" style="color:var(--gold);margin-right:6px"></i>+91 98765 43210</a></li>
+          <li><a><i class="fa-solid fa-location-dot" style="color:var(--gold);margin-right:6px"></i>Basanwara, Alamnagar, Madhepura, Bihar – 852210, India</a></li>
+          <li><a href="tel:+917631711371"><i class="fa-solid fa-phone" style="color:var(--gold);margin-right:6px"></i>+91 98765 43210</a></li>
           <li><a href="mailto:exports@snehaenterprises.in"><i class="fa-solid fa-envelope" style="color:var(--gold);margin-right:6px"></i>exports@snehaenterprises.in</a></li>
-          <li><a href="https://wa.me/919876543210" target="_blank"><i class="fa-brands fa-whatsapp" style="color:#25D366;margin-right:6px"></i>WhatsApp Available</a></li>
+          <li><a href="https://wa.me/917631711371" target="_blank"><i class="fa-brands fa-whatsapp" style="color:#25D366;margin-right:6px"></i>WhatsApp Available</a></li>
           <li><a><i class="fa-regular fa-clock" style="color:var(--gold);margin-right:6px"></i>Mon–Sat: 9 AM – 6 PM IST</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© <span id="footer-year"></span> Sneha Enterprises. All rights reserved. | Registered Exporter from India | Patna, Bihar</p>
+      <p>© <span id="footer-year"></span> Sneha Enterprises. All rights reserved. | Registered Exporter from India | Basanwara, Alamnagar, Madhepura, Bihar</p>
       <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:8px">
         <a href="pages/terms.html" style="font-size:11px;color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.9)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Terms &amp; Conditions</a>
         <span style="color:rgba(255,255,255,.2);font-size:11px">|</span>
@@ -150,8 +150,8 @@ var FOOTER_HTML = `
         <a href="pages/contact.html" style="font-size:11px;color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.9)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Contact Us</a>
       </div>
       <div class="footer-soc">
-        <div class="soc-btn" onclick="window.open('https://wa.me/919876543210','_blank')" title="WhatsApp" style="font-size:16px"><i class="fa-brands fa-whatsapp"></i></div>
-        <div class="soc-btn" onclick="window.open('tel:+919876543210')" title="Call" style="font-size:14px"><i class="fa-solid fa-phone"></i></div>
+        <div class="soc-btn" onclick="window.open('https://wa.me/917631711371','_blank')" title="WhatsApp" style="font-size:16px"><i class="fa-brands fa-whatsapp"></i></div>
+        <div class="soc-btn" onclick="window.open('tel:+917631711371')" title="Call" style="font-size:14px"><i class="fa-solid fa-phone"></i></div>
         <div class="soc-btn" onclick="window.open('mailto:exports@snehaenterprises.in')" title="Email" style="font-size:14px"><i class="fa-solid fa-envelope"></i></div>
       </div>
     </div>
