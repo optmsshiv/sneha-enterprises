@@ -178,8 +178,9 @@ if ($r0 === 'products') {
     // ── POST /api/products/upload-image ─────────────────────
     if (M()==='POST' && $r1==='upload-image') {
         auth();
-        $imgDir = dirname(__DIR__) . '/assets/gallery/';
-        $imgUrl = 'https://snehaenterprises.store/assets/gallery/';
+        $imgDir = $_SERVER['DOCUMENT_ROOT'] . '/sneha/assets/product_images/';
+        $imgUrl = 'https://snehaenterprises.store/assets/product_images/';
+        if (!is_dir($imgDir)) mkdir($imgDir, 0755, true);
         if (!is_dir($imgDir)) mkdir($imgDir,0755,true);
         if (empty($_FILES['image'])) respond(['error'=>'No image file. Use field name "image"'],400);
         $f=$_FILES['image'];
