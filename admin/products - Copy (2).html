@@ -173,6 +173,35 @@
       transform: scale(1.1);
     }
 
+    /* Image upload field */
+    .img-preview-box {
+      width: 100%;
+      height: 80px;
+      border-radius: 10px;
+      border: 1.5px dashed var(--border);
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-top: 6px;
+      transition: border-color .2s;
+    }
+
+    .img-preview-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 9px;
+    }
+
+    .img-preview-box .img-placeholder {
+      font-size: 11px;
+      color: var(--text-light);
+      text-align: center;
+      padding: 8px;
+    }
+
     /* Background preview */
     #bg-preview {
       height: 44px;
@@ -324,12 +353,6 @@
       border-style: solid;
     }
 
-    /* Image upload zone */
-    #img-upload-zone:hover {
-      border-color: var(--navy) !important;
-      background: #EEF1FB !important;
-    }
-
     /* Footer */
     .pm-footer {
       padding: 16px 28px;
@@ -443,57 +466,19 @@
         <div class="pm-section">
           <div class="pm-section-title">🎨 Appearance</div>
 
-          <!-- IMAGE UPLOAD -->
+          <!-- Image URL row (full width) -->
           <div class="pm-field" style="margin-bottom:14px">
-            <label>Product Image <span style="font-weight:400;text-transform:none;color:var(--text-light)">(optional —
-                shows instead of emoji if set)</span></label>
-            <div id="img-upload-zone"
-              style="border:2px dashed var(--border);border-radius:12px;padding:16px;background:var(--cream);cursor:pointer;position:relative;transition:all .2s"
-              onclick="document.getElementById('pm-img-file').click()"
-              ondragover="event.preventDefault();this.style.borderColor='var(--navy)'"
-              ondragleave="this.style.borderColor=''" ondrop="handleImgDrop(event)">
-              <input type="file" id="pm-img-file" accept="image/*" style="display:none"
-                onchange="handleImgFile(this.files[0])">
-              <div id="img-upload-placeholder" style="text-align:center">
-                <div style="font-size:28px;margin-bottom:6px">📷</div>
-                <div style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:2px">Click or drag to upload
-                  image</div>
-                <div style="font-size:11px;color:var(--text-light)">JPG, PNG, WEBP — max 2 MB</div>
-              </div>
-              <div id="img-preview-wrap" style="display:none;align-items:center;gap:12px">
-                <img id="img-preview" src="" alt=""
-                  style="width:64px;height:64px;object-fit:cover;border-radius:10px;border:1.5px solid var(--border)">
-                <div style="flex:1">
-                  <div id="img-preview-name" style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:4px">
-                  </div>
-                  <div id="img-preview-size" style="font-size:11px;color:var(--text-light);margin-bottom:8px"></div>
-                  <div style="display:flex;gap:6px">
-                    <button type="button" onclick="event.stopPropagation();clearImg()"
-                      style="font-size:11px;padding:4px 10px;border-radius:6px;border:1.5px solid var(--red);background:var(--red-light);color:var(--red);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600">✕
-                      Remove</button>
-                    <button type="button"
-                      onclick="event.stopPropagation();document.getElementById('pm-img-file').click()"
-                      style="font-size:11px;padding:4px 10px;border-radius:6px;border:1.5px solid var(--border);background:white;color:var(--navy);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600">↺
-                      Change</button>
-                  </div>
-                </div>
-              </div>
+            <label>Product Image URL <span style="font-weight:400;color:var(--text-light)">(optional — shown instead of
+                emoji if provided)</span></label>
+            <input id="pm-image" placeholder="https://example.com/product.jpg" oninput="updateImagePreview()">
+            <div class="img-preview-box" id="img-preview-box">
+              <div class="img-placeholder">🖼️ No image — emoji will be shown</div>
             </div>
-            <!-- OR paste URL -->
-            <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
-              <div style="flex:1;height:1px;background:var(--border)"></div>
-              <span style="font-size:10px;color:var(--text-light);font-weight:600">OR PASTE URL</span>
-              <div style="flex:1;height:1px;background:var(--border)"></div>
-            </div>
-            <input type="text" id="pm-image-url" placeholder="https://example.com/image.jpg" style="margin-top:8px"
-              oninput="onImageUrlInput(this.value)">
-            <input type="hidden" id="pm-image-url-final" value="">
           </div>
 
           <div class="pm-grid-2">
             <div class="pm-field">
-              <label>Emoji Icon <span style="font-weight:400;text-transform:none;color:var(--text-light)">(used when no
-                  image)</span></label>
+              <label>Emoji Icon <span style="font-weight:400;color:var(--text-light)">(fallback)</span></label>
               <div class="emoji-picker" id="emoji-picker"></div>
               <input type="hidden" id="pm-emoji" value="🌾">
             </div>
@@ -627,15 +612,14 @@
             : (rawSpecs || {});
           const specCount = Object.keys(specsNorm).length;
           const enquiries = inqCounts[p.id] || 0;
+          const thumbHtml = p.image_url
+            ? `<img src="${p.image_url}" alt="${p.name}" style="width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0;border:1.5px solid var(--border)" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+            + `<div style="display:none;width:44px;height:44px;border-radius:10px;background:${p.bg};align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${p.emoji}</div>`
+            : `<div style="width:44px;height:44px;border-radius:10px;background:${p.bg};display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${p.emoji}</div>`;
           return `<tr>
         <td>
           <div style="display:flex;align-items:center;gap:10px">
-            <div style="width:44px;height:44px;border-radius:10px;background:${p.bg};overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center">
-              ${p.image_url
-              ? `<img src="${p.image_url}" alt="${p.name}" style="width:44px;height:44px;object-fit:cover;border-radius:10px" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
-              : ''}
-              <span style="font-size:22px;${p.image_url ? 'display:none' : ''}">${p.emoji}</span>
-            </div>
+            ${thumbHtml}
             <div>
               <strong>${p.name}</strong>${badge}
               <div style="font-size:11px;color:var(--text-light);font-family:monospace">${p.id}</div>
@@ -715,7 +699,8 @@
       return specs;
     }
     function resetForm() {
-      ['pm-name', 'pm-origin', 'pm-moq', 'pm-desc', 'pm-pack'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+      ['pm-name', 'pm-origin', 'pm-moq', 'pm-desc', 'pm-pack', 'pm-image'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+      updateImagePreview();
       document.getElementById('pm-cat').value = 'grains';
       document.getElementById('pm-bg').value = 'linear-gradient(135deg,#FFF8E1,#FFF0C0)';
       document.getElementById('pm-emoji').value = '🌾';
@@ -728,9 +713,16 @@
       document.querySelectorAll('.badge-opt').forEach((b, i) => b.classList.toggle('selected', i === 0));
       renderEmojiPicker('🌾');
       updateBgPreview();
-      clearImg();
-      document.getElementById('pm-image-url').value = '';
-      document.getElementById('pm-image-url-final').value = '';
+    }
+
+    function updateImagePreview() {
+      const url = document.getElementById('pm-image').value.trim();
+      const box = document.getElementById('img-preview-box');
+      if (url) {
+        box.innerHTML = `<img src="${url}" alt="Preview" onerror="this.parentElement.innerHTML='<div class=\\'img-placeholder\\'>⚠️ Could not load image — check URL</div>'">`;
+      } else {
+        box.innerHTML = `<div class="img-placeholder">🖼️ No image — emoji will be shown</div>`;
+      }
     }
 
     document.getElementById('pm-bg').addEventListener('change', updateBgPreview);
@@ -760,15 +752,8 @@
         document.getElementById('pm-pack').value = (p.packaging || []).join(', ');
         document.getElementById('pm-bg').value = p.bg;
         document.getElementById('pm-emoji').value = p.emoji;
-        // Image
-        clearImg();
-        document.getElementById('pm-image-url-final').value = p.image_url || '';
-        if (p.image_url) {
-          document.getElementById('pm-image-url').value = p.image_url;
-          showImgPreviewFromUrl(p.image_url);
-        } else {
-          document.getElementById('pm-image-url').value = '';
-        }
+        document.getElementById('pm-image').value = p.image_url || '';
+        updateImagePreview();
         document.getElementById('pm-badge').value = p.badge || '';
         document.getElementById('pm-active').value = String(p.active);
         const track = document.getElementById('pm-track');
@@ -800,7 +785,7 @@
         name, origin, description: desc,
         category: document.getElementById('pm-cat').value,
         emoji: document.getElementById('pm-emoji').value || '🌾',
-        image_url: document.getElementById('pm-image-url-final').value.trim(),
+        image_url: document.getElementById('pm-image').value.trim() || null,
         badge: document.getElementById('pm-badge').value,
         bg: document.getElementById('pm-bg').value,
         packaging: document.getElementById('pm-pack').value.split(',').map(s => s.trim()).filter(Boolean),
@@ -836,62 +821,6 @@
         toast(`Deleted: ${name}`, 'warn');
         loadProducts();
       } catch (e) { toast('Delete failed: ' + e.message, 'error'); }
-    }
-
-    // ── IMAGE UPLOAD HELPERS ────────────────────────────────
-    let imgFileData = null; // base64 data URL if file uploaded
-
-    function handleImgFile(file) {
-      if (!file) return;
-      if (!file.type.startsWith('image/')) { toast('Please select an image file.', 'warn'); return; }
-      if (file.size > 2 * 1024 * 1024) { toast('Image must be under 2 MB.', 'warn'); return; }
-      const reader = new FileReader();
-      reader.onload = e => {
-        imgFileData = e.target.result;
-        document.getElementById('pm-image-url-final').value = imgFileData;
-        document.getElementById('pm-image-url').value = '';
-        showImgPreviewUI(imgFileData, file.name, (file.size / 1024).toFixed(0) + ' KB');
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function handleImgDrop(e) {
-      e.preventDefault();
-      document.getElementById('img-upload-zone').style.borderColor = '';
-      const file = e.dataTransfer.files[0];
-      if (file) handleImgFile(file);
-    }
-
-    function onImageUrlInput(url) {
-      imgFileData = null;
-      document.getElementById('pm-image-url-final').value = url.trim();
-      if (url.trim()) {
-        showImgPreviewFromUrl(url.trim());
-      } else {
-        clearImg();
-      }
-    }
-
-    function showImgPreviewFromUrl(url) {
-      showImgPreviewUI(url, url.split('/').pop().slice(0, 40), 'URL');
-    }
-
-    function showImgPreviewUI(src, name, size) {
-      document.getElementById('img-upload-placeholder').style.display = 'none';
-      const wrap = document.getElementById('img-preview-wrap');
-      wrap.style.display = 'flex';
-      document.getElementById('img-preview').src = src;
-      document.getElementById('img-preview-name').textContent = name;
-      document.getElementById('img-preview-size').textContent = size;
-    }
-
-    function clearImg() {
-      imgFileData = null;
-      document.getElementById('pm-img-file').value = '';
-      document.getElementById('pm-image-url-final').value = '';
-      document.getElementById('img-preview-wrap').style.display = 'none';
-      document.getElementById('img-upload-placeholder').style.display = 'block';
-      document.getElementById('img-preview').src = '';
     }
 
     window.addEventListener('DOMContentLoaded', () => {

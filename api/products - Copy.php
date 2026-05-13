@@ -77,14 +77,13 @@ if ($method === 'POST' && !$prodId) {
     $sortOrder = (int)$db->query('SELECT COUNT(*) FROM products')->fetchColumn() + 1;
 
     $db->prepare("
-        INSERT INTO products (id, name, category, emoji, image_url, badge, bg, origin, description, specs, packaging, min_order, active, sort_order)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO products (id, name, category, emoji, badge, bg, origin, description, specs, packaging, min_order, active, sort_order)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ")->execute([
         $id,
         $data['name'],
         $data['category'],
         $data['emoji']      ?? '🌾',
-        $data['image_url']  ?? '',
         $data['badge']      ?? '',
         $data['bg']         ?? 'linear-gradient(135deg,#FFF8E1,#FFF0C0)',
         $data['origin']     ?? '',
@@ -109,14 +108,13 @@ if ($method === 'PUT' && $prodId && !$isToggle) {
     $data = body();
     $db->prepare("
         UPDATE products SET
-        name=?, category=?, emoji=?, image_url=?, badge=?, bg=?, origin=?, description=?,
+        name=?, category=?, emoji=?, badge=?, bg=?, origin=?, description=?,
         specs=?, packaging=?, min_order=?, active=?, updated_at=NOW()
         WHERE id=?
     ")->execute([
         $data['name'],
         $data['category'],
         $data['emoji']      ?? '🌾',
-        $data['image_url']  ?? '',
         $data['badge']      ?? '',
         $data['bg']         ?? '',
         $data['origin']     ?? '',
