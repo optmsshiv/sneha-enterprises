@@ -142,8 +142,8 @@ if ($r0 === 'products') {
         $chk=$db->prepare('SELECT 1 FROM products WHERE id=?'); $chk->execute([$id]);
         if($chk->fetch()) $id.='-'.substr(bin2hex(random_bytes(2)),0,4);
         $sort=(int)$db->query('SELECT COUNT(*) FROM products')->fetchColumn()+1;
-        $db->prepare('INSERT INTO products(id,name,category,emoji,badge,bg,origin,description,specs,packaging,min_order,active,sort_order)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)')->execute([
-            $id,$d['name'],$d['category'],$d['emoji']??'🌾',$d['badge']??'',$d['bg']??'linear-gradient(135deg,#FFF8E1,#FFF0C0)',
+        $db->prepare('INSERT INTO products(id,name,category,emoji,image_url,badge,bg,origin,description,specs,packaging,min_order,active,sort_order)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)')->execute([
+            $id,$d['name'],$d['category'],$d['emoji']??'🌾',$d['image_url']??'',$d['badge']??'',$d['bg']??'linear-gradient(135deg,#FFF8E1,#FFF0C0)',
             $d['origin']??'',$d['description']??'',
             json_encode($d['specs']??[],JSON_UNESCAPED_UNICODE),json_encode($d['packaging']??[],JSON_UNESCAPED_UNICODE),
             $d['minOrder']??'On Request',isset($d['active'])?($d['active']?1:0):1,$sort]);
@@ -154,8 +154,8 @@ if ($r0 === 'products') {
         $chk=$db->prepare('SELECT 1 FROM products WHERE id=?'); $chk->execute([$pid]);
         if(!$chk->fetch()) apiErr('Not found',404);
         $d=body();
-        $db->prepare('UPDATE products SET name=?,category=?,emoji=?,badge=?,bg=?,origin=?,description=?,specs=?,packaging=?,min_order=?,active=?,updated_at=NOW() WHERE id=?')->execute([
-            $d['name'],$d['category'],$d['emoji']??'🌾',$d['badge']??'',$d['bg']??'',$d['origin']??'',$d['description']??'',
+        $db->prepare('UPDATE products SET name=?,category=?,emoji=?,image_url=?,badge=?,bg=?,origin=?,description=?,specs=?,packaging=?,min_order=?,active=?,updated_at=NOW() WHERE id=?')->execute([
+            $d['name'],$d['category'],$d['emoji']??'🌾',$d['image_url']??'',$d['badge']??'',$d['bg']??'',$d['origin']??'',$d['description']??'',
             json_encode($d['specs']??[],JSON_UNESCAPED_UNICODE),json_encode($d['packaging']??[],JSON_UNESCAPED_UNICODE),
             $d['minOrder']??'On Request',isset($d['active'])?($d['active']?1:0):1,$pid]);
         respond(['message'=>'Updated','id'=>$pid]);
@@ -181,18 +181,18 @@ if ($r0 === 'products') {
         $imgDir = $_SERVER['DOCUMENT_ROOT'] . '/sneha/assets/product_images/';
         $imgUrl = 'https://snehaenterprises.store/assets/product_images/';
         if (!is_dir($imgDir)) mkdir($imgDir, 0755, true);
-        if (!is_dir($imgDir)) mkdir($imgDir,0755,true);
-        if (empty($_FILES['image'])) respond(['error'=>'No image file. Use field name "image"'],400);
-        $f=$_FILES['image'];
-        if ($f['error']!==UPLOAD_ERR_OK) respond(['error'=>'Upload error: '.$f['error']],400);
-        if ($f['size']>5*1024*1024)      respond(['error'=>'Image exceeds 5 MB'],400);
-        $mime=mime_content_type($f['tmp_name']);
-        if (!in_array($mime,['image/jpeg','image/png','image/webp','image/gif']))
-            respond(['error'=>'Invalid image type'],400);
-        $ext=strtolower(pathinfo($f['name'],PATHINFO_EXTENSION))?:'jpg';
-        $fn='prod_'.date('Ymd_His').'_'.substr(bin2hex(random_bytes(3)),0,6).'.'.$ext;
-        if (!move_uploaded_file($f['tmp_name'],$imgDir.$fn)) respond(['error'=>'Failed to save file'],500);
-        respond(['url'=>$imgUrl.$fn,'filename'=>$fn,'message'=>'Uploaded OK'],201);
+        if (empty($_FILES['image'])) respond(['error'=>'No image file. Use field name "image"'], 400);
+        $f = $_FILES['image'];
+        if ($f['error'] !== UPLOAD_ERR_OK)   respond(['error'=>'Upload error: '.$f['error']], 400);
+        if ($f['size'] > 5*1024*1024)         respond(['error'=>'Image exceeds 5 MB'], 400);
+        $mime = mime_content_type($f['tmp_name']);
+        if (!in_array($mime, ['image/jpeg','image/png','image/webp','image/gif']))
+            respond(['error'=>'Invalid image type: '.$mime], 400);
+        $ext = strtolower(pathinfo($f['name'], PATHINFO_EXTENSION)) ?: 'jpg';
+        $fn  = 'prod_'.date('Ymd_His').'_'.substr(bin2hex(random_bytes(3)),0,6).'.'.$ext;
+        if (!move_uploaded_file($f['tmp_name'], $imgDir.$fn))
+            respond(['error'=>'Failed to save file. Check folder permissions.'], 500);
+        respond(['url'=>$imgUrl.$fn, 'filename'=>$fn, 'message'=>'Image uploaded successfully'], 201);
     }
 
     apiErr('Products endpoint not found',404);
