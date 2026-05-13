@@ -838,21 +838,52 @@
       } catch (e) { toast('Delete failed: ' + e.message, 'error'); }
     }
 
-    // ── IMAGE UPLOAD HELPERS ────────────────────────────────
-    let imgFileData = null; // base64 data URL if file uploaded
+    // ── IMAGE UPLOAD HELPERS ─────────────────────────────────
+    // Uploads file to /api/gallery/upload (reuses gallery API),
+    // stores the returned server URL — no base64 in DB.
 
-    function handleImgFile(file) {
+    const API_BASE_PROD = (() => {
+      const loc = window.location;
+      if (loc.hostname === 'localhost' || loc.hostname === '127.0.0.1')
+        return loc.origin + '/sneha/api/index.php';
+      return loc.origin + '/api/index.php';
+    })();
+
+    async function handleImgFile(file) {
       if (!file) return;
       if (!file.type.startsWith('image/')) { toast('Please select an image file.', 'warn'); return; }
-      if (file.size > 2 * 1024 * 1024) { toast('Image must be under 2 MB.', 'warn'); return; }
-      const reader = new FileReader();
-      reader.onload = e => {
-        imgFileData = e.target.result;
-        document.getElementById('pm-image-url-final').value = imgFileData;
-        document.getElementById('pm-image-url').value = '';
-        showImgPreviewUI(imgFileData, file.name, (file.size / 1024).toFixed(0) + ' KB');
-      };
-      reader.readAsDataURL(file);
+      if (file.size > 5 * 1024 * 1024) { toast('Image must be under 5 MB.', 'warn'); return; }
+
+      // Show uploading state
+      const zone = document.getElementById('img-upload-zone');
+      const placeholder = document.getElementById('img-upload-placeholder');
+      placeholder.innerHTML = '<div style="font-size:22px;margin-bottom:6px">⏳</div><div style="font-size:12px;font-weight:600;color:var(--navy)">Uploading...</div>';
+
+      try {
+        const fd = new FormData();
+        fd.append('images[]', file);
+        fd.append('title[]', file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' '));
+        fd.append('category', 'products');
+        fd.append('sub_label', '');
+
+        const token = Auth.getToken();
+        const res = await fetch(API_BASE_PROD + '?route=gallery/upload', {
+          method: 'POST',
+          headers: token ? { 'Authorization': 'Bearer ' + token } : {},
+          body: fd
+        });
+        const data = await res.json();
+        if (!res.ok || !data.items || !data.items[0]) throw new Error(data.error || 'Upload failed');
+
+        const imageUrl = data.items[0].url;
+        document.getElementById('pm-image-url-final').value = imageUrl;
+        document.getElementById('pm-image-url').value = imageUrl;
+        showImgPreviewUI(imageUrl, file.name, (file.size / 1024).toFixed(0) + ' KB');
+
+      } catch (e) {
+        toast('Image upload failed: ' + e.message, 'error');
+        placeholder.innerHTML = '<div style="font-size:28px;margin-bottom:6px">📷</div><div style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:2px">Click or drag to upload image</div><div style="font-size:11px;color:var(--text-light)">JPG, PNG, WEBP — max 5 MB</div>';
+      }
     }
 
     function handleImgDrop(e) {
@@ -863,12 +894,12 @@
     }
 
     function onImageUrlInput(url) {
-      imgFileData = null;
       document.getElementById('pm-image-url-final').value = url.trim();
       if (url.trim()) {
         showImgPreviewFromUrl(url.trim());
       } else {
         clearImg();
+        document.getElementById('pm-image-url').value = '';
       }
     }
 
@@ -886,10 +917,10 @@
     }
 
     function clearImg() {
-      imgFileData = null;
       document.getElementById('pm-img-file').value = '';
       document.getElementById('pm-image-url-final').value = '';
       document.getElementById('img-preview-wrap').style.display = 'none';
+      document.getElementById('img-upload-placeholder').innerHTML = '<div style="font-size:28px;margin-bottom:6px">📷</div><div style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:2px">Click or drag to upload image</div><div style="font-size:11px;color:var(--text-light)">JPG, PNG, WEBP — max 5 MB</div>';
       document.getElementById('img-upload-placeholder').style.display = 'block';
       document.getElementById('img-preview').src = '';
     }
