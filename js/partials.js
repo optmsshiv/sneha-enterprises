@@ -133,7 +133,7 @@ var FOOTER_HTML = `
         <h5>Contact</h5>
         <ul>
           <li><a><i class="fa-solid fa-location-dot" style="color:var(--gold);margin-right:6px"></i>Basanwara, Alamnagar, Madhepura, Bihar – 852210, India</a></li>
-          <li><a href="tel:+917631711371"><i class="fa-solid fa-phone" style="color:var(--gold);margin-right:6px"></i>+91 98765 43210</a></li>
+          <li><a href="tel:+917631711371"><i class="fa-solid fa-phone" style="color:var(--gold);margin-right:6px"></i>+91 76317 11371</a></li>
           <li><a href="mailto:exports@snehaenterprises.in"><i class="fa-solid fa-envelope" style="color:var(--gold);margin-right:6px"></i>exports@snehaenterprises.in</a></li>
           <li><a href="https://wa.me/917631711371" target="_blank"><i class="fa-brands fa-whatsapp" style="color:#25D366;margin-right:6px"></i>WhatsApp Available</a></li>
           <li><a><i class="fa-regular fa-clock" style="color:var(--gold);margin-right:6px"></i>Mon–Sat: 9 AM – 6 PM IST</a></li>
