@@ -175,6 +175,26 @@ if ($r0 === 'products') {
         $db->prepare('DELETE FROM products WHERE id=?')->execute([$pid]);
         respond(['message'=>'Deleted','id'=>$pid]);
     }
+    // ── POST /api/products/upload-image ─────────────────────
+    if (M()==='POST' && $r1==='upload-image') {
+        auth();
+        $imgDir = dirname(__DIR__) . '/assets/gallery/';
+        $imgUrl = (isset($_SERVER['HTTPS'])&&$_SERVER['HTTPS']==='on'?'https':'http')
+            .'://'.$_SERVER['HTTP_HOST'].'/assets/gallery/';
+        if (!is_dir($imgDir)) mkdir($imgDir,0755,true);
+        if (empty($_FILES['image'])) respond(['error'=>'No image file. Use field name "image"'],400);
+        $f=$_FILES['image'];
+        if ($f['error']!==UPLOAD_ERR_OK) respond(['error'=>'Upload error: '.$f['error']],400);
+        if ($f['size']>5*1024*1024)      respond(['error'=>'Image exceeds 5 MB'],400);
+        $mime=mime_content_type($f['tmp_name']);
+        if (!in_array($mime,['image/jpeg','image/png','image/webp','image/gif']))
+            respond(['error'=>'Invalid image type'],400);
+        $ext=strtolower(pathinfo($f['name'],PATHINFO_EXTENSION))?:'jpg';
+        $fn='prod_'.date('Ymd_His').'_'.substr(bin2hex(random_bytes(3)),0,6).'.'.$ext;
+        if (!move_uploaded_file($f['tmp_name'],$imgDir.$fn)) respond(['error'=>'Failed to save file'],500);
+        respond(['url'=>$imgUrl.$fn,'filename'=>$fn,'message'=>'Uploaded OK'],201);
+    }
+
     apiErr('Products endpoint not found',404);
 }
 
@@ -266,50 +286,6 @@ if ($r0 === 'dashboard') {
         'top_products'    =>$db->query("SELECT product_name,COUNT(*) as count FROM inquiries GROUP BY product_name ORDER BY count DESC LIMIT 8")->fetchAll(PDO::FETCH_ASSOC),
         'recent_7d'       =>$db->query("SELECT DATE(created_at) as day,COUNT(*) as count FROM inquiries WHERE created_at>=DATE_SUB(NOW(),INTERVAL 7 DAY) GROUP BY day ORDER BY day")->fetchAll(PDO::FETCH_ASSOC),
     ]);
-}
-
-// ════════════════════════════════════════════════
-//  PRODUCT IMAGE UPLOAD (saves file only, no gallery DB entry)
-// ════════════════════════════════════════════════
-if ($r0 === 'products' && $r1 === 'upload-image' && M() === 'POST') {
-    auth();
-
-    // Reuse gallery dir constants — define only if not already defined
-    if (!defined('GALLERY_DIR')) {
-        define('GALLERY_DIR', dirname(__DIR__) . '/assets/gallery/');
-        define('MAX_IMG_SIZE', 5 * 1024 * 1024);
-        define('ALLOWED_MIME', ['image/jpeg','image/png','image/webp','image/gif']);
-    }
-    $galleryUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')
-        . '://' . $_SERVER['HTTP_HOST'] . '/assets/gallery/';
-
-    if (!is_dir(GALLERY_DIR)) mkdir(GALLERY_DIR, 0755, true);
-
-    if (empty($_FILES['image'])) respond(['error' => 'No image file received. Use field name "image"'], 400);
-
-    $file    = $_FILES['image'];
-    $errCode = $file['error'];
-    $size    = $file['size'];
-    $tmpPath = $file['tmp_name'];
-
-    if ($errCode !== UPLOAD_ERR_OK) respond(['error' => 'Upload error code: ' . $errCode], 400);
-    if ($size > MAX_IMG_SIZE)       respond(['error' => 'Image exceeds 5 MB limit'], 400);
-
-    $mime = mime_content_type($tmpPath);
-    if (!in_array($mime, ALLOWED_MIME)) respond(['error' => 'Invalid image type: ' . $mime], 400);
-
-    $ext      = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION)) ?: 'jpg';
-    $uid      = 'prod_' . date('Ymd_His') . '_' . substr(bin2hex(random_bytes(3)), 0, 6);
-    $filename = $uid . '.' . $ext;
-    $destPath = GALLERY_DIR . $filename;
-
-    if (!move_uploaded_file($tmpPath, $destPath)) respond(['error' => 'Failed to save file on server'], 500);
-
-    respond([
-        'url'      => $galleryUrl . $filename,
-        'filename' => $filename,
-        'message'  => 'Image uploaded successfully'
-    ], 201);
 }
 
 // ════════════════════════════════════════════════
