@@ -142,8 +142,8 @@ if ($r0 === 'products') {
         $chk=$db->prepare('SELECT 1 FROM products WHERE id=?'); $chk->execute([$id]);
         if($chk->fetch()) $id.='-'.substr(bin2hex(random_bytes(2)),0,4);
         $sort=(int)$db->query('SELECT COUNT(*) FROM products')->fetchColumn()+1;
-        $db->prepare('INSERT INTO products(id,name,category,emoji,image_url,badge,bg,origin,description,specs,packaging,min_order,active,sort_order)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)')->execute([
-            $id,$d['name'],$d['category'],$d['emoji']??'🌾',$d['image_url']??'',$d['badge']??'',$d['bg']??'linear-gradient(135deg,#FFF8E1,#FFF0C0)',
+        $db->prepare('INSERT INTO products(id,name,category,emoji,badge,bg,origin,description,specs,packaging,min_order,active,sort_order)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)')->execute([
+            $id,$d['name'],$d['category'],$d['emoji']??'🌾',$d['badge']??'',$d['bg']??'linear-gradient(135deg,#FFF8E1,#FFF0C0)',
             $d['origin']??'',$d['description']??'',
             json_encode($d['specs']??[],JSON_UNESCAPED_UNICODE),json_encode($d['packaging']??[],JSON_UNESCAPED_UNICODE),
             $d['minOrder']??'On Request',isset($d['active'])?($d['active']?1:0):1,$sort]);
@@ -154,8 +154,8 @@ if ($r0 === 'products') {
         $chk=$db->prepare('SELECT 1 FROM products WHERE id=?'); $chk->execute([$pid]);
         if(!$chk->fetch()) apiErr('Not found',404);
         $d=body();
-        $db->prepare('UPDATE products SET name=?,category=?,emoji=?,image_url=?,badge=?,bg=?,origin=?,description=?,specs=?,packaging=?,min_order=?,active=?,updated_at=NOW() WHERE id=?')->execute([
-            $d['name'],$d['category'],$d['emoji']??'🌾',$d['image_url']??'',$d['badge']??'',$d['bg']??'',$d['origin']??'',$d['description']??'',
+        $db->prepare('UPDATE products SET name=?,category=?,emoji=?,badge=?,bg=?,origin=?,description=?,specs=?,packaging=?,min_order=?,active=?,updated_at=NOW() WHERE id=?')->execute([
+            $d['name'],$d['category'],$d['emoji']??'🌾',$d['badge']??'',$d['bg']??'',$d['origin']??'',$d['description']??'',
             json_encode($d['specs']??[],JSON_UNESCAPED_UNICODE),json_encode($d['packaging']??[],JSON_UNESCAPED_UNICODE),
             $d['minOrder']??'On Request',isset($d['active'])?($d['active']?1:0):1,$pid]);
         respond(['message'=>'Updated','id'=>$pid]);
