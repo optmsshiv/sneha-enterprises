@@ -142,8 +142,8 @@ if ($r0 === 'products') {
         $chk=$db->prepare('SELECT 1 FROM products WHERE id=?'); $chk->execute([$id]);
         if($chk->fetch()) $id.='-'.substr(bin2hex(random_bytes(2)),0,4);
         $sort=(int)$db->query('SELECT COUNT(*) FROM products')->fetchColumn()+1;
-        $db->prepare('INSERT INTO products(id,name,category,emoji,badge,bg,origin,description,specs,packaging,min_order,active,sort_order)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)')->execute([
-            $id,$d['name'],$d['category'],$d['emoji']??'🌾',$d['badge']??'',$d['bg']??'linear-gradient(135deg,#FFF8E1,#FFF0C0)',
+        $db->prepare('INSERT INTO products(id,name,category,emoji,image_url,badge,bg,origin,description,specs,packaging,min_order,active,sort_order)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)')->execute([
+            $id,$d['name'],$d['category'],$d['emoji']??'🌾',$d['image_url']??'',$d['badge']??'',$d['bg']??'linear-gradient(135deg,#FFF8E1,#FFF0C0)',
             $d['origin']??'',$d['description']??'',
             json_encode($d['specs']??[],JSON_UNESCAPED_UNICODE),json_encode($d['packaging']??[],JSON_UNESCAPED_UNICODE),
             $d['minOrder']??'On Request',isset($d['active'])?($d['active']?1:0):1,$sort]);
@@ -154,8 +154,8 @@ if ($r0 === 'products') {
         $chk=$db->prepare('SELECT 1 FROM products WHERE id=?'); $chk->execute([$pid]);
         if(!$chk->fetch()) apiErr('Not found',404);
         $d=body();
-        $db->prepare('UPDATE products SET name=?,category=?,emoji=?,badge=?,bg=?,origin=?,description=?,specs=?,packaging=?,min_order=?,active=?,updated_at=NOW() WHERE id=?')->execute([
-            $d['name'],$d['category'],$d['emoji']??'🌾',$d['badge']??'',$d['bg']??'',$d['origin']??'',$d['description']??'',
+        $db->prepare('UPDATE products SET name=?,category=?,emoji=?,image_url=?,badge=?,bg=?,origin=?,description=?,specs=?,packaging=?,min_order=?,active=?,updated_at=NOW() WHERE id=?')->execute([
+            $d['name'],$d['category'],$d['emoji']??'🌾',$d['image_url']??'',$d['badge']??'',$d['bg']??'',$d['origin']??'',$d['description']??'',
             json_encode($d['specs']??[],JSON_UNESCAPED_UNICODE),json_encode($d['packaging']??[],JSON_UNESCAPED_UNICODE),
             $d['minOrder']??'On Request',isset($d['active'])?($d['active']?1:0):1,$pid]);
         respond(['message'=>'Updated','id'=>$pid]);
@@ -266,50 +266,6 @@ if ($r0 === 'dashboard') {
         'top_products'    =>$db->query("SELECT product_name,COUNT(*) as count FROM inquiries GROUP BY product_name ORDER BY count DESC LIMIT 8")->fetchAll(PDO::FETCH_ASSOC),
         'recent_7d'       =>$db->query("SELECT DATE(created_at) as day,COUNT(*) as count FROM inquiries WHERE created_at>=DATE_SUB(NOW(),INTERVAL 7 DAY) GROUP BY day ORDER BY day")->fetchAll(PDO::FETCH_ASSOC),
     ]);
-}
-
-// ════════════════════════════════════════════════
-//  PRODUCT IMAGE UPLOAD (saves file only, no gallery DB entry)
-// ════════════════════════════════════════════════
-if ($r0 === 'products' && $r1 === 'upload-image' && M() === 'POST') {
-    auth();
-
-    // Reuse gallery dir constants — define only if not already defined
-    if (!defined('GALLERY_DIR')) {
-        define('GALLERY_DIR', dirname(__DIR__) . '/assets/gallery/');
-        define('MAX_IMG_SIZE', 5 * 1024 * 1024);
-        define('ALLOWED_MIME', ['image/jpeg','image/png','image/webp','image/gif']);
-    }
-    $galleryUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')
-        . '://' . $_SERVER['HTTP_HOST'] . '/assets/gallery/';
-
-    if (!is_dir(GALLERY_DIR)) mkdir(GALLERY_DIR, 0755, true);
-
-    if (empty($_FILES['image'])) respond(['error' => 'No image file received. Use field name "image"'], 400);
-
-    $file    = $_FILES['image'];
-    $errCode = $file['error'];
-    $size    = $file['size'];
-    $tmpPath = $file['tmp_name'];
-
-    if ($errCode !== UPLOAD_ERR_OK) respond(['error' => 'Upload error code: ' . $errCode], 400);
-    if ($size > MAX_IMG_SIZE)       respond(['error' => 'Image exceeds 5 MB limit'], 400);
-
-    $mime = mime_content_type($tmpPath);
-    if (!in_array($mime, ALLOWED_MIME)) respond(['error' => 'Invalid image type: ' . $mime], 400);
-
-    $ext      = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION)) ?: 'jpg';
-    $uid      = 'prod_' . date('Ymd_His') . '_' . substr(bin2hex(random_bytes(3)), 0, 6);
-    $filename = $uid . '.' . $ext;
-    $destPath = GALLERY_DIR . $filename;
-
-    if (!move_uploaded_file($tmpPath, $destPath)) respond(['error' => 'Failed to save file on server'], 500);
-
-    respond([
-        'url'      => $galleryUrl . $filename,
-        'filename' => $filename,
-        'message'  => 'Image uploaded successfully'
-    ], 201);
 }
 
 // ════════════════════════════════════════════════
