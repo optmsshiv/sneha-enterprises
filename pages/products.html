@@ -526,6 +526,24 @@
       left: 150%
     }
 
+    .prod-img-photo {
+      position: relative
+    }
+
+    .prod-img-photo img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1
+    }
+
+    .prod-img-photo span {
+      position: relative;
+      z-index: 0
+    }
+
     .prod-img {
       height: 188px;
       display: flex;
@@ -1985,30 +2003,25 @@
         return '<div class="prod-card reveal ' + delay + '" data-id="' + p.id + '">' +
           badge +
           (p.image_url
-            ? '<div class="prod-img" style="background:' + p.bg + ';padding:0;overflow:hidden">' +
-            '<img src="' + p.image_url + '" alt="' + p.name + '" ' +
-            'style="width:100%;height:100%;object-fit:cover;display:block" ' +
-            'onerror="this.style.display='none';this.nextSibling.style.display='flex'">' +
-              '<span style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:56px">' + p.emoji + '</span>' +
-              '</div>'
-        : '<div class="prod-img" style="background:' + p.bg + '">' + p.emoji + '</div>'
-      ) +
-        '<div class="prod-body">' +
-        '<h3>' + p.name + '</h3>' +
-        '<p class="prod-desc">' + p.description + '</p>' +
-        (packs ? '<div class="pack-tags">' + packs + '</div>' : '') +
-        '<div class="prod-specs">' + specs + '</div>' +
-        '<div class="prod-footer">' +
-        '<div class="prod-origin"><span>Origin</span><strong>' + p.origin + '</strong></div>' +
-        '<div class="prod-moq"><span>Min Order</span><strong>' + (p.minOrder || 'On Request') + '</strong></div>' +
-        '<button class="enquire-btn" onclick="openModal(\'' + p.id + '\')"><i class="fa-solid fa-paper-plane"></i> Enquire</button>' +
-        '</div>' +
-        '</div></div>';
-    }).join('');
+            ? '<div class="prod-img prod-img-photo" style="background:' + p.bg + ';padding:0;overflow:hidden;position:relative"><img src="' + p.image_url + '" alt="" style="width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0"><span style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:56px">' + p.emoji + '</span></div>'
+            : '<div class="prod-img" style="background:' + p.bg + '">' + p.emoji + '</div>'
+          ) +
+          '<div class="prod-body">' +
+          '<h3>' + p.name + '</h3>' +
+          '<p class="prod-desc">' + p.description + '</p>' +
+          (packs ? '<div class="pack-tags">' + packs + '</div>' : '') +
+          '<div class="prod-specs">' + specs + '</div>' +
+          '<div class="prod-footer">' +
+          '<div class="prod-origin"><span>Origin</span><strong>' + p.origin + '</strong></div>' +
+          '<div class="prod-moq"><span>Min Order</span><strong>' + (p.minOrder || 'On Request') + '</strong></div>' +
+          '<button class="enquire-btn" onclick="openModal(\'' + p.id + '\')"><i class="fa-solid fa-paper-plane"></i> Enquire</button>' +
+          '</div>' +
+          '</div></div>';
+      }).join('');
 
-    // Re-run scroll reveal on new cards
-    grid.querySelectorAll('.reveal').forEach(function (el) { ro.observe(el); });
-}
+      // Re-run scroll reveal on new cards
+      grid.querySelectorAll('.reveal').forEach(function (el) { ro.observe(el); });
+    }
 
     // ── MODAL ──
     function openModal(productId) {
