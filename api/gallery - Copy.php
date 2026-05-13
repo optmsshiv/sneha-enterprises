@@ -17,7 +17,8 @@
 // Upload directory — adjust if your folder structure is different
 define('GALLERY_DIR',  dirname(__DIR__) . '/assets/gallery/');
 // Absolute URL — works from any page on the site (e.g. /pages/gallery)
-define('GALLERY_URL',  'https://snehaenterprises.store/assets/gallery/');
+define('GALLERY_URL',  (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']==='on' ? 'https' : 'http')
+    . '://' . $_SERVER['HTTP_HOST'] . '/assets/gallery/');
 define('MAX_IMG_SIZE', 5 * 1024 * 1024);      // 5 MB
 define('ALLOWED_MIME', ['image/jpeg','image/png','image/webp','image/gif']);
 

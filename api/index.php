@@ -179,8 +179,7 @@ if ($r0 === 'products') {
     if (M()==='POST' && $r1==='upload-image') {
         auth();
         $imgDir = dirname(__DIR__) . '/assets/gallery/';
-        $imgUrl = (isset($_SERVER['HTTPS'])&&$_SERVER['HTTPS']==='on'?'https':'http')
-            .'://'.$_SERVER['HTTP_HOST'].'/assets/gallery/';
+        $imgUrl = 'https://snehaenterprises.store/assets/gallery/';
         if (!is_dir($imgDir)) mkdir($imgDir,0755,true);
         if (empty($_FILES['image'])) respond(['error'=>'No image file. Use field name "image"'],400);
         $f=$_FILES['image'];
