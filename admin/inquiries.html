@@ -930,11 +930,13 @@
         toast('Marked as replied ✓');
       });
     }
-    if (!_currentInq) return;
-    const phone = (_currentInq.phone || '').replace(/[^0-9]/g, '');
-    if (!phone) return;
-    const msg = `Dear ${_currentInq.name}, thank you for your inquiry about ${_currentInq.product_name || 'our products'}. We would like to share more details with you.`;
-    window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(msg), '_blank');
+
+    function openWhatsApp() {
+      if (!_currentInq) return;
+      const phone = (_currentInq.phone || '').replace(/[^0-9]/g, '');
+      if (!phone) return;
+      const msg = `Dear ${_currentInq.name}, thank you for your inquiry about ${_currentInq.product_name || 'our products'}. We would like to share more details with you.`;
+      window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(msg), '_blank');
     }
 
     function sendReplyEmail() {
