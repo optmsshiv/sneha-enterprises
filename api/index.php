@@ -55,9 +55,9 @@ function sendEmail(string $to, string $subject, string $html): bool {
         $mail->Body    = $html;
         $mail->AltBody = strip_tags(str_replace(['<br>','<br/>','</p>','</div>'], "\n", $html));
         return $mail->send();
-    } catch (Exception $ex) {
-        error_log('[EMAIL SMTP ERROR] ' . $ex->getMessage());
-        return sendEmailFallback($to, $subject, $html);
+    } catch (\Throwable $ex) {
+    error_log('[EMAIL SMTP ERROR] ' . $ex->getMessage());
+    return sendEmailFallback($to, $subject, $html);
     }
 }
 
@@ -317,7 +317,7 @@ if ($r0 === 'inquiries') {
             trim($d['incoterm']??'FOB'),trim($d['message']??''),trim($d['source']??'website'),$now,$now]);
         $st=$db->prepare('SELECT * FROM inquiries WHERE id=?'); $st->execute([$id]);
         $inq=$st->fetch(PDO::FETCH_ASSOC);
-        try { sendInquiryEmails($inq); } catch(Exception $e2){ error_log('[EMAIL] '.$e2->getMessage()); }
+        try { sendInquiryEmails($inq); } catch(\Throwable $e2){ error_log('[EMAIL] '.$e2->getMessage()); }
         respond(['id'=>$id,'message'=>'Inquiry submitted successfully'],201);
     }
     if (M()==='GET' && $isSt) {
