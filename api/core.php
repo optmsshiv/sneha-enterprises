@@ -119,7 +119,7 @@ function sendInquiryEmails(array $inq): void {
                     . "<td style='padding:10px;border-bottom:1px solid #eee;color:#333'>$value</td></tr>";
     }
     $adminHtml .= '</table><div style="margin-top:20px;text-align:center">
-      <a href="https://snehaenterprises.in/admin/login.html" style="background:#C8912A;color:white;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:700">View in Admin Panel →</a>
+      <a href="https://snehaenterprises.store/admin/login.html" style="background:#C8912A;color:white;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:700">View in Admin Panel →</a>
     </div></div>';
     sendEmail(ADMIN_EMAIL, 'New Inquiry: ' . ($inq['product_name'] ?? 'Product') . ' — ' . $inq['name'], $adminHtml);
 
@@ -140,8 +140,8 @@ function sendInquiryEmails(array $inq): void {
       <hr style="border:none;border-top:1px solid #eee;margin:24px 0">
       <p style="color:#888;font-size:13px">
         <strong>Sneha Enterprises</strong><br>
-        Patna, Bihar – 800001, India<br>
-        📞 +91 98765 43210 | ✉️ ' . COMPANY_EMAIL . '
+        Ward - 04, Basanwara, Alamnagar, Madhepura – 852210, Bihar, India<br>
+        📞 +91 76317 11371 | ✉️ ' . COMPANY_EMAIL . '
       </p>
     </div>';
     sendEmail($inq['email'], 'Inquiry Received — Ref: ' . $inq['id'], $buyerHtml);

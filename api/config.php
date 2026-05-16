@@ -19,7 +19,7 @@ define('TOKEN_EXPIRY', 86400); // 24 hours in seconds
 define('ADMIN_EMAIL',    'admin@snehaenterprises.store');   // ← Your admin email
 define('COMPANY_EMAIL',  'exports@snehaenterprises.store'); // ← Company email
 define('COMPANY_NAME',   'Sneha Enterprises');
-define('USE_SMTP',        false); // set true + fill SMTP_ vars to use SMTP
+define('USE_SMTP',        true); // set true + fill SMTP_ vars to use SMTP
 define('SMTP_HOST',       'mail.snehaenterprises.store');   // your cPanel mail server
 define('SMTP_PORT',        587);
 define('SMTP_USER',       'exports@snehaenterprises.store');
