@@ -16,14 +16,14 @@ define('JWT_SECRET',  'sneha-secret-key-change-this-2024');
 define('TOKEN_EXPIRY', 86400); // 24 hours in seconds
 
 // Email config (cPanel uses PHP mail() or SMTP)
-define('ADMIN_EMAIL',    'admin@snehaenterprises.in');   // ← Your admin email
-define('COMPANY_EMAIL',  'exports@snehaenterprises.in'); // ← Company email
+define('ADMIN_EMAIL',    'admin@snehaenterprises.store');   // ← Your admin email
+define('COMPANY_EMAIL',  'exports@snehaenterprises.store'); // ← Company email
 define('COMPANY_NAME',   'Sneha Enterprises');
 define('USE_SMTP',        false); // set true + fill SMTP_ vars to use SMTP
-define('SMTP_HOST',       'mail.snehaenterprises.in');   // your cPanel mail server
+define('SMTP_HOST',       'mail.snehaenterprises.store');   // your cPanel mail server
 define('SMTP_PORT',        587);
-define('SMTP_USER',       'exports@snehaenterprises.in');
-define('SMTP_PASS',       'YOUR_EMAIL_PASSWORD');        // ← Replace
+define('SMTP_USER',       'exports@snehaenterprises.store');
+define('SMTP_PASS',       '123Saneha');        // ← Replace
 
 // ── DB Connection ─────────────────────────────────────────
 function getDB() {
