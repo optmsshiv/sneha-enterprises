@@ -16,7 +16,7 @@ define('JWT_SECRET',  'sneha-secret-key-change-this-2024');
 define('TOKEN_EXPIRY', 86400); // 24 hours in seconds
 
 // Email config (cPanel uses PHP mail() or SMTP)
-define('ADMIN_EMAIL',    'admin@snehaenterprises.store');   // ← Your admin email
+define('ADMIN_EMAIL',    'exports@snehaenterprises.store');   // ← Your admin email
 define('COMPANY_EMAIL',  'exports@snehaenterprises.store'); // ← Company email
 define('COMPANY_NAME',   'Sneha Enterprises');
 define('USE_SMTP',        true); // set true + fill SMTP_ vars to use SMTP
