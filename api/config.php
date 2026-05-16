@@ -20,10 +20,10 @@ define('ADMIN_EMAIL',    'exports@snehaenterprises.store');   // ← Your admin 
 define('COMPANY_EMAIL',  'exports@snehaenterprises.store'); // ← Company email
 define('COMPANY_NAME',   'Sneha Enterprises');
 define('USE_SMTP',        true); // set true + fill SMTP_ vars to use SMTP
-define('SMTP_HOST',       'mail.snehaenterprises.store');   // your cPanel mail server
+define('SMTP_HOST',       'smtp.gmail.com');   // your cPanel mail server
 define('SMTP_PORT',        587);
-define('SMTP_USER',       'exports@snehaenterprises.store');
-define('SMTP_PASS',       '123Saneha');        // ← Replace
+define('SMTP_USER',       'snehaenterprises310@gmail.com');
+define('SMTP_PASS',       'iyqi pbum hnbz hjuy');        // ← Replace
 
 // ── DB Connection ─────────────────────────────────────────
 function getDB() {
