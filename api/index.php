@@ -21,6 +21,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit; }
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/core.php';
 
+// ── TEMP DEBUG — remove after fixing ─────────────────────────
+if ($r0 === 'debug-inquiry') {
+    $d = body();
+    $n = trim($d['name'] ?? 'Test'); 
+    $e = trim($d['email'] ?? 'test@test.com');
+    $db = getDB();
+    $id = 'INQ-TEST-001';
+    $now = date('Y-m-d H:i:s');
+    
+    // Step 1: test DB insert
+    try {
+        $db->prepare("INSERT INTO inquiries(id,name,email,company,country,phone,product_id,product_name,quantity,incoterm,message,source,status,created_at,updated_at)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,'new',?,?)")->execute([
+            $id,$n,strtolower($e),'','','','','Test Product','','FOB','Test','website',$now,$now]);
+        $step1 = 'DB insert OK';
+    } catch(Exception $ex) { respond(['fail'=>'DB insert', 'error'=>$ex->getMessage()]); }
+
+    // Step 2: test email
+    try {
+        sendInquiryEmails(['id'=>$id,'name'=>$n,'email'=>$e,'company'=>'','phone'=>'','country'=>'','product_name'=>'Test','quantity'=>'','incoterm'=>'FOB','message'=>'test','created_at'=>$now,'source'=>'website']);
+        $step2 = 'Email OK';
+    } catch(Exception $ex) { respond(['fail'=>'Email', 'db'=>$step1, 'error'=>$ex->getMessage()]); }
+
+    // cleanup
+    $db->prepare('DELETE FROM inquiries WHERE id=?')->execute([$id]);
+    respond(['db'=>$step1, 'email'=>$step2]);
+}
+
 // ── Helpers (index.php versions — core.php guards prevent redeclaration crash) ──
 function respond($data, int $code = 200): void {
     http_response_code($code);
