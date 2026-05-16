@@ -324,7 +324,7 @@ if ($r0 === 'debug-inquiry') {
     $n = trim($d['name'] ?? 'Test'); 
     $e = trim($d['email'] ?? 'test@test.com');
     $db = getDB();
-    $id = 'INQ-TEST-001';
+    $id = 'INQ-TEST-' . substr(bin2hex(random_bytes(4)), 0, 8);
     $now = date('Y-m-d H:i:s');
     
     // Step 1: test DB insert
