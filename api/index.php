@@ -18,6 +18,7 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-W
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit; }
 
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/core.php';
 
 // ── Helpers ──────────────────────────────────────────────────
 function respond($data, int $code = 200): void {
