@@ -17,11 +17,10 @@ header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit; }
 
-// config.php first (DB constants + getDB), then core.php (email functions)
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/core.php';
 
-// ── Helpers (index.php versions — core.php guards prevent redeclaration crash) ──
+// ── Helpers ──────────────────────────────────────────────────
 function respond($data, int $code = 200): void {
     http_response_code($code);
     echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
@@ -54,6 +53,7 @@ function decodeProduct(array &$p): void {
 // ── Route parsing ────────────────────────────────────────────
 $route = trim($_GET['route'] ?? '', '/');
 if ($route === '') {
+    // Try PATH_INFO
     $pi = $_SERVER['PATH_INFO'] ?? '';
     if ($pi) $route = trim($pi, '/');
 }
@@ -75,19 +75,7 @@ if ($r0 === 'health' || $route === '') {
         $dbOk  = true;
         $dbMsg = "Connected — {$np} products, {$ni} inquiries";
     } catch(Exception $e) { $dbMsg = 'ERROR: '.$e->getMessage(); }
-
-    // Check PHPMailer
-    $mailerOk = file_exists(__DIR__ . '/vendor/autoload.php') ? 'PHPMailer installed ✓' : 'PHPMailer NOT installed — run: composer require phpmailer/phpmailer';
-
-    respond([
-        'status'    => $dbOk ? 'ok' : 'db_error',
-        'message'   => 'Sneha Enterprises API — PHP + MySQL',
-        'version'   => '2.1',
-        'php'       => phpversion(),
-        'database'  => $dbMsg,
-        'mailer'    => $mailerOk,
-        'timestamp' => date('Y-m-d H:i:s'),
-    ]);
+    respond(['status'=>$dbOk?'ok':'db_error','message'=>'Sneha Enterprises API — PHP + MySQL','version'=>'2.1','php'=>phpversion(),'database'=>$dbMsg,'timestamp'=>date('Y-m-d H:i:s')]);
 }
 
 // ════════════════════════════════════════════════
@@ -95,7 +83,7 @@ if ($r0 === 'health' || $route === '') {
 // ════════════════════════════════════════════════
 if ($r0 === 'auth') {
     if ($r1==='login' && M()==='POST') {
-        $d=body(); $u=trim($d['username']??''); $p=$d['password']??'';
+        $d=$b=body(); $u=trim($d['username']??''); $p=$d['password']??'';
         if(!$u||!$p) apiErr('Username and password required');
         $db=getDB(); $st=$db->prepare('SELECT * FROM admins WHERE username=? LIMIT 1'); $st->execute([$u]);
         $a=$st->fetch(PDO::FETCH_ASSOC);
@@ -152,21 +140,25 @@ if ($r0 === 'products') {
         if(empty($d['name'])||empty($d['category'])) apiErr('name and category required');
         $db=getDB();
         $id=$d['id']??strtolower(preg_replace('/[^a-z0-9]+/i','-',$d['name'])).'-'.substr(bin2hex(random_bytes(3)),0,6);
-        $db->prepare("INSERT INTO products(id,name,category,origin,description,specs,packaging,image_url,min_order,active,sort_order,created_at,updated_at)VALUES(?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW())")->execute([
-            $id,$d['name'],$d['category'],$d['origin']??'',$d['description']??'',
-            json_encode($d['specs']??[]),json_encode($d['packaging']??[]),
-            $d['imageUrl']??'',$d['minOrder']??'On Request',isset($d['active'])?($d['active']?1:0):1,$d['sortOrder']??0]);
-        respond(['message'=>'Created','id'=>$id],201);
+        $chk=$db->prepare('SELECT 1 FROM products WHERE id=?'); $chk->execute([$id]);
+        if($chk->fetch()) $id.='-'.substr(bin2hex(random_bytes(2)),0,4);
+        $sort=(int)$db->query('SELECT COUNT(*) FROM products')->fetchColumn()+1;
+        $db->prepare('INSERT INTO products(id,name,category,emoji,image_url,badge,bg,origin,description,specs,packaging,min_order,active,sort_order)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)')->execute([
+            $id,$d['name'],$d['category'],$d['emoji']??'🌾',$d['image_url']??'',$d['badge']??'',$d['bg']??'linear-gradient(135deg,#FFF8E1,#FFF0C0)',
+            $d['origin']??'',$d['description']??'',
+            json_encode($d['specs']??[],JSON_UNESCAPED_UNICODE),json_encode($d['packaging']??[],JSON_UNESCAPED_UNICODE),
+            $d['minOrder']??'On Request',isset($d['active'])?($d['active']?1:0):1,$sort]);
+        respond(['id'=>$id,'message'=>'Product created'],201);
     }
-    if ((M()==='PUT'||M()==='PATCH') && $pid && !$tog) {
+    if (M()==='PUT' && $pid && !$tog) {
         auth(); $db=getDB();
         $chk=$db->prepare('SELECT 1 FROM products WHERE id=?'); $chk->execute([$pid]);
         if(!$chk->fetch()) apiErr('Not found',404);
         $d=body();
-        $db->prepare("UPDATE products SET name=?,category=?,origin=?,description=?,specs=?,packaging=?,image_url=?,min_order=?,active=?,updated_at=NOW() WHERE id=?")->execute([
-            $d['name']??'',$d['category']??'',$d['origin']??'',$d['description']??'',
-            json_encode($d['specs']??[]),json_encode($d['packaging']??[]),
-            $d['imageUrl']??'',$d['minOrder']??'On Request',isset($d['active'])?($d['active']?1:0):1,$pid]);
+        $db->prepare('UPDATE products SET name=?,category=?,emoji=?,image_url=?,badge=?,bg=?,origin=?,description=?,specs=?,packaging=?,min_order=?,active=?,updated_at=NOW() WHERE id=?')->execute([
+            $d['name'],$d['category'],$d['emoji']??'🌾',$d['image_url']??'',$d['badge']??'',$d['bg']??'',$d['origin']??'',$d['description']??'',
+            json_encode($d['specs']??[],JSON_UNESCAPED_UNICODE),json_encode($d['packaging']??[],JSON_UNESCAPED_UNICODE),
+            $d['minOrder']??'On Request',isset($d['active'])?($d['active']?1:0):1,$pid]);
         respond(['message'=>'Updated','id'=>$pid]);
     }
     if (M()==='PATCH' && $pid && $tog) {
@@ -184,6 +176,7 @@ if ($r0 === 'products') {
         $db->prepare('DELETE FROM products WHERE id=?')->execute([$pid]);
         respond(['message'=>'Deleted','id'=>$pid]);
     }
+    // ── POST /api/products/upload-image ─────────────────────
     if (M()==='POST' && $r1==='upload-image') {
         auth();
         $imgDir = $_SERVER['DOCUMENT_ROOT'] . '/assets/product_images/';
@@ -224,24 +217,8 @@ if ($r0 === 'inquiries') {
             trim($d['incoterm']??'FOB'),trim($d['message']??''),trim($d['source']??'website'),$now,$now]);
         $st=$db->prepare('SELECT * FROM inquiries WHERE id=?'); $st->execute([$id]);
         $inq=$st->fetch(PDO::FETCH_ASSOC);
-
-        // Send emails — errors are logged but do NOT block the 201 success response
-        $emailSent  = false;
-        $emailError = '';
-        try {
-            sendInquiryEmails($inq);
-            $emailSent = true;
-        } catch(Exception $e2) {
-            $emailError = $e2->getMessage();
-            error_log('[EMAIL] ' . $emailError);
-        }
-
-        respond([
-            'id'          => $id,
-            'message'     => 'Inquiry submitted successfully',
-            'email_sent'  => $emailSent,
-            'email_debug' => $emailError ?: null,   // remove this line once email is working
-        ], 201);
+        try { sendInquiryEmails($inq); } catch(Exception $e2){ error_log('[EMAIL] '.$e2->getMessage()); }
+        respond(['id'=>$id,'message'=>'Inquiry submitted successfully'],201);
     }
     if (M()==='GET' && $isSt) {
         auth(); $db=getDB();
@@ -318,33 +295,6 @@ if ($r0 === 'dashboard') {
 if ($r0 === 'gallery') {
     require_once __DIR__ . '/gallery.php';
 }
-// ── TEMP DEBUG — remove after fixing ─────────────────────────
-if ($r0 === 'debug-inquiry') {
-    $d = body();
-    $n = trim($d['name'] ?? 'Test'); 
-    $e = trim($d['email'] ?? 'test@test.com');
-    $db = getDB();
-    $id = 'INQ-TEST-' . substr(bin2hex(random_bytes(4)), 0, 8);
-    $now = date('Y-m-d H:i:s');
-    
-    // Step 1: test DB insert
-    try {
-        $db->prepare("INSERT INTO inquiries(id,name,email,company,country,phone,product_id,product_name,quantity,incoterm,message,source,status,created_at,updated_at)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,'new',?,?)")->execute([
-            $id,$n,strtolower($e),'','','','','Test Product','','FOB','Test','website',$now,$now]);
-        $step1 = 'DB insert OK';
-    } catch(Exception $ex) { respond(['fail'=>'DB insert', 'error'=>$ex->getMessage()]); }
-
-    // Step 2: test email
-    try {
-        sendInquiryEmails(['id'=>$id,'name'=>$n,'email'=>$e,'company'=>'','phone'=>'','country'=>'','product_name'=>'Test','quantity'=>'','incoterm'=>'FOB','message'=>'test','created_at'=>$now,'source'=>'website']);
-        $step2 = 'Email OK';
-    } catch(Exception $ex) { respond(['fail'=>'Email', 'db'=>$step1, 'error'=>$ex->getMessage()]); }
-
-    // cleanup
-    $db->prepare('DELETE FROM inquiries WHERE id=?')->execute([$id]);
-    respond(['db'=>$step1, 'email'=>$step2]);
-}
-
 
 // FALLBACK
 respond(['error'=>'Endpoint not found','tip'=>'Try: api/index.php?route=health','route_received'=>$route],404);

@@ -5,32 +5,24 @@
 require_once __DIR__ . '/config.php';
 
 // ── CORS headers ─────────────────────────────────────────────
-if (!headers_sent()) {
-    header('Content-Type: application/json; charset=utf-8');
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
-    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit; }
-}
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit; }
 
-// ── JSON helpers (guarded — index.php declares these too) ────
-if (!function_exists('respond')) {
-    function respond($data, int $code = 200): void {
-        http_response_code($code);
-        echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        exit;
-    }
+// ── JSON helpers ──────────────────────────────────────────────
+function respond($data, int $code = 200): void {
+    http_response_code($code);
+    echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
 }
-if (!function_exists('error')) {
-    function error(string $msg, int $code = 400): void {
-        respond(['error' => $msg], $code);
-    }
+function error(string $msg, int $code = 400): void {
+    respond(['error' => $msg], $code);
 }
-if (!function_exists('body')) {
-    function body(): array {
-        $raw = file_get_contents('php://input');
-        return json_decode($raw, true) ?: [];
-    }
+function body(): array {
+    $raw = file_get_contents('php://input');
+    return json_decode($raw, true) ?: [];
 }
 
 // ── Token auth ────────────────────────────────────────────────
@@ -67,9 +59,11 @@ function sendEmail(string $to, string $subject, string $htmlBody): bool {
 
 function sendSMTP(string $to, string $subject, string $html): bool {
     try {
+        // PHPMailer via Composer autoload
+        // Run: composer require phpmailer/phpmailer  (in your api/ folder)
         $autoload = __DIR__ . '/vendor/autoload.php';
         if (!file_exists($autoload)) {
-            error_log('[EMAIL] vendor/autoload.php not found. Run: composer require phpmailer/phpmailer');
+            error_log('[EMAIL] Composer autoload not found. Run: composer require phpmailer/phpmailer');
             return sendEmailFallback($to, $subject, $html);
         }
         require_once $autoload;
@@ -92,10 +86,11 @@ function sendSMTP(string $to, string $subject, string $html): bool {
         return $mail->send();
     } catch (Exception $e) {
         error_log('[EMAIL SMTP ERROR] ' . $e->getMessage());
-        return sendEmailFallback($to, $subject, $html);
+        return sendEmailFallback($to, $subject, $html); // fallback to php mail()
     }
 }
 
+// Fallback using php mail() if SMTP fails
 function sendEmailFallback(string $to, string $subject, string $html): bool {
     $headers  = "MIME-Version: 1.0\r\n";
     $headers .= "Content-type: text/html; charset=utf-8\r\n";
@@ -153,7 +148,7 @@ function sendInquiryEmails(array $inq): void {
       <hr style="border:none;border-top:1px solid #eee;margin:24px 0">
       <p style="color:#888;font-size:13px">
         <strong>Sneha Enterprises</strong><br>
-        Ward - 04, Basanwara, Alamnagar, Madhepura – 852210, Bihar, India<br>
+       Ward - 04, Basanwara, Alamnagar, Madhepura – 852210, Bihar, India<br>
         📞 +91 76317 11371 | ✉️ ' . COMPANY_EMAIL . '
       </p>
     </div>';
