@@ -23,7 +23,7 @@ define('USE_SMTP',        true); // set true + fill SMTP_ vars to use SMTP
 define('SMTP_HOST',       'smtp.gmail.com');   // your cPanel mail server
 define('SMTP_PORT',        587);
 define('SMTP_USER',       'snehaenterprises310@gmail.com');
-define('SMTP_PASS',       'iyqi pbum hnbz hjuy');        // ← Replace
+define('SMTP_PASS',       'iyqipbumhnbzhjuy');        // ← Replace
 
 // ── DB Connection ─────────────────────────────────────────
 function getDB() {
