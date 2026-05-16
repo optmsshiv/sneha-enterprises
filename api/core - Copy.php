@@ -54,49 +54,41 @@ function sendEmail(string $to, string $subject, string $htmlBody): bool {
     if (USE_SMTP) {
         return sendSMTP($to, $subject, $htmlBody);
     }
-    return sendEmailFallback($to, $subject, $htmlBody);
-}
-
-function sendSMTP(string $to, string $subject, string $html): bool {
-    try {
-        // PHPMailer via Composer autoload
-        // Run: composer require phpmailer/phpmailer  (in your api/ folder)
-        $autoload = __DIR__ . '/vendor/autoload.php';
-        if (!file_exists($autoload)) {
-            error_log('[EMAIL] Composer autoload not found. Run: composer require phpmailer/phpmailer');
-            return sendEmailFallback($to, $subject, $html);
-        }
-        require_once $autoload;
-
-        $mail = new PHPMailer\PHPMailer\PHPMailer(true);
-        $mail->isSMTP();
-        $mail->Host       = SMTP_HOST;
-        $mail->SMTPAuth   = true;
-        $mail->Username   = SMTP_USER;
-        $mail->Password   = SMTP_PASS;
-        $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = SMTP_PORT;
-        $mail->CharSet    = 'UTF-8';
-        $mail->setFrom(SMTP_USER, COMPANY_NAME);
-        $mail->addAddress($to);
-        $mail->isHTML(true);
-        $mail->Subject = $subject;
-        $mail->Body    = $html;
-        $mail->AltBody = strip_tags(str_replace(['<br>', '<br/>', '</p>', '</div>'], "\n", $html));
-        return $mail->send();
-    } catch (Exception $e) {
-        error_log('[EMAIL SMTP ERROR] ' . $e->getMessage());
-        return sendEmailFallback($to, $subject, $html); // fallback to php mail()
-    }
-}
-
-// Fallback using php mail() if SMTP fails
-function sendEmailFallback(string $to, string $subject, string $html): bool {
+    // cPanel PHP mail() — works out of box on shared hosting
     $headers  = "MIME-Version: 1.0\r\n";
     $headers .= "Content-type: text/html; charset=utf-8\r\n";
     $headers .= "From: " . COMPANY_NAME . " <" . COMPANY_EMAIL . ">\r\n";
     $headers .= "Reply-To: " . COMPANY_EMAIL . "\r\n";
-    return @mail($to, $subject, $html, $headers);
+    $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
+    return @mail($to, $subject, $htmlBody, $headers);
+}
+
+function sendSMTP(string $to, string $subject, string $html): bool {
+    try {
+        // Using PHPMailer if available, else fallback
+        if (file_exists(__DIR__ . '/phpmailer/PHPMailer.php')) {
+            require_once __DIR__ . '/phpmailer/PHPMailer.php';
+            require_once __DIR__ . '/phpmailer/SMTP.php';
+            $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+            $mail->isSMTP();
+            $mail->Host       = SMTP_HOST;
+            $mail->SMTPAuth   = true;
+            $mail->Username   = SMTP_USER;
+            $mail->Password   = SMTP_PASS;
+            $mail->SMTPSecure = 'tls';
+            $mail->Port       = SMTP_PORT;
+            $mail->setFrom(SMTP_USER, COMPANY_NAME);
+            $mail->addAddress($to);
+            $mail->isHTML(true);
+            $mail->Subject = $subject;
+            $mail->Body    = $html;
+            return $mail->send();
+        }
+        return sendEmail($to, $subject, $html); // fallback
+    } catch (Exception $e) {
+        error_log('[EMAIL ERROR] ' . $e->getMessage());
+        return false;
+    }
 }
 
 function sendInquiryEmails(array $inq): void {
@@ -148,7 +140,7 @@ function sendInquiryEmails(array $inq): void {
       <hr style="border:none;border-top:1px solid #eee;margin:24px 0">
       <p style="color:#888;font-size:13px">
         <strong>Sneha Enterprises</strong><br>
-       Ward - 04, Basanwara, Alamnagar, Madhepura – 852210, Bihar, India<br>
+        Ward - 04, Basanwara, Alamnagar, Madhepura – 852210, Bihar, India<br>
         📞 +91 76317 11371 | ✉️ ' . COMPANY_EMAIL . '
       </p>
     </div>';
